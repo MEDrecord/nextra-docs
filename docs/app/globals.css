@@ -157,6 +157,13 @@ aside nav > a[href="/docs"] {
   display: none !important;
 }
 
+/* Hide the breadcrumb navigation (Documentation > Introduction) */
+nav[aria-label="breadcrumb"],
+.nextra-breadcrumb,
+[class*="breadcrumb"] {
+  display: none !important;
+}
+
 /* Hide feedback section ("Question? Give us feedback") */
 .nextra-toc-footer {
   display: none !important;
@@ -176,6 +183,22 @@ main {
 aside {
   top: 0 !important;
   height: 100vh !important;
+}
+
+/* Hide the theme/system toggle at bottom of sidebar */
+aside [class*="theme"],
+aside button[aria-label*="theme"],
+aside button[aria-label*="Theme"],
+aside > div:last-child button:has(svg),
+.nextra-sidebar-footer,
+aside footer {
+  display: none !important;
+}
+
+/* Hide the "System" theme toggle button specifically */
+aside button:has(+ [class*="system"]),
+aside div:has(> button[title="Change theme"]) {
+  display: none !important;
 }
 
 body {
