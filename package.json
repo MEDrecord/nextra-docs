@@ -3,10 +3,10 @@
   "private": true,
   "packageManager": "pnpm@9.15.9",
   "scripts": {
-    "build": "turbo run build --filter=./packages/\\*",
+    "build": "pnpm --filter docs build",
     "build:all": "turbo run build",
     "clean": "rm -rf .turbo && pnpm -r exec sh -c 'rm -rf dist .next .turbo'",
-    "dev": "turbo run dev --filter=./packages/\\*",
+    "dev": "pnpm --filter docs dev",
     "dev:theme-blog": "turbo run dev --filter=example-blog... --filter=!docs",
     "dev:theme-docs": "turbo run dev --filter=example-docs... --filter=!docs",
     "dev:theme-i18n": "turbo run dev --filter=swr-site... --filter=!docs",
@@ -14,12 +14,15 @@
     "format": "pnpm prettier --write",
     "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --config packages/eslint-config/src/index.ts --cache --max-warnings 0 .",
     "lint:prettier": "pnpm prettier --check",
-    "postinstall": "pnpm build",
+    "postinstall": "echo 'Using published nextra packages'",
     "prettier": "prettier --config-path packages/prettier-config/src/index.js --cache --ignore-path .gitignore --ignore-path .prettierignore --experimental-cli .",
     "release": "changeset publish",
     "test": "turbo run test",
     "types:check": "turbo run types:check",
     "version": "changeset version"
+  },
+  "dependencies": {
+    "next": "16.0.10"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.4",
