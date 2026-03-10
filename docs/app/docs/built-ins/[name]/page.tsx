@@ -119,7 +119,7 @@ async function getReference(props: PageProps) {
     apiRef.code ??
     `
 import type { ComponentProps, HTMLAttributes } from 'react'
-import type { ComboboxInputProps } from '../packages/nextra/node_modules/@headlessui/react'
+import type { ComboboxInputProps } from '@headlessui/react'
 import { ${name} as MyComponent } from '${packageName}'
 
 type MyProps = ComponentProps<typeof MyComponent>

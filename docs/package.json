@@ -10,6 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
     "@inkeep/cxkit-react": "^0.5.98",
     "clsx": "^2.1.0",
     "framer-motion": "^12.0.0",
