@@ -1,0 +1,94 @@
+# Audit Trail
+
+Complete activity logging and traceability in HealthTalk.
+
+## Overview
+
+HealthTalk maintains a comprehensive audit trail of all system activities to support regulatory compliance and security requirements.
+
+## Logged Events
+
+### User Activities
+
+- Login/logout events
+- Failed authentication attempts
+- User profile changes
+- Permission changes
+
+### Message Activities
+
+- Message creation
+- Message sending
+- Message delivery status changes
+- Message viewing
+- Response receipt
+
+### Administrative Activities
+
+- Configuration changes
+- Template modifications
+- User management actions
+- Integration changes
+- Data exports
+
+### System Events
+
+- API access
+- Webhook deliveries
+- System errors
+- Security events
+
+## Audit Log Format
+
+Each audit entry includes:
+
+```json
+{
+  "id": "aud_abc123",
+  "timestamp": "2026-03-10T09:30:00Z",
+  "actor": {
+    "userId": "usr_123",
+    "role": "clinician",
+    "ipAddress": "192.168.1.100"
+  },
+  "action": "message.send",
+  "resource": {
+    "type": "message",
+    "id": "msg_456"
+  },
+  "details": {
+    "patientId": "pat_789",
+    "channel": "sms"
+  },
+  "outcome": "success"
+}
+```
+
+## Retention
+
+- Audit logs retained for minimum 7 years
+- Logs are immutable once written
+- Archived logs available on request
+
+## Access
+
+### Admin Dashboard
+
+View audit logs via **Settings > Audit Trail**:
+
+- Filter by date range, user, action type
+- Search by resource ID
+- Export to CSV
+
+### API Access
+
+```http
+GET /v1/audit?from=2026-03-01&to=2026-03-10
+```
+
+## Integrity
+
+- Audit logs are write-once (immutable)
+- Tamper detection via cryptographic hashing
+- Separate audit log storage
+- Regular integrity verification

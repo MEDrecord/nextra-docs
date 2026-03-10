@@ -1,0 +1,51 @@
+# Configuration
+
+Configure HealthTalk settings for your organization.
+
+## Organization Settings
+
+### Basic Information
+
+- **Organization Name** - Your healthcare organization's display name
+- **Time Zone** - Default timezone for scheduling and timestamps
+- **Language** - Default language for system messages
+- **Logo** - Organization branding for patient-facing communications
+
+### Communication Channels
+
+Enable and configure available communication channels:
+
+- **Email** - SMTP configuration for email delivery
+- **SMS** - SMS gateway integration (Twilio, MessageBird)
+- **Push Notifications** - Mobile app notification settings
+- **Patient Portal** - Integration with existing patient portals
+
+### Security Settings
+
+- **Session Timeout** - Auto-logout duration
+- **Password Policy** - Complexity requirements
+- **Two-Factor Authentication** - Enable 2FA for all users
+- **IP Whitelisting** - Restrict access to approved networks
+
+## User Management
+
+### Roles and Permissions
+
+| Role | Description |
+|------|-------------|
+| Admin | Full system access |
+| Clinician | Patient communication and scheduling |
+| Staff | Limited messaging capabilities |
+| Viewer | Read-only access to reports |
+
+### User Provisioning
+
+Users can be provisioned via:
+- Manual creation in admin dashboard
+- CSV bulk import
+- SSO/SCIM integration
+- API provisioning
+
+## Next Steps
+
+- [Quick Start](/docs/getting-started/quick-start) - Send your first message

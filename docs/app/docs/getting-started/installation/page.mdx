@@ -1,0 +1,51 @@
+# Installation
+
+This guide covers the installation and setup of HealthTalk for your organization.
+
+## Prerequisites
+
+Before installing HealthTalk, ensure you have:
+
+- Administrative access to your organization's systems
+- Network configuration allowing HTTPS traffic
+- Valid SSL certificates for secure communication
+- Database server (PostgreSQL recommended)
+
+## Installation Options
+
+### Cloud Deployment (Recommended)
+
+HealthTalk is available as a managed cloud service with automatic updates and maintenance.
+
+1. Contact MEDrecord sales to provision your tenant
+2. Receive your organization credentials
+3. Configure SSO integration (optional)
+4. Complete onboarding wizard
+
+### Self-Hosted Deployment
+
+For organizations requiring on-premise deployment:
+
+```bash
+# Clone the HealthTalk deployment repository
+git clone https://github.com/MEDrecord/healthtalk-deploy.git
+
+# Configure environment variables
+cp .env.example .env
+
+# Start services
+docker-compose up -d
+```
+
+## Verification
+
+After installation, verify the setup:
+
+1. Access the admin dashboard
+2. Check system health status
+3. Test message delivery
+4. Verify audit logging
+
+## Next Steps
+
+- [Configuration](/docs/getting-started/configuration) - Configure your organization settings

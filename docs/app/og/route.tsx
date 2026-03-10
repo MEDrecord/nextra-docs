@@ -1,5 +1,4 @@
 /* eslint react/no-unknown-property: ['error', { ignore: ['tw'] }] */
-import { NextraLogo } from '@components/icons'
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
@@ -15,7 +14,7 @@ export async function GET(req: Request): Promise<Response> {
 
     // ?title=<title>
     const title =
-      searchParams.get('title')?.slice(0, 75) || 'Nextra Documentation'
+      searchParams.get('title')?.slice(0, 75) || 'HealthTalk Documentation'
 
     return new ImageResponse(
       <div
@@ -27,7 +26,10 @@ export async function GET(req: Request): Promise<Response> {
           backgroundPosition: '-30px -10px'
         }}
       >
-        <NextraLogo height="40" />
+        <div tw="flex items-center text-3xl font-bold">
+          <span tw="text-blue-500">Health</span>
+          <span>Talk</span>
+        </div>
         <h1
           tw="text-transparent text-[82px] m-0 mb-10 tracking-tighter leading-[1.1]"
           style={{
@@ -41,7 +43,7 @@ export async function GET(req: Request): Promise<Response> {
           {title}
         </h1>
         <p tw="m-0 text-3xl tracking-tight">
-          Create beautiful websites with Next.js & MDX.
+          Secure patient communication platform documentation.
         </p>
       </div>,
       {

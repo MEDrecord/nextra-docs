@@ -1,0 +1,74 @@
+# Rate Limits
+
+HealthTalk API enforces rate limits to ensure fair usage and service availability.
+
+## Default Limits
+
+| Endpoint Category | Limit | Window |
+|-------------------|-------|--------|
+| Messages (send) | 100 | per minute |
+| Messages (read) | 1000 | per minute |
+| Patients | 500 | per minute |
+| Templates | 200 | per minute |
+| Webhooks | 50 | per minute |
+
+## Rate Limit Headers
+
+All responses include rate limit information:
+
+```http
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1678901294
+```
+
+## Handling Rate Limits
+
+When rate limited, you receive:
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+```
+
+```json
+{
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Rate limit exceeded. Please retry after 30 seconds."
+  }
+}
+```
+
+## Best Practices
+
+### Implement Backoff
+
+```javascript
+async function apiCallWithRetry(fn, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (error.status === 429 && i < maxRetries - 1) {
+        const retryAfter = error.headers['retry-after'] || 30;
+        await sleep(retryAfter * 1000);
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+```
+
+### Batch Requests
+
+Use bulk endpoints when available to reduce API calls:
+
+```http
+POST /v1/messages/batch
+```
+
+## Increasing Limits
+
+Contact MEDrecord to discuss increased rate limits for high-volume use cases.
