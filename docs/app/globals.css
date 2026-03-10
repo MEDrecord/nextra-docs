@@ -7,6 +7,47 @@
 @variant dark (&:where(.dark *));
 
 @theme {
+  /* HealthTalk Blue Theme */
+  --color-primary: #2563EB;
+  --color-primary-dark: #1D4ED8;
+  --color-primary-light: #3B82F6;
+  
+  /* Accent colors */
+  --color-accent: #2563EB;
+  --color-accent-foreground: #FFFFFF;
+  
+  /* Muted/neutral */
+  --color-muted: #F3F4F6;
+  --color-muted-foreground: #6B7280;
+}
+
+/* HealthTalk primary color overrides */
+:root {
+  --nextra-primary-hue: 217deg;
+  --nextra-primary-saturation: 91%;
+  --nextra-primary-lightness: 60%;
+}
+
+.dark {
+  --nextra-primary-lightness: 55%;
+}
+
+/* Link color overrides for HealthTalk blue */
+a.x\\:text-primary-600 {
+  color: #2563EB !important;
+}
+
+.dark a.x\\:text-primary-600 {
+  color: #3B82F6 !important;
+}
+
+/* Sidebar active item */
+[data-active="true"] {
+  color: #2563EB !important;
+}
+
+.dark [data-active="true"] {
+  color: #3B82F6 !important;
 }
 
 body {
