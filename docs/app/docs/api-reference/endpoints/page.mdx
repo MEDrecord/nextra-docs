@@ -1,0 +1,105 @@
+# API Endpoints
+
+Complete reference for HealthTalk API endpoints.
+
+## Messages
+
+### Send Message
+
+```http
+POST /v1/messages
+```
+
+**Request Body:**
+
+```json
+{
+  "patientId": "pat_123",
+  "templateId": "tpl_456",
+  "channel": "sms",
+  "variables": {
+    "appointmentDate": "2026-03-15",
+    "appointmentTime": "10:30"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "msg_789",
+  "status": "queued",
+  "createdAt": "2026-03-10T09:00:00Z"
+}
+```
+
+### Get Message Status
+
+```http
+GET /v1/messages/{messageId}
+```
+
+### List Messages
+
+```http
+GET /v1/messages?patientId={patientId}&limit=20&offset=0
+```
+
+## Patients
+
+### Get Patient
+
+```http
+GET /v1/patients/{patientId}
+```
+
+### Update Communication Preferences
+
+```http
+PATCH /v1/patients/{patientId}/preferences
+```
+
+## Templates
+
+### List Templates
+
+```http
+GET /v1/templates
+```
+
+### Get Template
+
+```http
+GET /v1/templates/{templateId}
+```
+
+## Appointments
+
+### List Appointments
+
+```http
+GET /v1/appointments?from={date}&to={date}
+```
+
+### Send Reminder
+
+```http
+POST /v1/appointments/{appointmentId}/remind
+```
+
+## Webhooks
+
+### List Webhook Subscriptions
+
+```http
+GET /v1/webhooks
+```
+
+### Create Webhook
+
+```http
+POST /v1/webhooks
+```
+
+See [Webhooks](/docs/api-reference/webhooks) for detailed webhook documentation.

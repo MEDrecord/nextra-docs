@@ -1,0 +1,73 @@
+# Data Flow
+
+Message and data processing flows in HealthTalk.
+
+## Message Sending Flow
+
+```
+User Action           Gateway              Services                 Delivery
+    │                    │                    │                        │
+    │  1. Send Request   │                    │                        │
+    ├───────────────────>│                    │                        │
+    │                    │  2. Authenticate   │                        │
+    │                    │  3. Rate Check     │                        │
+    │                    ├───────────────────>│                        │
+    │                    │                    │  4. Validate Request   │
+    │                    │                    │  5. Render Template    │
+    │                    │                    │  6. Queue Message      │
+    │                    │<───────────────────┤                        │
+    │  7. Accepted       │                    │                        │
+    │<───────────────────┤                    │                        │
+    │                    │                    │  8. Process Queue      │
+    │                    │                    ├───────────────────────>│
+    │                    │                    │                        │  9. Deliver
+    │                    │                    │<───────────────────────┤
+    │                    │                    │  10. Update Status     │
+    │  11. Webhook       │                    │                        │
+    │<─────────────────────────────────────────                        │
+```
+
+## Patient Response Flow
+
+1. Patient receives message via channel (SMS/Email)
+2. Patient responds via same channel
+3. Provider receives message
+4. Response linked to original conversation
+5. Notification sent to assigned staff
+6. Staff reviews and responds
+
+## Data Synchronization
+
+### EHR Integration
+
+```
+EHR System ──> API Gateway ──> Patient Service ──> Database
+                    │
+                    └──> Audit Trail
+```
+
+### Appointment Sync
+
+```
+Scheduling System ──> Webhook ──> Appointment Service
+                                        │
+                                        └──> Reminder Queue
+```
+
+## Event Flow
+
+All significant events are published to the event bus:
+
+- `message.created`
+- `message.sent`
+- `message.delivered`
+- `message.failed`
+- `patient.updated`
+- `appointment.created`
+
+Subscribers process events for:
+
+- Analytics aggregation
+- Audit logging
+- Webhook delivery
+- Notification dispatch

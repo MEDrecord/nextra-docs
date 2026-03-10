@@ -1,0 +1,63 @@
+# Architecture Overview
+
+Technical architecture documentation for HealthTalk.
+
+## System Overview
+
+HealthTalk is a cloud-native healthcare communication platform built on modern, scalable architecture.
+
+## High-Level Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Client Layer                          │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐    │
+│  │ Web App │  │ Mobile  │  │   API   │  │ Patient │    │
+│  │         │  │  Apps   │  │ Clients │  │ Portal  │    │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘    │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│                   Gateway Layer                          │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │              MEDrecord Gateway                   │   │
+│  │    (Authentication, Rate Limiting, Routing)     │   │
+│  └─────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│                  Application Layer                       │
+│  ┌───────┐  ┌───────┐  ┌───────┐  ┌───────┐           │
+│  │Message│  │Patient│  │Appoint│  │Templat│           │
+│  │Service│  │Service│  │Service│  │Service│           │
+│  └───────┘  └───────┘  └───────┘  └───────┘           │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│                    Data Layer                            │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐          │
+│  │ PostgreSQL│  │   Redis   │  │   S3/Blob │          │
+│  │  (Primary)│  │  (Cache)  │  │  (Files)  │          │
+│  └───────────┘  └───────────┘  └───────────┘          │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Key Components
+
+| Component | Purpose |
+|-----------|---------|
+| [System Design](/docs/architecture/system-design) | Detailed component architecture |
+| [Data Flow](/docs/architecture/data-flow) | Message and data processing flows |
+| [Security](/docs/architecture/security) | Security architecture and controls |
+| [Integrations](/docs/architecture/integrations) | External system integrations |
+
+## Technology Stack
+
+- **Frontend**: Next.js, React, TypeScript
+- **Backend**: Node.js, Express
+- **Database**: PostgreSQL, Redis
+- **Infrastructure**: Vercel, AWS
+- **Messaging**: SMS gateways, Email providers

@@ -1,0 +1,80 @@
+# Webhooks
+
+Receive real-time notifications when events occur in HealthTalk.
+
+## Available Events
+
+| Event | Description |
+|-------|-------------|
+| `message.sent` | Message successfully sent |
+| `message.delivered` | Message delivered to recipient |
+| `message.failed` | Message delivery failed |
+| `message.response` | Patient responded to a message |
+| `appointment.confirmed` | Patient confirmed appointment |
+| `appointment.cancelled` | Patient cancelled appointment |
+
+## Creating a Webhook
+
+```http
+POST /v1/webhooks
+```
+
+```json
+{
+  "url": "https://your-server.com/webhook",
+  "events": ["message.delivered", "message.response"],
+  "secret": "your-webhook-secret"
+}
+```
+
+## Webhook Payload
+
+All webhook payloads include:
+
+```json
+{
+  "id": "evt_123",
+  "type": "message.delivered",
+  "timestamp": "2026-03-10T09:00:00Z",
+  "data": {
+    "messageId": "msg_789",
+    "patientId": "pat_123",
+    "channel": "sms"
+  }
+}
+```
+
+## Signature Verification
+
+Webhooks include a signature header for verification:
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhook(payload, signature, secret) {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+```
+
+## Retry Policy
+
+Failed webhook deliveries are retried:
+
+- 1st retry: 1 minute after failure
+- 2nd retry: 5 minutes after
+- 3rd retry: 30 minutes after
+- 4th retry: 2 hours after
+- 5th retry: 24 hours after
+
+After 5 failed attempts, the webhook is disabled and an alert is sent.
+
+## Testing Webhooks
+
+Use the webhook testing tool in the admin dashboard to send test events to your endpoint.

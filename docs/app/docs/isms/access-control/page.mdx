@@ -1,0 +1,87 @@
+# Access Control
+
+Identity and access management for HealthTalk.
+
+## Principles
+
+- **Least Privilege** - Minimum necessary access
+- **Need to Know** - Access based on role requirements
+- **Separation of Duties** - Critical functions divided
+- **Defense in Depth** - Multiple control layers
+
+## User Management
+
+### Account Provisioning
+
+1. Request submitted by manager
+2. Role assignment based on job function
+3. Account created with initial credentials
+4. MFA enrollment required
+5. Access confirmation
+
+### Account Review
+
+- Quarterly access reviews
+- Manager certification of continued need
+- Removal of dormant accounts (90 days)
+
+### Account Termination
+
+- Immediate on employment end
+- All access revoked within 24 hours
+- Equipment and credentials returned
+- Exit audit conducted
+
+## Authentication
+
+### Password Requirements
+
+- Minimum 12 characters
+- Complexity requirements
+- No password reuse (last 12)
+- Maximum age: 90 days
+
+### Multi-Factor Authentication
+
+Required for:
+
+- All user accounts
+- API access (service accounts exempt)
+- Administrative functions
+- VPN access
+
+### Session Management
+
+- Automatic timeout: 30 minutes
+- Concurrent session limits
+- Re-authentication for sensitive actions
+
+## Authorization
+
+### Role-Based Access Control
+
+Roles defined per organizational structure:
+
+| Role | Access Level |
+|------|--------------|
+| System Admin | Full system access |
+| Organization Admin | Organization-wide access |
+| Department Admin | Department access |
+| Clinician | Patient data access |
+| Staff | Limited messaging access |
+| Viewer | Read-only access |
+
+### Permission Matrix
+
+Documented matrix mapping:
+
+- Roles to permissions
+- Permissions to resources
+- Special access requirements
+
+## Privileged Access
+
+- Just-in-time elevation
+- Approval workflow
+- Session recording
+- Enhanced monitoring

@@ -1,0 +1,86 @@
+# Security Architecture
+
+Security design and controls for HealthTalk.
+
+## Security Layers
+
+### Network Security
+
+- All traffic encrypted via TLS 1.3
+- Web Application Firewall (WAF)
+- DDoS protection
+- Network segmentation
+
+### Application Security
+
+- Input validation and sanitization
+- Output encoding
+- CSRF protection
+- Content Security Policy
+
+### Data Security
+
+- Encryption at rest (AES-256)
+- Encryption in transit (TLS 1.3)
+- Key management via HSM
+- Data masking for non-production
+
+### Identity & Access
+
+- Multi-factor authentication
+- Role-based access control
+- Single Sign-On (SSO) support
+- Session management
+
+## Authentication Flow
+
+```
+User ──> Identity Provider ──> JWT Token ──> Gateway ──> Services
+              │
+              └──> MFA Challenge (if enabled)
+```
+
+## Authorization Model
+
+### Role Hierarchy
+
+```
+Organization Admin
+    │
+    ├── Department Admin
+    │       │
+    │       ├── Clinician
+    │       │
+    │       └── Staff
+    │
+    └── Viewer
+```
+
+### Permission Model
+
+Permissions are assigned at:
+
+- Organization level
+- Department level
+- Resource level (specific patients, templates)
+
+## Secrets Management
+
+- API keys stored in encrypted vault
+- Automatic rotation policies
+- Access logging for all secret access
+- Separation of production secrets
+
+## Security Monitoring
+
+- Real-time threat detection
+- Anomaly detection on API usage
+- Failed authentication alerting
+- Security event logging
+
+## Vulnerability Management
+
+- Regular penetration testing
+- Automated dependency scanning
+- Security code reviews
+- Bug bounty program

@@ -1,0 +1,61 @@
+# Message Templates
+
+Create and manage reusable message templates for consistent patient communication.
+
+## Template Library
+
+Access pre-approved templates organized by category:
+
+- **Appointment** - Reminders, confirmations, cancellations
+- **Clinical** - Test results, follow-up care, instructions
+- **Administrative** - Billing, forms, general information
+- **Surveys** - Patient satisfaction, health assessments
+
+## Creating Templates
+
+### Basic Template
+
+1. Navigate to **Settings > Templates**
+2. Click **New Template**
+3. Select category and name
+4. Enter message content
+5. Submit for approval
+
+### Using Dynamic Fields
+
+Insert merge fields for personalization:
+
+| Field | Example Output |
+|-------|---------------|
+| `{{patient.firstName}}` | John |
+| `{{patient.lastName}}` | Smith |
+| `{{appointment.date}}` | March 15, 2026 |
+| `{{appointment.time}}` | 10:30 AM |
+| `{{provider.name}}` | Dr. Johnson |
+| `{{organization.name}}` | City Medical Center |
+
+### Example Template
+
+```
+Hello {{patient.firstName}},
+
+This is a reminder about your appointment with {{provider.name}} on {{appointment.date}} at {{appointment.time}}.
+
+Please arrive 15 minutes early. If you need to reschedule, reply to this message or call us.
+
+Best regards,
+{{organization.name}}
+```
+
+## Approval Workflow
+
+Templates requiring approval:
+
+1. Draft template submitted by staff
+2. Review by designated approver
+3. Approval or revision requested
+4. Published to template library
+
+## Template Versioning
+
+All template changes are versioned for audit purposes. Previous versions can be viewed but only the current approved version can be used for sending.

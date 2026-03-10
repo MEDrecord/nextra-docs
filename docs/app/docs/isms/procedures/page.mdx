@@ -1,0 +1,79 @@
+# Security Procedures
+
+Operational security procedures for HealthTalk.
+
+## Change Management
+
+### Standard Changes
+
+Pre-approved changes with established process:
+
+1. Change request submitted
+2. Automated validation
+3. Deployment to staging
+4. Production deployment
+
+### Normal Changes
+
+Changes requiring CAB approval:
+
+1. Change request with impact analysis
+2. CAB review and approval
+3. Testing and validation
+4. Scheduled deployment
+5. Post-implementation review
+
+### Emergency Changes
+
+Expedited process for critical fixes:
+
+1. Verbal approval from CAB member
+2. Implementation with monitoring
+3. Retrospective change record
+4. Root cause analysis
+
+## Vulnerability Management
+
+### Scanning
+
+- Automated scans: Daily
+- Penetration testing: Quarterly
+- Code scanning: Every commit
+
+### Remediation
+
+| Severity | SLA |
+|----------|-----|
+| Critical | 24 hours |
+| High | 7 days |
+| Medium | 30 days |
+| Low | 90 days |
+
+## Backup and Recovery
+
+### Backup Schedule
+
+- Database: Continuous (point-in-time recovery)
+- Files: Daily incremental, weekly full
+- Configuration: On change
+
+### Recovery Testing
+
+- Quarterly recovery tests
+- Documented recovery procedures
+- Recovery time objectives verified
+
+## Security Monitoring
+
+### Log Review
+
+- Security logs reviewed daily
+- Automated alerting for anomalies
+- Monthly trend analysis
+
+### Security Metrics
+
+- Failed login attempts
+- Privilege escalations
+- Policy violations
+- Incident count
