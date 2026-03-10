@@ -80,48 +80,7 @@ const nextConfig = withNextra({
     NEXT_PUBLIC_INKEEP_API_KEY:
       'dee399c7f7ac40b9de0d0b85ca32959953b9ff7c9fc8d96c'
   },
-  redirects: () => [
-    {
-      source: '/docs/guide/:slug(typescript|latex|tailwind-css|mermaid)',
-      destination: '/docs/advanced/:slug',
-      permanent: true
-    },
-    {
-      source: '/docs/docs-theme/built-ins/:slug(callout|steps|tabs|bleed)',
-      destination: '/docs/built-ins/:slug',
-      permanent: true
-    },
-    {
-      source: '/docs/docs-theme/api/use-config',
-      destination: '/docs/docs-theme/api',
-      permanent: true
-    },
-    {
-      source: '/docs/guide/advanced/:slug',
-      destination: '/docs/advanced/:slug',
-      permanent: true
-    },
-    {
-      source: '/docs/docs-theme/theme-configuration',
-      destination: '/docs/docs-theme/built-ins/layout',
-      permanent: true
-    },
-    {
-      source: '/docs/docs-theme/page-configuration',
-      destination: '/docs/file-conventions/meta-file',
-      permanent: true
-    },
-    {
-      source: '/docs/guide/organize-files',
-      destination: '/docs/file-conventions',
-      permanent: true
-    },
-    {
-      source: '/docs/advanced/playground',
-      destination: '/docs/built-ins/playground',
-      permanent: true
-    }
-  ],
+  redirects: () => [],
   webpack(config) {
     // rule.exclude doesn't work starting from Next.js 15
     const { test: _test, ...imageLoaderOptions } = config.module.rules.find(
