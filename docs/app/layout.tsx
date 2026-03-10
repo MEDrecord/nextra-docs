@@ -1,7 +1,6 @@
 import { getEnhancedPageMap } from '@components/get-page-map'
-import { ChatButton } from '@components/inkeep-chat-button'
 import type { Metadata } from 'next'
-import { Footer, Layout, Navbar } from 'nextra-theme-docs'
+import { Layout } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import type { FC } from 'react'
 import './globals.css'
@@ -33,7 +32,7 @@ export const metadata: Metadata = {
     type: 'website'
   },
   other: {
-    'msapplication-TileColor': '#2563EB'
+    'msapplication-TileColor': '#001B9F'
   },
   twitter: {
     site: 'https://healthtalk.ai'
@@ -43,39 +42,20 @@ export const metadata: Metadata = {
   }
 }
 
-// Simple text logo for iframe embedding
-const navbar = (
-  <Navbar
-    logo={
-      <span className="font-semibold text-lg text-primary">
-        Documentation
-      </span>
-    }
-  />
-)
-
-// Minimal footer for iframe
-const footer = (
-  <Footer className="flex-col items-center md:items-start">
-    <p className="text-xs text-muted-foreground">
-      © {new Date().getFullYear()} HealthTalk - MEDrecord
-    </p>
-  </Footer>
-)
-
 const RootLayout: FC<LayoutProps<'/'>> = async ({ children }) => {
   const pageMap = await getEnhancedPageMap()
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
-        <ChatButton />
         <Layout
-          navbar={navbar}
+          navbar={null}
           pageMap={pageMap}
           editLink={null}
+          feedback={{ content: null }}
           sidebar={{ defaultMenuCollapseLevel: 1 }}
-          footer={footer}
+          footer={null}
+          toc={{ extraContent: null }}
         >
           {children}
         </Layout>

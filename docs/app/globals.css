@@ -148,6 +148,36 @@ a.x\\:text-primary-600 {
   color: var(--sidebar-primary) !important;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────────
+   Iframe Embed Mode - Hide unnecessary elements for embedded use
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* Hide the "Documentation" breadcrumb link in sidebar header */
+aside nav > a[href="/docs"] {
+  display: none !important;
+}
+
+/* Hide feedback section ("Question? Give us feedback") */
+.nextra-toc-footer {
+  display: none !important;
+}
+
+/* Adjust content to start from top without navbar spacing */
+.nextra-nav-container {
+  display: none !important;
+}
+
+/* Remove top padding that was for navbar */
+main {
+  padding-top: 0 !important;
+}
+
+/* Make sidebar flush to top */
+aside {
+  top: 0 !important;
+  height: 100vh !important;
+}
+
 body {
   font-feature-settings:
     'rlig' 1,
