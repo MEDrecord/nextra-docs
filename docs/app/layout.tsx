@@ -56,8 +56,6 @@ const RootLayout: FC<LayoutProps<'/'>> = async ({ children }) => {
           sidebar={{ defaultMenuCollapseLevel: 1 }}
           footer={null}
           toc={{ extraContent: null, backToTop: null }}
-          themeSwitch={null}
-          darkMode={false}
         >
           {children}
         </Layout>
