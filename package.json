@@ -21,6 +21,9 @@
     "types:check": "turbo run types:check",
     "version": "changeset version"
   },
+  "dependencies": {
+    "next": "16.0.10"
+  },
   "devDependencies": {
     "@changesets/cli": "2.29.4",
     "@rollup/plugin-alias": "5.1.1",

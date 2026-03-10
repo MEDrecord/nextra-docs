@@ -31,6 +31,10 @@ patchedDependencies:
 importers:
 
   .:
+    dependencies:
+      next:
+        specifier: 16.0.10
+        version: 16.0.10(patch_hash=7jofu3qtudpcn7yuwfpdpiosuy)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
     devDependencies:
       '@changesets/cli':
         specifier: 2.29.4
