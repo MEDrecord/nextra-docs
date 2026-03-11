@@ -85,7 +85,44 @@ const nextConfig = withNextra({
   outputFileTracingIncludes: {
     '/*': ['./tsconfig.json']
   },
-  redirects: () => [],
+  redirects: async () => [
+    // Redirects for Helpdesk app compatibility
+    {
+      source: '/docs/admin',
+      destination: '/admin',
+      permanent: false,
+    },
+    {
+      source: '/docs/user-guide',
+      destination: '/docs/user-guide/overview',
+      permanent: false,
+    },
+    {
+      source: '/docs/getting-started',
+      destination: '/docs/getting-started/introduction',
+      permanent: false,
+    },
+    {
+      source: '/docs/products/coachi',
+      destination: '/docs/products/overview',
+      permanent: false,
+    },
+    {
+      source: '/docs/products/medsafe',
+      destination: '/docs/products/overview',
+      permanent: false,
+    },
+    {
+      source: '/helpdesk/isms',
+      destination: '/isms',
+      permanent: false,
+    },
+    {
+      source: '/helpdesk/isms/:path*',
+      destination: '/isms/:path*',
+      permanent: false,
+    },
+  ],
   webpack(config) {
     // Fix Nextra module resolution issue with Turbopack
     config.resolve.alias = {
