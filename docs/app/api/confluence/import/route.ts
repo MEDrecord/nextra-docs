@@ -148,19 +148,28 @@ export async function GET(request: NextRequest) {
     }> = []
 
     let start = 0
-    const limit = 200
+    const limit = 100 // Confluence API recommends max 100 per request
     let hasMore = true
+    let totalFetched = 0
+
+    console.log(`[Confluence Import] Starting fetch for space: ${spaceKey}`)
 
     while (hasMore) {
       const url = `${CONFLUENCE_BASE_URL}/rest/api/content?spaceKey=${spaceKey}&type=page&expand=body.storage,version,ancestors&limit=${limit}&start=${start}`
       
+      console.log(`[Confluence Import] Fetching batch starting at ${start}...`)
+      
       const response = await fetch(url, { headers })
       
       if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`[Confluence Import] API error: ${response.status}`, errorText)
         throw new Error(`Confluence API error: ${response.status} ${response.statusText}`)
       }
 
       const data: ConfluenceResponse = await response.json()
+      
+      console.log(`[Confluence Import] Received ${data.results.length} pages in this batch`)
       
       for (const page of data.results) {
         const slug = slugify(page.title)
@@ -179,9 +188,17 @@ export async function GET(request: NextRequest) {
         })
       }
 
-      hasMore = data.size === limit
+      totalFetched += data.results.length
+      
+      // Check if there are more pages using the _links.next field
+      // Also check if we received fewer results than the limit (means no more pages)
+      hasMore = !!data._links?.next && data.results.length === limit
       start += limit
+      
+      console.log(`[Confluence Import] Total fetched so far: ${totalFetched}, hasMore: ${hasMore}`)
     }
+    
+    console.log(`[Confluence Import] Completed. Total pages fetched: ${pages.length}`)
 
     return NextResponse.json({
       success: true,
