@@ -80,6 +80,11 @@ const nextConfig = withNextra({
     NEXT_PUBLIC_INKEEP_API_KEY:
       'dee399c7f7ac40b9de0d0b85ca32959953b9ff7c9fc8d96c'
   },
+  // Include tsconfig.json in the deployment for Nextra TSDoc feature
+  // TSDoc uses TypeScript compiler API which needs tsconfig at runtime
+  outputFileTracingIncludes: {
+    '/*': ['./tsconfig.json']
+  },
   redirects: () => [],
   webpack(config) {
     // Fix Nextra module resolution issue with Turbopack
