@@ -32,7 +32,7 @@ async function readMdxFiles(dir: string, basePath: string, type: KnowledgeItem['
           
           // Extract title from first heading
           const titleMatch = content.match(/^#\s+(.+)$/m)
-          const title = titleMatch ? titleMatch[1] : path.basename(path.dirname(fullPath))
+          const title: string = titleMatch?.[1] ?? path.basename(path.dirname(fullPath))
           
           // Extract tags from content (look for **Tags:** pattern)
           const tagsMatch = content.match(/\*\*Tags:\*\*\s*(.+)$/m)
