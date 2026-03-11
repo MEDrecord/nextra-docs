@@ -1,4 +1,5 @@
 import nextra from 'nextra'
+import path from 'path'
 
 // @ts-expect-error -- fixme
 function isExportNode(node, varName: string) {
@@ -82,6 +83,9 @@ const nextConfig = withNextra({
   },
   redirects: () => [],
   webpack(config) {
+    // Add @ alias for imports
+    config.resolve.alias['@'] = path.resolve(__dirname)
+    
     // rule.exclude doesn't work starting from Next.js 15
     const { test: _test, ...imageLoaderOptions } = config.module.rules.find(
       // @ts-expect-error -- fixme
@@ -105,6 +109,9 @@ const nextConfig = withNextra({
         loaders: ['@svgr/webpack'],
         as: '*.js'
       }
+    },
+    resolveAlias: {
+      '@/*': ['./*']
     }
   },
   experimental: {
