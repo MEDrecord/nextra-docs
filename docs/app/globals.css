@@ -135,7 +135,7 @@
 }
 
 /* Link color overrides for HT Brand Blue */
-a.x\\:text-primary-600 {
+a[class*="text-primary"] {
   color: var(--primary) !important;
 }
 
@@ -146,63 +146,6 @@ a.x\\:text-primary-600 {
 
 .dark [data-active="true"] {
   color: var(--sidebar-primary) !important;
-}
-
-/* ──────────────────────────────────────────────────────────────────────────────
-   Iframe Embed Mode - Hide unnecessary elements for embedded use
-   ──────────────────────────────────────────────────────────────────────────── */
-
-/* Hide entire top navigation/header bar */
-header,
-nav:has(> a[href="/"]),
-.x\\:sticky:has(nav),
-div[class*="nextra-nav"],
-.nextra-nav-container {
-  display: none !important;
-}
-
-/* Hide breadcrumb navigation (Documentation > Introduction) */
-nav[aria-label="Breadcrumb"],
-nav:has(> ol > li > a[href="/docs"]),
-ol:has(> li > a[href="/docs"]),
-.x\\:flex:has(> a[href="/docs"]):has(> svg) {
-  display: none !important;
-}
-
-/* Hide "Copy page" button and feedback links in content header */
-div:has(> button:has(span:contains("Copy"))),
-a:has(span:contains("feedback")),
-.nextra-toc-footer {
-  display: none !important;
-}
-
-/* Remove top padding/margin from main content area */
-main,
-article {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-}
-
-/* Make sidebar flush to top */
-aside {
-  top: 0 !important;
-  height: 100vh !important;
-  padding-top: 1rem !important;
-}
-
-/* Hide the "System" theme toggle at bottom of sidebar */
-aside > div:last-child,
-aside div:has(> button[title="Change theme"]),
-aside div:has(> span:contains("System")),
-button[title="Change theme"],
-.x\\:flex:has(> button > svg[class*="moon"]),
-.x\\:flex:has(> button > svg[class*="sun"]) {
-  display: none !important;
-}
-
-/* Force hide any remaining sidebar footer */
-aside > div:last-of-type:has(button) {
-  display: none !important;
 }
 
 body {

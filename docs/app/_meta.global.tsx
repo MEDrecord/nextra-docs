@@ -43,12 +43,32 @@ const ARCHITECTURE: MetaRecord = {
 }
 
 const ISMS: MetaRecord = {
-  overview: 'Overview',
+  index: 'Overview',
   'policies': 'Policies',
-  'procedures': 'Procedures',
-  'risk-management': 'Risk Management',
-  'incident-response': 'Incident Response',
-  'access-control': 'Access Control'
+  'annex-a': 'Annex A Controls',
+  'registers': 'Registers',
+  'risks': 'Risk Register'
+}
+
+const ISMS_ANNEX_A: MetaRecord = {
+  index: 'Overview',
+  'a-6-1-2-segregation-duties': 'A.6.1.2 Segregation of duties',
+  'a-7-2-2-security-awareness': 'A.7.2.2 Security awareness',
+  'a-9-4-2-secure-logon': 'A.9.4.2 Secure log-on',
+  'a-12-6-1-technical-vulnerabilities': 'A.12.6.1 Technical vulnerabilities',
+  'a-16-1-1-responsibilities-procedures': 'A.16.1.1 Responsibilities',
+  'a-16-1-2-reporting-security-events': 'A.16.1.2 Reporting events',
+  'a-16-1-3-reporting-weaknesses': 'A.16.1.3 Reporting weaknesses',
+  'a-16-1-7-collection-evidence': 'A.16.1.7 Collection of evidence'
+}
+
+const ISMS_REGISTERS: MetaRecord = {
+  index: 'Overview',
+  'changes': 'Changes',
+  'risk-assessment': 'Risk Assessment',
+  'incidents': 'Incidents',
+  'legal-requirements': 'Legal Requirements',
+  'suppliers': 'Suppliers'
 }
 
 const DEVELOPER_TOOLS: MetaRecord = {
@@ -70,10 +90,18 @@ const PRODUCTS: MetaRecord = {
 
 const KNOWLEDGE_BASE: MetaRecord = {
   overview: 'Overview',
+  'patterns': 'Patterns',
+  'test-templates': 'Test Templates',
+  'prevention': 'Prevention Steps',
+  'code-reviews': 'Code Reviews'
+}
+
+const HELP_CENTER: MetaRecord = {
+  overview: 'Overview',
   'faq': 'FAQ',
   'how-to-guides': 'How-to Guides',
   'troubleshooting': 'Troubleshooting',
-  'best-practices': 'Best Practices'
+  'account': 'Account & Settings'
 }
 
 export default {
@@ -103,7 +131,24 @@ export default {
   isms: {
     type: 'page',
     title: 'ISMS',
-    items: ISMS
+    items: {
+      index: 'Overview',
+      'policies': 'Policies',
+      'annex-a': {
+        title: 'Annex A Controls',
+        items: ISMS_ANNEX_A
+      },
+      'registers': {
+        title: 'Registers',
+        items: ISMS_REGISTERS
+      },
+      'risks': 'Risk Register'
+    }
+  },
+  help: {
+    type: 'page',
+    title: 'Help Center',
+    items: HELP_CENTER
   },
   knowledge: {
     type: 'page',
