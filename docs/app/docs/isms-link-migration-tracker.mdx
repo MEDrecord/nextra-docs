@@ -1,42 +1,87 @@
 # ISMS Link Migration Tracker
 
-This document tracks all external and internal links from the ISMS Confluence export that need to be resolved, migrated, or updated.
-
-## Summary
-
-| Link Type | Count | Status | Action Required |
-|-----------|-------|--------|-----------------|
-| Azure DevOps Wiki | 10 | Pending | Migrate to Helpdesk |
-| Confluence/Atlassian | 8 | Broken | Create new pages or resolve |
-| MS Teams | 2 | External | Keep as external or migrate |
-| GitLab | 2 | External | Keep as external |
-| Empty Placeholders | 20+ | Broken | Identify and populate |
-| External Legal/Reference | 5 | External | Keep as external links |
+This document tracks all links from the ISMS Confluence export that need to be created in the Helpdesk system.
 
 ---
 
-## Part 1: Azure DevOps Wiki Pages (To Migrate to Helpdesk)
+## Buttons to Create in Helpdesk (ISMS Section)
 
-These pages currently live in Azure DevOps ISMS Wiki and need to be migrated to the Helpdesk system.
+Copy these exact titles when creating buttons/pages in the Helpdesk system.
 
-### Required Helpdesk Pages
+### Policies (8 buttons)
 
-| # | Azure DevOps Path | Topic | Priority | Helpdesk Path (Proposed) | Status |
-|---|-------------------|-------|----------|-------------------------|--------|
-| 1 | `/1057/Competences` | Roles: Change Manager, Lead Developer, etc. | High | `/helpdesk/isms/roles-competences` | TODO |
-| 2 | `/1174/Information-retention-policy` | Data retention periods | High | `/helpdesk/isms/information-retention-policy` | TODO |
-| 3 | `/1177/Password-policy` | Password requirements | High | `/helpdesk/isms/password-policy` | TODO |
-| 4 | `/1190/Supplier-relationship-policy` | Supplier management rules | High | `/helpdesk/isms/supplier-relationship-policy` | TODO |
-| 5 | `/1191/Secure-development-policy` | Secure coding guidelines | High | `/helpdesk/isms/secure-development-policy` | TODO |
-| 6 | `/1230/Assets` | Webhosting partners / asset register | Medium | `/helpdesk/isms/assets-register` | TODO |
-| 7 | `/1140/Access-control-policy` | Network access controls | High | `/helpdesk/isms/access-control-policy` | TODO |
-| 8 | `/1155/Clean-desk-and-screen-policy` | Physical security | Medium | `/helpdesk/isms/clean-desk-policy` | TODO |
-| 9 | `/1156/Business-continuity-plan` | Disaster recovery | High | `/helpdesk/isms/business-continuity-plan` | TODO |
-| 10 | `/1163/Information-classification-policy` | Data classification | High | `/helpdesk/isms/information-classification-policy` | TODO |
-| 11 | `/1168/Cryptographic-policy` | Encryption standards | High | `/helpdesk/isms/cryptographic-policy` | TODO |
-| 12 | `/1194/Authorization-request-process` | Auth request workflow | Medium | `/helpdesk/isms/authorization-request-process` | TODO |
-| 13 | `/1234/Authorization-request-template` | Auth request template | Medium | `/helpdesk/isms/authorization-request-template` | TODO |
-| 14 | `/1260/Security-training-and-awareness-policy` | Security awareness training | Medium | `/helpdesk/isms/security-training-policy` | TODO |
+| Button Label | Description |
+|--------------|-------------|
+| **Information Retention Policy** | Data retention periods and disposal rules |
+| **Password Policy** | Password requirements, complexity, rotation |
+| **Access Control Policy** | Network access and authorization controls |
+| **Supplier Relationship Policy** | Third-party vendor management rules |
+| **Secure Development Policy** | Secure coding and SDLC guidelines |
+| **Clean Desk and Screen Policy** | Physical workspace security |
+| **Information Classification Policy** | Data classification levels (public, internal, confidential) |
+| **Cryptographic Policy** | Encryption standards and key management |
+
+### Procedures (4 buttons)
+
+| Button Label | Description |
+|--------------|-------------|
+| **Business Continuity Plan** | Disaster recovery and continuity procedures |
+| **Authorization Request Process** | Access request workflow and approvals |
+| **Authorization Request Template** | Standard form for access requests |
+| **Security Training and Awareness** | Security awareness training requirements |
+
+### Registers (2 buttons)
+
+| Button Label | Description |
+|--------------|-------------|
+| **Asset Register** | Hardware, software, data assets, webhosting partners |
+| **Supplier Register** | Approved vendors and contracts list |
+
+### Roles and Responsibilities (1 button)
+
+| Button Label | Description |
+|--------------|-------------|
+| **Competences and Roles** | ISMS roles (Change Manager, Lead Developer, ISO, etc.) |
+
+---
+
+## Summary: 15 Total Buttons to Create
+
+| Category | Count |
+|----------|-------|
+| Policies | 8 |
+| Procedures | 4 |
+| Registers | 2 |
+| Roles | 1 |
+| **Total** | **15** |
+
+---
+
+## Additional Pages Needed in ISMS Docs (Not Helpdesk)
+
+These Annex A control pages should be created in the ISMS documentation itself (not Helpdesk):
+
+| Control Code | Control Title |
+|--------------|---------------|
+| A.6.1.2 | Segregation of duties |
+| A.7.2.2 | Information security awareness, education and training |
+| A.12.6.1 | Management of technical vulnerabilities |
+| A.16.1.1 | Responsibilities and procedures |
+| A.16.1.2 | Reporting information security events |
+| A.16.1.3 | Reporting information security weaknesses |
+| A.16.1.7 | Collection of evidence |
+
+---
+
+## External Links to Keep (No Action Required)
+
+These external regulatory links should remain as-is:
+
+- GDPR references (gdpr-info.eu)
+- Dutch law references (wetten.overheid.nl)
+- MedMij framework (afsprakenstelsel.medmij.nl)
+- Public websites (medsafe.io, medrecord.io, healthtalk.ai)
+- GitLab incident tracking (if still in use)
 
 ### Source URLs to Update
 
