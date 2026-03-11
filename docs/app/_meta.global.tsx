@@ -68,6 +68,14 @@ const PRODUCTS: MetaRecord = {
   'ehr-platform': 'EHR Platform'
 }
 
+const KNOWLEDGE_BASE: MetaRecord = {
+  overview: 'Overview',
+  'faq': 'FAQ',
+  'how-to-guides': 'How-to Guides',
+  'troubleshooting': 'Troubleshooting',
+  'best-practices': 'Best Practices'
+}
+
 export default {
   index: {
     type: 'page',
@@ -89,11 +97,23 @@ export default {
       'products': {
         title: 'Products',
         items: PRODUCTS
-      },
-      _: {
-        type: 'separator',
-        title: 'Developer'
-      },
+      }
+    }
+  },
+  isms: {
+    type: 'page',
+    title: 'ISMS',
+    items: ISMS
+  },
+  knowledge: {
+    type: 'page',
+    title: 'Knowledge Base',
+    items: KNOWLEDGE_BASE
+  },
+  developer: {
+    type: 'page',
+    title: 'Developer',
+    items: {
       'api-reference': { 
         title: 'API Reference',
         items: API_REFERENCE 
@@ -106,17 +126,9 @@ export default {
         title: 'Developer Tools',
         items: DEVELOPER_TOOLS
       },
-      __: {
-        type: 'separator',
-        title: 'Compliance & Security'
-      },
       'compliance': { 
         title: 'Compliance',
         items: COMPLIANCE 
-      },
-      'isms': { 
-        title: 'ISMS',
-        items: ISMS 
       }
     }
   }
