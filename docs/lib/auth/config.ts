@@ -20,19 +20,49 @@ export const USER_STORAGE_KEY = 'auth.user'
 export function getTenantId(): string {
   const tenantId = process.env.NEXT_PUBLIC_TENANT_ID
   if (!tenantId) {
-    throw new Error('NEXT_PUBLIC_TENANT_ID environment variable is not set')
+    // Default tenant for development/preview
+    return 'default'
   }
   return tenantId
 }
 
-// App URL - the base URL of this application
+/**
+ * App URL - the base URL of this application
+ * Smart detection order:
+ * 1. NEXT_PUBLIC_APP_URL env var (explicit configuration)
+ * 2. VERCEL_URL env var (auto-set by Vercel for preview deployments)
+ * 3. window.location.origin (client-side auto-detection)
+ * 4. localhost fallback for development
+ */
 export function getAppUrl(): string {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
-  if (!appUrl) {
-    throw new Error('NEXT_PUBLIC_APP_URL environment variable is not set')
+  // 1. Check explicit configuration
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '')
   }
-  // Remove trailing slash if present
-  return appUrl.replace(/\/$/, '')
+  
+  // 2. Check Vercel preview URL (automatically set by Vercel)
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+  
+  // 3. Client-side: use window.location
+  if (typeof window !== 'undefined') {
+    return window.location.origin
+  }
+  
+  // 4. Fallback for local development
+  return 'http://localhost:3000'
+}
+
+/**
+ * Get app URL on client side (always uses window.location)
+ * Use this in client components for accurate URL detection
+ */
+export function getAppUrlClient(): string {
+  if (typeof window !== 'undefined') {
+    return window.location.origin
+  }
+  return getAppUrl()
 }
 
 /**
@@ -81,7 +111,7 @@ export function isCrossDomainModeClient(): boolean {
 }
 
 /**
- * Generate the signin URL for the HealthTalk Gateway
+ * Generate the signin URL for the HealthTalk Gateway (server-side)
  * @param callbackPath - The path to redirect to after successful authentication (must start with /)
  */
 export function getSigninUrl(callbackPath: string = '/'): string {
@@ -92,6 +122,24 @@ export function getSigninUrl(callbackPath: string = '/'): string {
   
   const tenantId = getTenantId()
   const appUrl = getAppUrl()
+  const callbackUrl = encodeURIComponent(`${appUrl}/auth/callback?callbackUrl=${encodeURIComponent(callbackPath)}`)
+  
+  return `${GATEWAY_URL}/api/auth/signin?tenantId=${encodeURIComponent(tenantId)}&callbackUrl=${callbackUrl}`
+}
+
+/**
+ * Generate the signin URL for the HealthTalk Gateway (client-side)
+ * Uses window.location.origin for accurate URL detection in preview environments
+ * @param callbackPath - The path to redirect to after successful authentication (must start with /)
+ */
+export function getSigninUrlClient(callbackPath: string = '/'): string {
+  // Validate callback path is internal (security: prevent open redirects)
+  if (!callbackPath.startsWith('/')) {
+    throw new Error('Callback path must start with /')
+  }
+  
+  const tenantId = getTenantId()
+  const appUrl = getAppUrlClient()
   const callbackUrl = encodeURIComponent(`${appUrl}/auth/callback?callbackUrl=${encodeURIComponent(callbackPath)}`)
   
   return `${GATEWAY_URL}/api/auth/signin?tenantId=${encodeURIComponent(tenantId)}&callbackUrl=${callbackUrl}`

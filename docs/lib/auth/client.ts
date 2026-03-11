@@ -13,13 +13,12 @@
  */
 
 import { 
-  getSigninUrl, 
+  getSigninUrlClient, 
   getSignoutUrl, 
   GATEWAY_ENDPOINTS,
   SESSION_STORAGE_KEY, 
   USER_STORAGE_KEY,
   isCrossDomainModeClient,
-  GATEWAY_URL,
 } from './config'
 import type { User } from './types'
 
@@ -88,7 +87,8 @@ export function redirectToSignin(callbackPath: string = '/'): void {
     callbackPath = '/'
   }
   
-  const signinUrl = getSigninUrl(callbackPath)
+  // Use client-side URL detection for accurate preview URL handling
+  const signinUrl = getSigninUrlClient(callbackPath)
   window.location.href = signinUrl
 }
 
