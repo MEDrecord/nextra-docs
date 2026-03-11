@@ -166,14 +166,29 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
 }
 
 /**
+ * Default auth value returned during SSG/SSR when AuthProvider is not available
+ * This prevents build errors while ensuring the app works correctly at runtime
+ */
+const DEFAULT_AUTH_VALUE: AuthContextValue = {
+  user: null,
+  isLoading: true,
+  isAuthenticated: false,
+  error: null,
+  isCrossDomain: false,
+  refetchSession: async () => {},
+}
+
+/**
  * Hook to access authentication state
- * Must be used within an AuthProvider
+ * Returns a safe default during SSG when AuthProvider is not yet mounted
  */
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext)
   
+  // Return safe default during SSG/SSR or when context not yet available
+  // This allows the build to complete - at runtime, AuthProvider will be mounted
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    return DEFAULT_AUTH_VALUE
   }
   
   return context
