@@ -107,8 +107,8 @@ const nextConfig = withNextra({
   },
   turbopack: {
     resolveAlias: {
-      // Fix Nextra module resolution issue - alias to mdx-components
-      'next-mdx-import-source-file': './mdx-components.tsx'
+      // Fix Nextra module resolution issue - alias to shim module
+      'next-mdx-import-source-file': './next-mdx-import-source-file.js'
     },
     rules: {
       './components/icons/*.svg': {
