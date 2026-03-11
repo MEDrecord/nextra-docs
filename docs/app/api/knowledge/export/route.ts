@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
 
+// CORS headers for cross-origin requests from helpdesk app
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+}
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 interface KnowledgeItem {
   id: string
   title: string
@@ -66,7 +77,33 @@ export async function GET(request: NextRequest) {
   const format = request.nextUrl.searchParams.get('format') || 'json' // 'json' or 'training'
   
   try {
-    const appDir = path.join(process.cwd(), 'app')
+    // In Next.js production, process.cwd() returns the project root
+    // The docs app is in /docs, so we need to check both locations
+    const cwd = process.cwd()
+    let appDir = path.join(cwd, 'app')
+    
+    // Check if we're in the docs subdirectory or project root
+    try {
+      await fs.access(appDir)
+    } catch {
+      // Try docs/app if app doesn't exist
+      appDir = path.join(cwd, 'docs', 'app')
+      try {
+        await fs.access(appDir)
+      } catch {
+        console.error('[Knowledge Export] Cannot find app directory. CWD:', cwd)
+        return NextResponse.json({
+          success: true,
+          format: format,
+          itemCount: 0,
+          items: [],
+          warning: 'App directory not found'
+        })
+      }
+    }
+    
+    console.log('[Knowledge Export] Using app directory:', appDir)
+    
     const allItems: KnowledgeItem[] = []
     
     // Read from each section
@@ -101,7 +138,7 @@ export async function GET(request: NextRequest) {
         format: 'training',
         itemCount: trainingData.length,
         data: trainingData
-      })
+      }, { headers: corsHeaders })
     }
     
     // Standard JSON export
@@ -119,13 +156,13 @@ export async function GET(request: NextRequest) {
         fullContent: item.content,
         lastModified: item.lastModified
       }))
-    })
+    }, { headers: corsHeaders })
     
   } catch (error) {
     console.error('Knowledge export error:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     )
   }
 }
