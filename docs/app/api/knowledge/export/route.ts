@@ -36,7 +36,7 @@ async function readMdxFiles(dir: string, basePath: string, type: KnowledgeItem['
           
           // Extract tags from content (look for **Tags:** pattern)
           const tagsMatch = content.match(/\*\*Tags:\*\*\s*(.+)$/m)
-          const tags = tagsMatch 
+          const tags = tagsMatch?.[1] 
             ? tagsMatch[1].split(',').map(t => t.trim())
             : []
           
