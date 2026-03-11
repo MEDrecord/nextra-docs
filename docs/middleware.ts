@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { isCrossDomainMode } from '@/lib/auth/config'
+import { isCrossDomainModeFromHost } from '@/lib/auth/config'
 
 /**
  * Middleware for Route Protection
@@ -38,8 +38,8 @@ const STATIC_PATHS = [
 ]
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  const isCrossDomain = isCrossDomainMode()
+  const { pathname, hostname } = request.nextUrl
+  const isCrossDomain = isCrossDomainModeFromHost(hostname)
 
   // Skip static assets (performance optimization)
   if (STATIC_PATHS.some(path => pathname.startsWith(path))) {

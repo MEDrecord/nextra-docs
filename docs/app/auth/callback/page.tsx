@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { exchangeWebToken, storeSessionId, storeUser } from '@/lib/auth/client'
+import { exchangeWebToken } from '@/lib/auth/client'
 import { isCrossDomainModeClient } from '@/lib/auth/config'
 
 /**

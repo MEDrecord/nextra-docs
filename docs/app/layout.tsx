@@ -2,7 +2,7 @@ import { getEnhancedPageMap } from '@components/get-page-map'
 import type { Metadata } from 'next'
 import { Layout } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
-import type { FC } from 'react'
+import type React from 'react'
 import { AuthProvider } from '@/lib/contexts/AuthContext'
 import { getUser } from '@/lib/auth/server'
 import { isCrossDomainMode } from '@/lib/auth/config'
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   }
 }
 
-const RootLayout: FC<LayoutProps<'/'>> = async ({ children }) => {
+const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   // Fetch page map first
   const pageMap = await getEnhancedPageMap()
   

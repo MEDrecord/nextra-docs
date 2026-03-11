@@ -30,6 +30,7 @@ export {
   getSignoutUrl,
   isCrossDomainMode,
   isCrossDomainModeClient,
+  isCrossDomainModeFromHost,
   GATEWAY_ENDPOINTS 
 } from './config'
 

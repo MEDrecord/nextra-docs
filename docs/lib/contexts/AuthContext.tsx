@@ -162,7 +162,7 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
     refetchSession,
   }
 
-  return <AuthContext value={value}>{children}</AuthContext>
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 /**

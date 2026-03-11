@@ -36,7 +36,7 @@ export function getAppUrl(): string {
 }
 
 /**
- * Detect if we're in cross-domain mode
+ * Detect if we're in cross-domain mode using NEXT_PUBLIC_APP_URL
  * Cross-domain mode is used when the app is NOT on the same parent domain as the gateway
  * 
  * Examples:
@@ -45,7 +45,11 @@ export function getAppUrl(): string {
  */
 export function isCrossDomainMode(): boolean {
   try {
-    const appUrl = getAppUrl()
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
+    if (!appUrl) {
+      // If env var not set, assume cross-domain for safety
+      return true
+    }
     const appHostname = new URL(appUrl).hostname
     
     // Check if app is on the same parent domain as gateway
@@ -55,6 +59,13 @@ export function isCrossDomainMode(): boolean {
     // If we can't determine, assume cross-domain for safety
     return true
   }
+}
+
+/**
+ * Detect cross-domain mode from request hostname (for middleware)
+ */
+export function isCrossDomainModeFromHost(hostname: string): boolean {
+  return !hostname.endsWith(GATEWAY_DOMAIN)
 }
 
 /**

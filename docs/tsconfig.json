@@ -17,6 +17,7 @@
     "module": "esnext",
     "resolveJsonModule": true,
     "paths": {
+      "@/*": ["./*"],
       "@components/*": ["components/*"],
       // These work at runtime due to Next.js internal resolution or custom config,
       // but we include them here so TypeScript doesn't complain.

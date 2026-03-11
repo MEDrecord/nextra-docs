@@ -1,7 +1,7 @@
 import 'server-only'
 
 import { cookies, headers } from 'next/headers'
-import { GATEWAY_ENDPOINTS, isCrossDomainMode, SESSION_STORAGE_KEY } from './config'
+import { GATEWAY_ENDPOINTS, isCrossDomainMode } from './config'
 import type { Session, User, AuthResponse } from './types'
 
 /**
