@@ -81,32 +81,38 @@ export async function GET(request: NextRequest) {
   const format = request.nextUrl.searchParams.get('format') || 'json' // 'json' or 'training'
   
   try {
-    // In Next.js production, process.cwd() returns the project root
-    // The docs app is in /docs, so we need to check both locations
+    // Find the app directory - check multiple possible locations
     const cwd = process.cwd()
-    let appDir = path.join(cwd, 'app')
+    const possiblePaths = [
+      path.join(cwd, 'app'),
+      path.join(cwd, 'docs', 'app'),
+      '/var/task/app',
+      '/var/task/docs/app',
+    ]
     
-    // Check if we're in the docs subdirectory or project root
-    try {
-      await fs.access(appDir)
-    } catch {
-      // Try docs/app if app doesn't exist
-      appDir = path.join(cwd, 'docs', 'app')
+    let appDir: string | null = null
+    for (const p of possiblePaths) {
       try {
-        await fs.access(appDir)
+        await fs.access(p)
+        // Verify it has isms folder
+        await fs.access(path.join(p, 'isms'))
+        appDir = p
+        break
       } catch {
-        console.error('[Knowledge Export] Cannot find app directory. CWD:', cwd)
-        return NextResponse.json({
-          success: true,
-          format: format,
-          itemCount: 0,
-          items: [],
-          warning: 'App directory not found'
-        })
+        continue
       }
     }
     
-    console.log('[Knowledge Export] Using app directory:', appDir)
+    if (!appDir) {
+      console.error('[Knowledge Export] No valid app directory found. CWD:', cwd)
+      return NextResponse.json({
+        success: true,
+        format: format,
+        itemCount: 0,
+        items: [],
+        debug: { cwd, checked: possiblePaths }
+      }, { headers: corsHeaders })
+    }
     
     const allItems: KnowledgeItem[] = []
     
