@@ -99,17 +99,21 @@ export function redirectToSignin(callbackPath: string = '/'): void {
  */
 export async function logout(): Promise<void> {
   const isCrossDomain = isCrossDomainModeClient()
-  
-  // Always clear local storage in cross-domain mode
-  if (isCrossDomain) {
-    clearStoredAuth()
-  }
+  const sessionId = getStoredSessionId()
   
   try {
     // Call the gateway signout endpoint to destroy the session
+    const headers: Record<string, string> = {}
+    
+    // In cross-domain mode, send X-Session-Id header
+    if (isCrossDomain && sessionId) {
+      headers['X-Session-Id'] = sessionId
+    }
+    
     const response = await fetch(getSignoutUrl(), {
       method: 'GET',
       credentials: 'include',
+      headers,
     })
     
     if (!response.ok) {
@@ -117,6 +121,11 @@ export async function logout(): Promise<void> {
     }
   } catch (error) {
     console.error('[Auth Client] Signout error:', error)
+  }
+  
+  // Clear local storage after signout request (cross-domain mode)
+  if (isCrossDomain) {
+    clearStoredAuth()
   }
   
   // Always redirect to home
@@ -178,7 +187,9 @@ export async function verifySession(): Promise<boolean> {
   try {
     const response = await fetch(GATEWAY_ENDPOINTS.webSessionVerify, {
       method: 'GET',
+      credentials: 'include',
       headers: {
+        'Content-Type': 'application/json',
         'X-Session-Id': sessionId,
       },
     })
