@@ -1,0 +1,219 @@
+# ISMS Link Migration Tracker
+
+This document tracks all external and internal links from the ISMS Confluence export that need to be resolved, migrated, or updated.
+
+## Summary
+
+| Link Type | Count | Status | Action Required |
+|-----------|-------|--------|-----------------|
+| Azure DevOps Wiki | 10 | Pending | Migrate to Helpdesk |
+| Confluence/Atlassian | 8 | Broken | Create new pages or resolve |
+| MS Teams | 2 | External | Keep as external or migrate |
+| GitLab | 2 | External | Keep as external |
+| Empty Placeholders | 20+ | Broken | Identify and populate |
+| External Legal/Reference | 5 | External | Keep as external links |
+
+---
+
+## Part 1: Azure DevOps Wiki Pages (To Migrate to Helpdesk)
+
+These pages currently live in Azure DevOps ISMS Wiki and need to be migrated to the Helpdesk system.
+
+### Required Helpdesk Pages
+
+| # | Azure DevOps Path | Topic | Priority | Helpdesk Path (Proposed) | Status |
+|---|-------------------|-------|----------|-------------------------|--------|
+| 1 | `/1057/Competences` | Roles: Change Manager, Lead Developer, etc. | High | `/helpdesk/isms/roles-competences` | TODO |
+| 2 | `/1174/Information-retention-policy` | Data retention periods | High | `/helpdesk/isms/information-retention-policy` | TODO |
+| 3 | `/1177/Password-policy` | Password requirements | High | `/helpdesk/isms/password-policy` | TODO |
+| 4 | `/1190/Supplier-relationship-policy` | Supplier management rules | High | `/helpdesk/isms/supplier-relationship-policy` | TODO |
+| 5 | `/1191/Secure-development-policy` | Secure coding guidelines | High | `/helpdesk/isms/secure-development-policy` | TODO |
+| 6 | `/1230/Assets` | Webhosting partners / asset register | Medium | `/helpdesk/isms/assets-register` | TODO |
+| 7 | `/1140/Access-control-policy` | Network access controls | High | `/helpdesk/isms/access-control-policy` | TODO |
+| 8 | `/1155/Clean-desk-and-screen-policy` | Physical security | Medium | `/helpdesk/isms/clean-desk-policy` | TODO |
+| 9 | `/1156/Business-continuity-plan` | Disaster recovery | High | `/helpdesk/isms/business-continuity-plan` | TODO |
+| 10 | `/1163/Information-classification-policy` | Data classification | High | `/helpdesk/isms/information-classification-policy` | TODO |
+| 11 | `/1168/Cryptographic-policy` | Encryption standards | High | `/helpdesk/isms/cryptographic-policy` | TODO |
+| 12 | `/1194/Authorization-request-process` | Auth request workflow | Medium | `/helpdesk/isms/authorization-request-process` | TODO |
+| 13 | `/1234/Authorization-request-template` | Auth request template | Medium | `/helpdesk/isms/authorization-request-template` | TODO |
+| 14 | `/1260/Security-training-and-awareness-policy` | Security awareness training | Medium | `/helpdesk/isms/security-training-policy` | TODO |
+
+### Source URLs to Update
+
+Once migrated to Helpdesk, update these ISMS pages:
+
+```
+docs/app/docs/isms/root/home/information-security-management-system/supporting-documents/roles-and-functions/change-manager/page.mdx
+docs/app/docs/isms/root/home/information-security-management-system/supporting-documents/roles-and-functions/lead-developer/page.mdx
+docs/app/docs/isms/root/home/policies/information-retention-policy/page.mdx
+docs/app/docs/isms/root/home/policies/supplier-relationship-policy/page.mdx
+docs/app/docs/isms/root/home/procedures/authorization-request-process/page.mdx
+docs/app/docs/isms/root/home/policies/information-security-policy/page.mdx
+```
+
+---
+
+## Part 2: Broken Confluence/Atlassian Links
+
+These links point to the old Atlassian Confluence and need to be resolved to new ISMS pages.
+
+### Annex A Control References (Most Critical)
+
+| Old Atlassian URL | Control | Required New Path | Referenced In |
+|-------------------|---------|-------------------|---------------|
+| `pages/8486968` | A.16.1.2 Reporting information security events | `/isms/controls/a-16-1-2` | Multiple risk pages |
+| `pages/8490868` | A.7.2.2 Information security awareness | `/isms/controls/a-7-2-2` | 2019-22 Data leak risk |
+| `pages/8490892` | A.12.6.1 Management of technical vulnerabilities | `/isms/controls/a-12-6-1` | 2019-14 E-mail intercepted |
+| `pages/8490894` | A.16.1.1 Responsibilities and procedures | `/isms/controls/a-16-1-1` | 2019-22 Data leak risk |
+| `pages/8490898` | A.16.1.3 Reporting information security weaknesses | `/isms/controls/a-16-1-3` | Multiple risk pages |
+| `pages/8490902` | A.16.1.7 Collection of evidence | `/isms/controls/a-16-1-7` | Multiple risk pages |
+| `pages/3964959` | Information security officer role | `/isms/roles/information-security-officer` | Assurance statement |
+| `pages/491999` | A.6.1.2 Segregation of duties | `/isms/controls/a-6-1-2` | Authorization request process |
+| `pages/2010906625` | Suppliers list | `/isms/registers/suppliers` | A.13.2.4 NDA control |
+
+### Pages to Create or Verify
+
+These Annex A control pages need to exist in the ISMS documentation:
+
+- [ ] A.6.1.2 Segregation of duties
+- [ ] A.7.2.2 Information security awareness, education and training
+- [ ] A.12.6.1 Management of technical vulnerabilities
+- [ ] A.16.1.1 Responsibilities and procedures
+- [ ] A.16.1.2 Reporting information security events
+- [ ] A.16.1.3 Reporting information security weaknesses
+- [ ] A.16.1.7 Collection of evidence
+
+---
+
+## Part 3: MS Teams References
+
+These links point to MS Teams channels/tabs. Decision needed: keep external or migrate content.
+
+| MS Teams Link | Content | Decision |
+|---------------|---------|----------|
+| `teams.microsoft.com/_#/tab::a9efe80d-5946-497b-accc-53dcfeaf07f4/...` | Roles/Competences channel | Migrate to Helpdesk |
+
+**Affected Files:**
+- `docs/app/docs/isms/root/home/information-security-management-system/supporting-documents/roles-and-functions/change-manager/page.mdx`
+- `docs/app/docs/isms/root/home/information-security-management-system/supporting-documents/roles-and-functions/lead-developer/page.mdx`
+
+---
+
+## Part 4: GitLab References
+
+External links to GitLab incident tracking. Keep as external unless GitLab is being deprecated.
+
+| GitLab URL | Content | Recommendation |
+|------------|---------|----------------|
+| `gitlab.medvision360.org/management/reports-and-announcements/-/boards` | Incident board | Keep as external |
+| `gitlab.medvision360.org/management/.../incidents` | Incident archive | Keep as external |
+
+---
+
+## Part 5: Empty Link Placeholders
+
+These are broken placeholders in the ISMS content that appear as `Implement ,` or `Implement  and ` with no actual link.
+
+### Risk Pages with Empty Placeholders
+
+| Page | Empty Placeholders Count | Notes |
+|------|-------------------------|-------|
+| 2019-04 Social engineering | 2 | Missing control references |
+| 2019-11 Loss of cryptographic keys | 2 | Missing policy references |
+| 2019-14 E-mail is intercepted | 2 | Missing policy references |
+| 2019-28 Improper configuration/hardening | 3 | Missing control references |
+| 2019-06 Account sharing | 4 | Missing policy references |
+| 2019-29 Usage of weak passwords | 3 | Missing references |
+| 2019-35 External people access | 3 | Missing policy references |
+
+### Common Missing References (to identify and populate)
+
+Based on context, these empty placeholders likely refer to:
+- Password Policy
+- Access Control Policy
+- Information Classification Policy
+- Asset Register
+- Code of Conduct
+- HR Onboarding/Offboarding Process
+- Clean Desk Policy
+
+---
+
+## Part 6: External Legal/Regulatory References (Keep as External)
+
+These are legitimate external links to regulatory sources:
+
+| URL | Content | Action |
+|-----|---------|--------|
+| `gdpr-info.eu/chapter-3/` | GDPR Chapter 3 | Keep external |
+| `gdpr-info.eu/art-30-gdpr/` | GDPR Article 30 | Keep external |
+| `wetten.overheid.nl/BWBR0040940/2018-05-25` | UAVG (Dutch law) | Keep external |
+| `afsprakenstelsel.medmij.nl/` | MedMij framework | Keep external |
+| `medsafe.io/`, `medrecord.io/`, `healthtalk.ai/` | Public websites | Keep external |
+
+---
+
+## Migration Checklist
+
+### Phase 1: Create Helpdesk Pages (Prerequisite)
+
+- [ ] Create all 14 Azure DevOps Wiki pages in Helpdesk (see Part 1)
+- [ ] Verify Helpdesk URL structure matches proposed paths
+
+### Phase 2: Create Missing ISMS Control Pages
+
+- [ ] Create A.6.1.2 Segregation of duties
+- [ ] Create A.7.2.2 Information security awareness
+- [ ] Create A.12.6.1 Management of technical vulnerabilities
+- [ ] Create A.16.1.1 Responsibilities and procedures
+- [ ] Create A.16.1.2 Reporting information security events
+- [ ] Create A.16.1.3 Reporting information security weaknesses
+- [ ] Create A.16.1.7 Collection of evidence
+
+### Phase 3: Update ISMS Pages with New Links
+
+- [ ] Replace all Azure DevOps links with Helpdesk links
+- [ ] Replace all Atlassian links with new ISMS paths
+- [ ] Identify and populate all empty placeholders
+- [ ] Update MS Teams references
+
+### Phase 4: Verify and Test
+
+- [ ] Test all internal links resolve correctly
+- [ ] Verify external links are working
+- [ ] Review navigation and cross-references
+
+---
+
+## Link Replacement Patterns
+
+When updating links, use these patterns:
+
+### Azure DevOps to Helpdesk
+```mdx
+// Before
+[Azure wiki page](https://dev.azure.com/medrecord/MEDrecord%20ISMS/_wiki/wikis/MEDrecord-ISMS.wiki/1174/Information-retention-policy)
+
+// After
+[Information Retention Policy](/helpdesk/isms/information-retention-policy)
+```
+
+### Atlassian to Internal ISMS
+```mdx
+// Before
+[A.16.1.2 Reporting information security events (NEN 7510)](https://medrecord.atlassian.net/wiki/spaces/ISMS/pages/8486968)
+
+// After
+[A.16.1.2 Reporting information security events](/isms/controls/a-16-1-2)
+```
+
+### Empty Placeholder Fix
+```mdx
+// Before
+- Implement ,
+- Implement  and 
+
+// After
+- Implement [Password Policy](/helpdesk/isms/password-policy)
+- Implement [Access Control Policy](/helpdesk/isms/access-control-policy) and [Information Classification Policy](/helpdesk/isms/information-classification-policy)
+```
