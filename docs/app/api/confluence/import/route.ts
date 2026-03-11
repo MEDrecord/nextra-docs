@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getUser } from '../../../../lib/auth/server'
+import { ROLES } from '../../../../lib/auth/types'
 
 const CONFLUENCE_BASE_URL = 'https://medrecord.atlassian.net/wiki'
 
@@ -113,13 +115,34 @@ function slugify(title: string): string {
 }
 
 export async function GET(request: NextRequest) {
-  const email = request.nextUrl.searchParams.get('email')
+  // SECURITY: Verify user is authenticated before processing
+  const user = await getUser()
+  if (!user) {
+    return NextResponse.json(
+      { error: 'Authentication required' },
+      { status: 401 }
+    )
+  }
+
+  // SECURITY: Verify user has tenant_admin role for this elevated endpoint
+  if (user.role !== ROLES.TENANT_ADMIN) {
+    return NextResponse.json(
+      { error: 'Access denied - requires tenant_admin role', userRole: user.role },
+      { status: 403 }
+    )
+  }
+
+  // Use authenticated user's email for Confluence API (if they have Atlassian access)
+  // Or allow admin override via query param
+  const emailParam = request.nextUrl.searchParams.get('email')
+  const email = emailParam || user.email
+  
   const apiToken = process.env.CONFLUENCE_API_TOKEN
   const spaceKey = request.nextUrl.searchParams.get('space') || 'ISMS'
 
   if (!email) {
     return NextResponse.json(
-      { error: 'Missing email parameter - enter your Atlassian email in the form' },
+      { error: 'Missing email - user email not available' },
       { status: 400 }
     )
   }
