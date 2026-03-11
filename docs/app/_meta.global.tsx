@@ -81,33 +81,14 @@ export default {
     type: 'page',
     display: 'hidden'
   },
-  docs: {
-    type: 'page',
-    title: 'Documentation',
-    items: {
-      index: 'Welcome',
-      'getting-started': { 
-        title: 'Getting Started',
-        items: GETTING_STARTED 
-      },
-      'user-guide': { 
-        title: 'User Guide',
-        items: USER_GUIDE 
-      },
-      'products': {
-        title: 'Products',
-        items: PRODUCTS
-      }
-    }
-  },
   isms: {
     type: 'page',
     title: 'ISMS',
     items: ISMS
   },
-  knowledge: {
+  faq: {
     type: 'page',
-    title: 'Knowledge Base',
+    title: 'FAQ',
     items: KNOWLEDGE_BASE
   },
   developer: {
@@ -130,6 +111,22 @@ export default {
         title: 'Compliance',
         items: COMPLIANCE 
       }
+    }
+  },
+  products: {
+    type: 'page',
+    title: 'Products',
+    items: PRODUCTS
+  },
+  'user-guide': {
+    type: 'page',
+    title: 'User Guide',
+    items: {
+      'getting-started': { 
+        title: 'Getting Started',
+        items: GETTING_STARTED 
+      },
+      ...USER_GUIDE
     }
   }
 }
