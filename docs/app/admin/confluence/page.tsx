@@ -38,15 +38,31 @@ export default function ConfluenceImportPage() {
     setResult(null)
 
     try {
-      const response = await fetch(`/api/confluence/import?space=${spaceKey}&email=${encodeURIComponent(email)}`)
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Import failed')
+      console.log('[v0] Starting import for space:', spaceKey, 'email:', email)
+      const url = `/api/confluence/import?space=${spaceKey}&email=${encodeURIComponent(email)}`
+      console.log('[v0] Fetching:', url)
+      
+      const response = await fetch(url)
+      console.log('[v0] Response status:', response.status)
+      
+      const text = await response.text()
+      console.log('[v0] Response text:', text.substring(0, 500))
+      
+      let data
+      try {
+        data = JSON.parse(text)
+      } catch {
+        throw new Error(`Invalid JSON response: ${text.substring(0, 200)}`)
       }
 
+      if (!response.ok) {
+        throw new Error(data.error || `Import failed with status ${response.status}`)
+      }
+
+      console.log('[v0] Import successful, pages:', data.pageCount)
       setResult(data)
     } catch (err) {
+      console.error('[v0] Import error:', err)
       setError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
       setLoading(false)
