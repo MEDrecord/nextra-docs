@@ -15,8 +15,9 @@
  * - Types: import type { User, Session } from '@/lib/auth/types'
  */
 
-// Re-export types
-export type { User, Session, AuthResponse, Tenant, GatewayError } from './types'
+// Re-export types and constants
+export type { User, Session, AuthResponse, Tenant, GatewayError, UserRole } from './types'
+export { ROLES } from './types'
 
 // Re-export config
 export { 

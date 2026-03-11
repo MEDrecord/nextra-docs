@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUser } from '../../../../lib/auth/server'
+import { ROLES } from '../../../../lib/auth/types'
 
 const CONFLUENCE_BASE_URL = 'https://medrecord.atlassian.net/wiki'
 
@@ -120,6 +121,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { error: 'Authentication required' },
       { status: 401 }
+    )
+  }
+
+  // SECURITY: Verify user has tenant_admin role for this elevated endpoint
+  if (user.role !== ROLES.TENANT_ADMIN) {
+    return NextResponse.json(
+      { error: 'Access denied - requires tenant_admin role', userRole: user.role },
+      { status: 403 }
     )
   }
 
