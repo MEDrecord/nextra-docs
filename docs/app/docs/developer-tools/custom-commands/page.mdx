@@ -1,0 +1,204 @@
+# Custom Commands
+
+Custom commands (slash commands) provide shortcuts for common development tasks. Define these in your project rules or AI tool configuration.
+
+## Essential Commands
+
+### /techdebt
+
+Identify and document technical debt in the codebase.
+
+```markdown
+## /techdebt Command
+
+When invoked, analyze the current file or specified scope for:
+- TODO/FIXME comments
+- Deprecated API usage
+- Code duplication
+- Missing tests
+- Outdated dependencies
+- Performance issues
+
+Output a prioritized list with:
+- Severity (high/medium/low)
+- Effort estimate
+- Suggested fix approach
+- Impact if not addressed
+```
+
+**Example usage:**
+```
+/techdebt src/components/
+```
+
+### /security-audit
+
+Review code for security vulnerabilities.
+
+```markdown
+## /security-audit Command
+
+Analyze code for:
+- SQL injection risks
+- XSS vulnerabilities  
+- Insecure authentication patterns
+- Exposed secrets or credentials
+- Missing input validation
+- Insecure dependencies
+- CORS misconfigurations
+- Missing rate limiting
+
+Output findings with:
+- OWASP category
+- Severity level
+- Line numbers affected
+- Recommended fix
+```
+
+**Example usage:**
+```
+/security-audit api/routes/
+```
+
+### /compliance-check
+
+Verify regulatory compliance requirements.
+
+```markdown
+## /compliance-check Command
+
+Check code against compliance requirements:
+- Data handling (GDPR, HIPAA)
+- Audit logging presence
+- Access control implementation
+- Data encryption at rest/transit
+- Consent management
+- Data retention policies
+- Right to deletion support
+
+Output:
+- Compliance gaps found
+- Affected regulations
+- Required changes
+- Documentation needs
+```
+
+**Example usage:**
+```
+/compliance-check --standard=gdpr
+```
+
+### /explain
+
+Get detailed explanations of code or concepts.
+
+```markdown
+## /explain Command
+
+Provide comprehensive explanation of:
+- What the code does
+- Why it's implemented this way
+- Key design decisions
+- Potential gotchas
+- Related patterns in codebase
+- Links to relevant documentation
+
+Adjust detail level based on context:
+- New team member: Include basics
+- Senior developer: Focus on nuances
+```
+
+**Example usage:**
+```
+/explain authentication middleware
+```
+
+### /refactor
+
+Suggest improvements to existing code.
+
+```markdown
+## /refactor Command
+
+Analyze and suggest refactoring for:
+- Code clarity and readability
+- Performance optimizations
+- Better error handling
+- Improved type safety
+- Reduced complexity
+- Better separation of concerns
+
+Present changes as:
+- Current state summary
+- Proposed improvements
+- Trade-offs of each change
+- Migration path
+```
+
+**Example usage:**
+```
+/refactor --focus=performance
+```
+
+### /test
+
+Generate or improve tests.
+
+```markdown
+## /test Command
+
+Generate tests covering:
+- Happy path scenarios
+- Edge cases
+- Error conditions
+- Boundary values
+- Integration points
+
+Follow project testing patterns:
+- Use [testing framework]
+- Mock external dependencies
+- Include setup/teardown
+- Add descriptive test names
+```
+
+**Example usage:**
+```
+/test UserService.createUser
+```
+
+## Creating Your Own Commands
+
+### Command Definition Template
+
+```markdown
+## /your-command Command
+
+**Purpose:** Brief description of what this command does
+
+**When to use:** Situations where this command is helpful
+
+**Inputs:**
+- Required: [list required inputs]
+- Optional: [list optional flags/parameters]
+
+**Process:**
+1. Step one
+2. Step two
+3. Step three
+
+**Output format:**
+- [Describe expected output structure]
+
+**Examples:**
+\`\`\`
+/your-command example-input
+\`\`\`
+```
+
+### Best Practices
+
+1. **Keep commands focused** - One command, one purpose
+2. **Include examples** - Show expected input/output
+3. **Define scope** - Specify what files/folders to analyze
+4. **Set output format** - Structured output is easier to action
+5. **Add flags** - Allow customization with optional parameters

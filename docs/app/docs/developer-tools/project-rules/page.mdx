@@ -1,0 +1,130 @@
+# Project Rules
+
+Project rules files (like `CLAUDE.md`, `.cursorrules`, or similar) help AI assistants understand your codebase conventions and constraints.
+
+## Why Project Rules Matter
+
+Without explicit rules, AI assistants may:
+
+- Use patterns inconsistent with your codebase
+- Suggest libraries you don't want to use
+- Miss security or compliance requirements
+- Generate code that doesn't follow team conventions
+
+## Template Structure
+
+Create a rules file in your project root with these sections:
+
+### Basic Template
+
+```markdown
+# Project Rules
+
+## Architecture Overview
+Brief description of your system architecture and key patterns.
+
+## Technology Stack
+- Framework: [e.g., Next.js 16, React 19]
+- Styling: [e.g., Tailwind CSS, shadcn/ui]
+- Database: [e.g., PostgreSQL via Supabase]
+- Authentication: [e.g., HMAC signatures, OAuth]
+
+## Code Patterns
+
+### API Calls
+- All API calls go through [gateway/service layer]
+- Never call databases directly from components
+- Use [specific hooks/utilities] for data fetching
+
+### Component Structure
+- Use [atomic design/feature folders/etc.]
+- Components should be [functional/class-based]
+- State management via [Context/Redux/Zustand/etc.]
+
+### Naming Conventions
+- Files: [kebab-case/PascalCase/etc.]
+- Functions: [camelCase]
+- Constants: [UPPER_SNAKE_CASE]
+
+## Security Requirements
+- Never log sensitive data
+- Always validate input on server
+- Use parameterized queries
+- Follow [specific security guidelines]
+
+## Testing Requirements
+- Unit tests required for [utilities/services]
+- Integration tests for [API routes]
+- E2E tests for [critical user flows]
+
+## Compliance Notes
+- [Specific compliance requirements]
+- [Data handling rules]
+- [Audit trail requirements]
+
+## Common Mistakes to Avoid
+- [Mistake 1]
+- [Mistake 2]
+- [Mistake 3]
+```
+
+## Best Practices
+
+### Keep Rules Updated
+
+- Review rules when adding new patterns
+- Update when deprecating approaches
+- Include date of last update
+
+### Be Specific
+
+Instead of:
+```
+Use good security practices
+```
+
+Write:
+```
+All user input must be validated using zod schemas before processing.
+API routes must use the validateRequest middleware.
+Never store passwords - use bcrypt hashes only.
+```
+
+### Include Examples
+
+```markdown
+## Component Pattern
+
+Good:
+\`\`\`tsx
+export function UserCard({ user }: { user: User }) {
+  return (...)
+}
+\`\`\`
+
+Bad:
+\`\`\`tsx
+export default function({ data }) {  // No types, default export
+  return (...)
+}
+\`\`\`
+```
+
+### Reference Documentation
+
+Link to relevant internal docs:
+```markdown
+See [API Reference](/docs/api-reference) for endpoint documentation.
+See [Architecture](/docs/architecture) for system design.
+```
+
+## Location and Naming
+
+Common locations and names:
+- `CLAUDE.md` - Claude Code specific
+- `.cursorrules` - Cursor specific  
+- `AGENTS.md` - General AI agents
+- `.github/copilot-instructions.md` - GitHub Copilot
+- `docs/AI_GUIDELINES.md` - Framework agnostic
+
+Choose based on your primary AI tool, or maintain multiple files if using several tools.
