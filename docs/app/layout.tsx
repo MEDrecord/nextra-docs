@@ -55,7 +55,8 @@ const RootLayout: FC<LayoutProps<'/'>> = async ({ children }) => {
           feedback={{ content: null }}
           sidebar={{ defaultMenuCollapseLevel: 1 }}
           footer={null}
-          toc={{ extraContent: null, backToTop: null }}
+          copyPageButton={false}
+          toc={{ float: false, extraContent: null, backToTop: null }}
         >
           {children}
         </Layout>
