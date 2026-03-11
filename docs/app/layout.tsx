@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { Layout } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import type { FC } from 'react'
+import { AuthProvider } from '@/lib/contexts/AuthContext'
+import { getUser } from '@/lib/auth/server'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -43,22 +45,30 @@ export const metadata: Metadata = {
 }
 
 const RootLayout: FC<LayoutProps<'/'>> = async ({ children }) => {
-  const pageMap = await getEnhancedPageMap()
+  // Fetch page map and user in parallel for performance
+  // getUser() may return null for auth pages (before login) - this is expected
+  const [pageMap, user] = await Promise.all([
+    getEnhancedPageMap(),
+    getUser().catch(() => null), // Gracefully handle auth failures during login flow
+  ])
+  
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
-        <Layout
-          navbar={null}
-          pageMap={pageMap}
-          editLink={null}
-          feedback={{ content: null }}
-          sidebar={{ defaultMenuCollapseLevel: 1 }}
-          footer={null}
-          toc={{ extraContent: null, backToTop: null }}
-        >
-          {children}
-        </Layout>
+        <AuthProvider initialUser={user}>
+          <Layout
+            navbar={null}
+            pageMap={pageMap}
+            editLink={null}
+            feedback={{ content: null }}
+            sidebar={{ defaultMenuCollapseLevel: 1 }}
+            footer={null}
+            toc={{ extraContent: null, backToTop: null }}
+          >
+            {children}
+          </Layout>
+        </AuthProvider>
       </body>
     </html>
   )

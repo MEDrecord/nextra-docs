@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from '@/lib/contexts/AuthContext'
 
 interface PageData {
   id: string
@@ -20,12 +21,20 @@ interface ImportResult {
 }
 
 export default function ConfluenceImportPage() {
+  const { user } = useAuth()
   const [spaceKey, setSpaceKey] = useState('ISMS')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<ImportResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedPage, setSelectedPage] = useState<PageData | null>(null)
+
+  // Pre-fill email from authenticated user
+  useEffect(() => {
+    if (user?.email && !email) {
+      setEmail(user.email)
+    }
+  }, [user, email])
 
   const handleImport = async () => {
     if (!email) {
