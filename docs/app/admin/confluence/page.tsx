@@ -80,15 +80,10 @@ export default function ConfluenceImportPage() {
     setResult(null)
 
     try {
-      console.log('[v0] Starting import for space:', spaceKey, 'email:', email)
       const url = `/api/confluence/import?space=${spaceKey}&email=${encodeURIComponent(email)}`
-      console.log('[v0] Fetching:', url)
-      
       const response = await fetch(url)
-      console.log('[v0] Response status:', response.status)
       
       const text = await response.text()
-      console.log('[v0] Response text:', text.substring(0, 500))
       
       let data
       try {
@@ -101,10 +96,8 @@ export default function ConfluenceImportPage() {
         throw new Error(data.error || `Import failed with status ${response.status}`)
       }
 
-      console.log('[v0] Import successful, pages:', data.pageCount)
       setResult(data)
     } catch (err) {
-      console.error('[v0] Import error:', err)
       setError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
       setLoading(false)
@@ -125,17 +118,12 @@ export default function ConfluenceImportPage() {
     if (!result) return
     
     try {
-      console.log('[v0] Starting download of', result.pages.length, 'pages')
-      
       const allContent = result.pages.map(p => ({
         path: `docs/app/docs/isms/${p.path}/page.mdx`,
         content: p.fullMdx
       }))
       
-      // Create JSON string in chunks to avoid memory issues
       const jsonString = JSON.stringify(allContent, null, 2)
-      console.log('[v0] JSON size:', (jsonString.length / 1024 / 1024).toFixed(2), 'MB')
-      
       const blob = new Blob([jsonString], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
       
@@ -149,10 +137,8 @@ export default function ConfluenceImportPage() {
       // Clean up after a delay to ensure download starts
       setTimeout(() => {
         URL.revokeObjectURL(url)
-        console.log('[v0] Download cleanup complete')
       }, 1000)
     } catch (err) {
-      console.error('[v0] Download error:', err)
       setError(`Download failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
     }
   }
