@@ -1,16 +1,16 @@
 'use client'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { redirectToSignin } from '../../../lib/auth/client'
 
 /**
- * Sign In Page
+ * Sign In Handler Component
  * 
- * Redirects to the HealthTalk Gateway for authentication.
- * Shows a loading state while redirecting.
+ * Handles the sign in logic with access to search params.
+ * Must be wrapped in Suspense boundary for static generation.
  */
-export default function SignInPage() {
+function SignInHandler() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   const error = searchParams.get('error')
@@ -37,42 +37,68 @@ export default function SignInPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="w-full max-w-md rounded-lg border border-border bg-card p-8 shadow-sm">
-          <div className="text-center">
-            <h1 className="text-2xl font-semibold text-foreground">
-              Authentication Error
-            </h1>
-            <p className="mt-4 text-muted-foreground">
-              {error === 'session_invalid' 
-                ? 'Your session is invalid or has expired. Please sign in again.'
-                : error === 'access_denied'
-                ? 'Access was denied. You may not have permission to access this resource.'
-                : `An error occurred: ${error}`}
-            </p>
-            <button
-              onClick={() => redirectToSignin('/')}
-              className="mt-6 rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Try Again
-            </button>
-          </div>
+      <div className="w-full max-w-md rounded-lg border border-border bg-card p-8 shadow-sm">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold text-foreground">
+            Authentication Error
+          </h1>
+          <p className="mt-4 text-muted-foreground">
+            {error === 'session_invalid' 
+              ? 'Your session is invalid or has expired. Please sign in again.'
+              : error === 'access_denied'
+              ? 'Access was denied. You may not have permission to access this resource.'
+              : `An error occurred: ${error}`}
+          </p>
+          <button
+            onClick={() => redirectToSignin('/')}
+            className="mt-6 rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     )
   }
 
   return (
+    <div className="text-center">
+      <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+      <h1 className="text-xl font-medium text-foreground">
+        Redirecting to sign in...
+      </h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        You will be redirected to the HealthTalk authentication portal.
+      </p>
+    </div>
+  )
+}
+
+/**
+ * Loading Fallback
+ */
+function LoadingFallback() {
+  return (
+    <div className="text-center">
+      <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+      <h1 className="text-xl font-medium text-foreground">
+        Loading...
+      </h1>
+    </div>
+  )
+}
+
+/**
+ * Sign In Page
+ * 
+ * Redirects to the HealthTalk Gateway for authentication.
+ * Shows a loading state while redirecting.
+ */
+export default function SignInPage() {
+  return (
     <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
-        <h1 className="text-xl font-medium text-foreground">
-          Redirecting to sign in...
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          You will be redirected to the HealthTalk authentication portal.
-        </p>
-      </div>
+      <Suspense fallback={<LoadingFallback />}>
+        <SignInHandler />
+      </Suspense>
     </div>
   )
 }
