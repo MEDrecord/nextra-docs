@@ -60,19 +60,18 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
-        <AuthProvider initialUser={user}>
-          <Layout
-            navbar={null}
-            pageMap={pageMap}
-            editLink={null}
-            feedback={{ content: null }}
-            sidebar={{ defaultMenuCollapseLevel: 1 }}
-            footer={null}
-            toc={{ extraContent: null, backToTop: null }}
-          >
-            {children}
-          </Layout>
-        </AuthProvider>
+        <Layout
+          navbar={null}
+          pageMap={pageMap}
+          editLink={null}
+          feedback={{ content: null }}
+          sidebar={{ defaultMenuCollapseLevel: 1 }}
+          footer={null}
+          copyPageButton={false}
+          toc={{ float: false, extraContent: null, backToTop: null }}
+        >
+          {children}
+        </Layout>
       </body>
     </html>
   )

@@ -104,7 +104,16 @@ const HELP_CENTER: MetaRecord = {
   'account': 'Account & Settings'
 }
 
+// Global theme settings to disable breadcrumb and toc across all pages
+const themeConfig = {
+  breadcrumb: false,
+  toc: false
+}
+
 export default {
+  '*': {
+    theme: themeConfig
+  },
   index: {
     type: 'page',
     display: 'hidden'
