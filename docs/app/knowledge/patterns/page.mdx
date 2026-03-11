@@ -1,0 +1,129 @@
+# Patterns
+
+Common code patterns and anti-patterns identified through code reviews and incident analysis.
+
+## Authentication Patterns
+
+### Login Attempt with Invalid Credentials
+
+**Category:** auth  
+**Tags:** helpdesk, auth, regression
+
+**Pattern Description:**
+Handle invalid login attempts gracefully with proper error messages and rate limiting.
+
+**Prevention Steps:**
+1. Navigate to the login page
+2. Enter an invalid email in the email input field
+3. Enter an invalid password in the password input field
+4. Click the login button
+5. Verify error message is displayed without revealing which field is incorrect
+
+**Test Template:**
+```json
+{
+  "sections": [{
+    "id": "T1",
+    "title": "Login Attempt with Invalid Credentials",
+    "tests": [{
+      "id": "T1.1",
+      "title": "Login Attempt with Invalid Credentials",
+      "steps": [
+        "Navigate to login page",
+        "Enter invalid email",
+        "Enter invalid password",
+        "Click login button"
+      ],
+      "expected": "Error message displayed without revealing specifics"
+    }]
+  }],
+  "category": "auth",
+  "scope_tags": ["helpdesk", "auth", "regression"]
+}
+```
+
+---
+
+### Session Expiry Handling
+
+**Category:** auth  
+**Tags:** helpdesk, auth, regression
+
+**Pattern Description:**
+Properly handle session expiry with user-friendly redirect to login.
+
+**Prevention Steps:**
+1. Verify session timeout is configured correctly
+2. Ensure refresh token rotation is implemented
+3. Display session expiry warning before timeout
+4. Redirect to login with return URL preserved
+
+---
+
+### Access Control for Unauthenticated Users
+
+**Category:** auth  
+**Tags:** helpdesk, auth, security
+
+**Pattern Description:**
+Ensure protected routes redirect unauthenticated users appropriately.
+
+**Anti-Pattern:**
+- Showing partial content before redirect
+- Leaking protected data in error messages
+- Inconsistent behavior across routes
+
+**Correct Pattern:**
+- Immediate redirect with no content flash
+- Store intended destination for post-login redirect
+- Consistent middleware for all protected routes
+
+---
+
+## Data Integrity Patterns
+
+### Optimistic Updates with Rollback
+
+**Category:** data integrity  
+**Tags:** frontend, ux, data
+
+**Pattern Description:**
+Update UI immediately while syncing with backend, with proper rollback on failure.
+
+**Implementation:**
+1. Apply optimistic update to local state
+2. Send request to backend
+3. On success: confirm local state
+4. On failure: rollback local state and show error
+
+---
+
+## Error Handling Patterns
+
+### API Error Response Format
+
+**Category:** api  
+**Tags:** backend, error-handling
+
+**Standard Format:**
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Human-readable error message",
+    "details": [{
+      "field": "email",
+      "message": "Invalid email format"
+    }]
+  }
+}
+```
+
+**Anti-Pattern:**
+- Exposing stack traces in production
+- Inconsistent error formats across endpoints
+- Missing error codes for programmatic handling
+
+---
+
+*This page is automatically updated from code review learnings and incident resolutions.*

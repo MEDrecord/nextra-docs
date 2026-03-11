@@ -1,18 +1,51 @@
 # Knowledge Base
 
-Welcome to the MEDrecord Knowledge Base. Find answers to common questions, step-by-step guides, and best practices for using our healthcare platform.
+Technical patterns and learnings from code reviews, testing, and incident resolution. This knowledge base trains the Helpdesk Agent to provide better support.
 
-## Quick Links
+## Sections
 
-- **FAQ** - Answers to frequently asked questions
-- **How-to Guides** - Step-by-step tutorials for common tasks
-- **Troubleshooting** - Solutions to common issues
-- **Best Practices** - Recommendations for optimal usage
+- **Patterns** - Common code patterns and anti-patterns identified in reviews
+- **Test Templates** - Reusable test cases and templates for QA
+- **Prevention Steps** - Steps to prevent recurring issues
+- **Code Reviews** - Learnings and best practices from code reviews
 
-## Need More Help?
+## How This Works
 
-If you cannot find what you are looking for:
+The Knowledge Base is populated from:
 
-1. **Search** - Use the search bar at the top to find specific topics
-2. **Contact Support** - Reach out to our support team via the Helpdesk
-3. **Developer Docs** - For technical questions, see the Developer section
+1. **Code Reviews** - Patterns identified during PR reviews
+2. **Incident Resolution** - Root causes and prevention steps from tickets
+3. **Testing** - Test templates and regression test cases
+4. **Confluence Import** - ISMS and technical documentation
+
+## Agent Learning
+
+The Helpdesk Agent uses this knowledge to:
+
+- Suggest relevant patterns when developers report issues
+- Recommend test templates for new features
+- Provide prevention steps for known problems
+- Link to related documentation
+
+## API Access
+
+Export knowledge for agent training:
+
+```
+GET /api/knowledge/export?type=all&format=training
+```
+
+See [Developer Tools](/developer/developer-tools/overview) for more integration options.
+
+## Contributing
+
+Knowledge is automatically added when:
+
+- Tickets are resolved with root cause analysis
+- Code reviews identify new patterns
+- Test templates are approved
+- Documentation is imported from Confluence or Ghost
+
+For manual additions, use the admin import tools:
+- [Confluence Import](/admin/confluence) - Import ISMS and technical docs
+- [Ghost Import](/admin/ghost) - Import FAQ and help articles

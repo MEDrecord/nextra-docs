@@ -1,0 +1,143 @@
+# Prevention Steps
+
+Documented prevention steps from incident resolutions to avoid recurring issues.
+
+## Security Issues
+
+### SQL Injection Prevention
+
+**Root Cause:** User input directly concatenated into SQL queries
+
+**Prevention Steps:**
+1. Always use parameterized queries or prepared statements
+2. Validate and sanitize all user input
+3. Use ORM methods that handle escaping automatically
+4. Implement input length limits
+5. Run static analysis tools in CI pipeline
+
+**Code Example:**
+```typescript
+// BAD - vulnerable to injection
+const query = `SELECT * FROM users WHERE id = ${userId}`
+
+// GOOD - parameterized query
+const query = 'SELECT * FROM users WHERE id = $1'
+const result = await db.query(query, [userId])
+```
+
+---
+
+### XSS Prevention
+
+**Root Cause:** Unescaped user content rendered in HTML
+
+**Prevention Steps:**
+1. Escape all user-generated content before rendering
+2. Use framework's built-in XSS protection
+3. Implement Content Security Policy headers
+4. Sanitize HTML if rich text is required
+5. Validate input against allowlists
+
+---
+
+## Performance Issues
+
+### N+1 Query Prevention
+
+**Root Cause:** Fetching related data in loops instead of batching
+
+**Prevention Steps:**
+1. Use eager loading for known relationships
+2. Implement DataLoader pattern for GraphQL
+3. Review query logs in development
+4. Set up query count monitoring
+5. Add N+1 detection to test suite
+
+**Code Example:**
+```typescript
+// BAD - N+1 queries
+const users = await db.query('SELECT * FROM users')
+for (const user of users) {
+  user.posts = await db.query('SELECT * FROM posts WHERE user_id = $1', [user.id])
+}
+
+// GOOD - single query with join
+const users = await db.query(`
+  SELECT users.*, posts.*
+  FROM users
+  LEFT JOIN posts ON posts.user_id = users.id
+`)
+```
+
+---
+
+### Memory Leak Prevention
+
+**Root Cause:** Event listeners or subscriptions not cleaned up
+
+**Prevention Steps:**
+1. Always remove event listeners in cleanup/unmount
+2. Cancel subscriptions when components unmount
+3. Use weak references where appropriate
+4. Implement memory monitoring in production
+5. Run memory profiling in development
+
+---
+
+## Integration Issues
+
+### API Timeout Prevention
+
+**Root Cause:** External API calls without proper timeout configuration
+
+**Prevention Steps:**
+1. Set explicit timeouts on all HTTP clients
+2. Implement circuit breaker pattern
+3. Add retry logic with exponential backoff
+4. Monitor external API latency
+5. Provide fallback behavior for failures
+
+**Code Example:**
+```typescript
+// Configure timeout and retry
+const response = await fetch(url, {
+  signal: AbortSignal.timeout(5000), // 5 second timeout
+})
+
+// With circuit breaker
+const result = await circuitBreaker.fire(async () => {
+  return await externalApi.call()
+})
+```
+
+---
+
+### Webhook Delivery Prevention
+
+**Root Cause:** Webhook endpoints failing silently
+
+**Prevention Steps:**
+1. Implement webhook signature verification
+2. Return 2xx status only after processing
+3. Set up dead letter queue for failures
+4. Implement retry with backoff
+5. Monitor delivery success rate
+
+---
+
+## Data Integrity Issues
+
+### Race Condition Prevention
+
+**Root Cause:** Concurrent updates without locking
+
+**Prevention Steps:**
+1. Use database transactions for related operations
+2. Implement optimistic locking with version fields
+3. Use SELECT FOR UPDATE when needed
+4. Design for idempotency
+5. Test concurrent scenarios
+
+---
+
+*Prevention steps are extracted from resolved incidents and reviewed code patterns.*

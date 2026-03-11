@@ -70,10 +70,18 @@ const PRODUCTS: MetaRecord = {
 
 const KNOWLEDGE_BASE: MetaRecord = {
   overview: 'Overview',
+  'patterns': 'Patterns',
+  'test-templates': 'Test Templates',
+  'prevention': 'Prevention Steps',
+  'code-reviews': 'Code Reviews'
+}
+
+const HELP_CENTER: MetaRecord = {
+  overview: 'Overview',
   'faq': 'FAQ',
   'how-to-guides': 'How-to Guides',
   'troubleshooting': 'Troubleshooting',
-  'best-practices': 'Best Practices'
+  'account': 'Account & Settings'
 }
 
 export default {
@@ -104,6 +112,11 @@ export default {
     type: 'page',
     title: 'ISMS',
     items: ISMS
+  },
+  help: {
+    type: 'page',
+    title: 'Help Center',
+    items: HELP_CENTER
   },
   knowledge: {
     type: 'page',

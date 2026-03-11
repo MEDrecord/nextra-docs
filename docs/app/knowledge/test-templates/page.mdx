@@ -1,0 +1,162 @@
+# Test Templates
+
+Reusable test case templates for QA and regression testing.
+
+## Authentication Tests
+
+### Login Flow Tests
+
+```json
+{
+  "suite": "Authentication",
+  "tests": [
+    {
+      "id": "AUTH-001",
+      "title": "Successful login with valid credentials",
+      "preconditions": ["User account exists", "User is logged out"],
+      "steps": [
+        "Navigate to login page",
+        "Enter valid email",
+        "Enter valid password",
+        "Click login button"
+      ],
+      "expected": "User is redirected to dashboard"
+    },
+    {
+      "id": "AUTH-002",
+      "title": "Failed login with invalid password",
+      "preconditions": ["User account exists"],
+      "steps": [
+        "Navigate to login page",
+        "Enter valid email",
+        "Enter invalid password",
+        "Click login button"
+      ],
+      "expected": "Error message displayed, no redirect"
+    },
+    {
+      "id": "AUTH-003",
+      "title": "Account lockout after failed attempts",
+      "preconditions": ["User account exists", "Lockout threshold is 5"],
+      "steps": [
+        "Attempt login with wrong password 5 times"
+      ],
+      "expected": "Account is temporarily locked, lockout message displayed"
+    }
+  ]
+}
+```
+
+### Session Management Tests
+
+```json
+{
+  "suite": "Session Management",
+  "tests": [
+    {
+      "id": "SESSION-001",
+      "title": "Session persists across page refresh",
+      "steps": [
+        "Log in successfully",
+        "Refresh the page"
+      ],
+      "expected": "User remains logged in"
+    },
+    {
+      "id": "SESSION-002",
+      "title": "Session expires after timeout",
+      "steps": [
+        "Log in successfully",
+        "Wait for session timeout period",
+        "Attempt to access protected route"
+      ],
+      "expected": "User is redirected to login"
+    }
+  ]
+}
+```
+
+## Messaging Tests
+
+### Send Message Tests
+
+```json
+{
+  "suite": "Messaging",
+  "tests": [
+    {
+      "id": "MSG-001",
+      "title": "Send SMS message successfully",
+      "preconditions": ["User has send permissions", "Recipient has valid phone"],
+      "steps": [
+        "Create new message",
+        "Select recipient",
+        "Choose SMS channel",
+        "Enter message content",
+        "Click send"
+      ],
+      "expected": "Message queued, delivery status shown"
+    },
+    {
+      "id": "MSG-002",
+      "title": "Message fails with invalid recipient",
+      "steps": [
+        "Create new message",
+        "Enter invalid phone number",
+        "Click send"
+      ],
+      "expected": "Validation error displayed"
+    }
+  ]
+}
+```
+
+## API Tests
+
+### Endpoint Response Tests
+
+```json
+{
+  "suite": "API Endpoints",
+  "tests": [
+    {
+      "id": "API-001",
+      "title": "GET /api/messages returns 200",
+      "preconditions": ["Valid auth token"],
+      "request": {
+        "method": "GET",
+        "path": "/api/messages",
+        "headers": {"Authorization": "Bearer {token}"}
+      },
+      "expected": {
+        "status": 200,
+        "body": {"type": "array"}
+      }
+    },
+    {
+      "id": "API-002",
+      "title": "GET /api/messages returns 401 without auth",
+      "request": {
+        "method": "GET",
+        "path": "/api/messages"
+      },
+      "expected": {
+        "status": 401
+      }
+    }
+  ]
+}
+```
+
+## Using Templates
+
+1. Copy the relevant template
+2. Customize for your specific test case
+3. Add to your test suite
+4. Update based on test results
+
+Templates are automatically generated from approved test cases in the Helpdesk Knowledge Base.
+
+---
+
+*Templates are synced from the Helpdesk KB. New templates are added when test cases are approved.*
