@@ -133,13 +133,17 @@ export async function exchangeWebToken(webToken: string): Promise<{
   expiresAt: string
 } | null> {
   try {
+    const origin = window.location.origin
+    
     const response = await fetch(GATEWAY_ENDPOINTS.webSessionExchange, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Origin': window.location.origin,
       },
-      body: JSON.stringify({ webToken }),
+      body: JSON.stringify({ 
+        webToken,
+        origin, // Required by gateway for origin validation
+      }),
     })
     
     if (!response.ok) {
