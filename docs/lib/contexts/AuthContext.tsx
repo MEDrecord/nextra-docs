@@ -8,15 +8,15 @@ import {
   useCallback,
   type ReactNode,
 } from 'react'
-import type { User } from '@/lib/auth/types'
-import { GATEWAY_ENDPOINTS, isCrossDomainModeClient } from '@/lib/auth/config'
+import type { User } from '../auth/types'
+import { GATEWAY_ENDPOINTS, isCrossDomainModeClient } from '../auth/config'
 import { 
   getStoredSessionId, 
   getStoredUser, 
   clearStoredAuth,
   verifySession,
   redirectToSignin,
-} from '@/lib/auth/client'
+} from '../auth/client'
 
 interface AuthContextValue {
   user: User | null

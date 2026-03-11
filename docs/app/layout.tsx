@@ -3,9 +3,9 @@ import type { Metadata } from 'next'
 import { Layout } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import type React from 'react'
-import { AuthProvider } from '@/lib/contexts/AuthContext'
-import { getUser } from '@/lib/auth/server'
-import { isCrossDomainMode } from '@/lib/auth/config'
+import { AuthProvider } from '../lib/contexts/AuthContext'
+import { getUser } from '../lib/auth/server'
+import { isCrossDomainMode } from '../lib/auth/config'
 import './globals.css'
 
 export const metadata: Metadata = {

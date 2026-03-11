@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { logout } from '@/lib/auth/client'
+import { logout } from '../../../lib/auth/client'
 
 /**
  * Sign Out Page

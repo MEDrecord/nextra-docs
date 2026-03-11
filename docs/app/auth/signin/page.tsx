@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { redirectToSignin } from '@/lib/auth/client'
+import { redirectToSignin } from '../../../lib/auth/client'
 
 /**
  * Sign In Page

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useAuth } from '@/lib/contexts/AuthContext'
-import { logout } from '@/lib/auth/client'
+import { useAuth } from '../../lib/contexts/AuthContext'
+import { logout } from '../../lib/auth/client'
 import { LoginButton } from './LoginButton'
 
 /**

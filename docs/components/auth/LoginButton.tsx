@@ -1,6 +1,6 @@
 'use client'
 
-import { redirectToSignin, getCurrentPath } from '@/lib/auth/client'
+import { redirectToSignin, getCurrentPath } from '../../lib/auth/client'
 
 interface LoginButtonProps {
   /** Path to redirect to after login (defaults to current path) */

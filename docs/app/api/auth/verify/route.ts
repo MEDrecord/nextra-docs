@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getUser } from '@/lib/auth/server'
+import { getUser } from '../../../../lib/auth/server'
 
 /**
  * API Route: Verify Authentication Status

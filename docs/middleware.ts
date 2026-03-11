@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { isCrossDomainModeFromHost } from '@/lib/auth/config'
+import { isCrossDomainModeFromHost } from './lib/auth/config'
 
 /**
  * Middleware for Route Protection

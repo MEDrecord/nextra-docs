@@ -17,7 +17,6 @@
     "module": "esnext",
     "resolveJsonModule": true,
     "paths": {
-      "@/*": ["./*"],
       "@components/*": ["components/*"],
       "private-next-root-dir/*": ["./*"],
       "next-mdx-import-source-file": ["./mdx-components.tsx"]

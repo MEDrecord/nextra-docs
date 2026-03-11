@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getUser } from '@/lib/auth/server'
+import { getUser } from '../../../../lib/auth/server'
 
 const CONFLUENCE_BASE_URL = 'https://medrecord.atlassian.net/wiki'
 

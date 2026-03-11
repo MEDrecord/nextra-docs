@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/lib/contexts/AuthContext'
+import { useAuth } from '../../../lib/contexts/AuthContext'
 
 interface PageData {
   id: string
