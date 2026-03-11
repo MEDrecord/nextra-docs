@@ -1,0 +1,141 @@
+# Code Reviews
+
+Best practices and learnings from code reviews.
+
+## Review Guidelines
+
+### What We Look For
+
+1. **Security** - No vulnerabilities, proper auth checks, input validation
+2. **Performance** - Efficient queries, no N+1 problems, proper caching
+3. **Maintainability** - Clear naming, good structure, documented edge cases
+4. **Testing** - Adequate coverage, meaningful assertions, edge cases covered
+5. **Compliance** - ISMS requirements, audit trail, data handling
+
+### Review Checklist
+
+- [ ] Code follows project conventions
+- [ ] No secrets or credentials in code
+- [ ] Error handling is comprehensive
+- [ ] Database queries are optimized
+- [ ] API endpoints validate input
+- [ ] Authentication/authorization is correct
+- [ ] Logging includes necessary context
+- [ ] Tests cover happy path and error cases
+
+## Common Feedback Patterns
+
+### Authentication and Authorization
+
+**Frequently Caught Issues:**
+- Missing auth middleware on new routes
+- Inconsistent permission checks
+- Token handling exposing sensitive data
+- Session management edge cases
+
+**Example Feedback:**
+> "This route needs the `requireAuth` middleware. All `/api/admin/*` routes should verify admin role."
+
+---
+
+### Error Handling
+
+**Frequently Caught Issues:**
+- Swallowing errors without logging
+- Exposing internal errors to users
+- Missing error boundaries in React
+- Inconsistent error response format
+
+**Example Feedback:**
+> "Please use the standard error response format. Also add logging before returning the error to the client."
+
+---
+
+### Database Operations
+
+**Frequently Caught Issues:**
+- Missing transactions for related operations
+- N+1 query patterns
+- Missing indexes on frequently queried columns
+- Raw queries when ORM would be safer
+
+**Example Feedback:**
+> "This operation updates multiple tables - wrap in a transaction to ensure consistency."
+
+---
+
+### API Design
+
+**Frequently Caught Issues:**
+- Inconsistent naming conventions
+- Missing pagination on list endpoints
+- Overfetching (returning too much data)
+- Missing rate limiting considerations
+
+**Example Feedback:**
+> "Add pagination to this endpoint. It could return thousands of records and cause performance issues."
+
+---
+
+## Approved Patterns
+
+### Server Action Pattern
+
+```typescript
+'use server'
+
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+
+export async function createItem(formData: FormData) {
+  // 1. Validate auth
+  const session = await getSession()
+  if (!session) throw new Error('Unauthorized')
+  
+  // 2. Validate input
+  const data = schema.parse(Object.fromEntries(formData))
+  
+  // 3. Perform operation
+  await db.insert(items).values(data)
+  
+  // 4. Revalidate and redirect
+  revalidatePath('/items')
+  redirect('/items')
+}
+```
+
+### API Route Pattern
+
+```typescript
+export async function POST(request: Request) {
+  try {
+    // 1. Validate auth
+    const session = await verifyAuth(request)
+    if (!session) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
+    // 2. Parse and validate body
+    const body = await request.json()
+    const data = schema.parse(body)
+    
+    // 3. Perform operation
+    const result = await performOperation(data)
+    
+    // 4. Return success
+    return Response.json({ data: result })
+    
+  } catch (error) {
+    // 5. Handle errors
+    console.error('Operation failed:', error)
+    return Response.json(
+      { error: 'Operation failed' },
+      { status: 500 }
+    )
+  }
+}
+```
+
+---
+
+*Code review patterns are updated based on team feedback and recurring issues.*
