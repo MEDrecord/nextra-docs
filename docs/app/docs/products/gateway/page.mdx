@@ -1,0 +1,123 @@
+# Gateway
+
+The MEDrecord Gateway is a secure API Gateway that provides unified authentication, routing, and request validation for all MEDrecord products.
+
+## Overview
+
+Gateway serves as the central entry point for all API requests, ensuring consistent security, authentication, and audit logging across the entire product ecosystem.
+
+### Key Features
+
+- **HMAC Authentication** - Cryptographic request signing and validation
+- **Multi-Tenant Routing** - Automatic tenant context injection
+- **Rate Limiting** - Configurable rate limits per endpoint and tenant
+- **Request Validation** - Schema validation and sanitization
+- **Audit Logging** - Comprehensive request/response logging
+- **AI Model Routing** - Intelligent routing to AI providers
+
+## Authentication
+
+Gateway uses HMAC (Hash-based Message Authentication Code) for request authentication:
+
+### Request Headers
+
+```
+X-Gateway-Signature: HMAC-SHA256 signature of request body
+X-User-Id: Authenticated user identifier
+X-Tenant-Id: Tenant/organization identifier
+X-Tenant-Role: User role within tenant
+X-Request-Id: Unique request identifier for tracing
+```
+
+### Signature Calculation
+
+```javascript
+const signature = crypto
+  .createHmac('sha256', secretKey)
+  .update(JSON.stringify(requestBody))
+  .digest('hex')
+```
+
+No API keys are transmitted - authentication is based entirely on cryptographic signatures.
+
+## Routing
+
+Gateway routes requests to appropriate backend services:
+
+```
+Client Request
+      ↓
+   Gateway
+      ↓
+┌─────┼─────┐
+↓     ↓     ↓
+EHR  AI   Helpdesk
+```
+
+### Route Configuration
+
+Routes are defined per tenant with:
+
+- **Path matching** - URL pattern matching
+- **Authentication requirements** - Public, authenticated, or admin-only
+- **Rate limits** - Requests per minute/hour
+- **Backend target** - Service URL and timeout
+
+## AI Model Routing
+
+Gateway intelligently routes AI requests to appropriate providers:
+
+| Model Type | Provider | Use Case |
+|------------|----------|----------|
+| Chat | OpenAI GPT-4 | Conversational AI |
+| Embeddings | OpenAI Ada | Semantic search |
+| Medical | Custom | Clinical decision support |
+
+## Security
+
+### Request Validation
+
+- JSON schema validation
+- SQL injection prevention
+- XSS sanitization
+- Request size limits
+
+### Audit Logging
+
+Every request is logged with:
+
+- Timestamp
+- User and tenant context
+- Request/response bodies (sanitized)
+- Response time
+- Error details (if any)
+
+Logs are immutable and retained per compliance requirements.
+
+## Integration
+
+### For Products
+
+Products integrate with Gateway by:
+
+1. Configuring HMAC secret key
+2. Signing all outgoing requests
+3. Handling tenant context headers
+
+### Environment Variables
+
+```
+GATEWAY_URL=https://gateway.medrecord.nl
+GATEWAY_SECRET=your-hmac-secret
+```
+
+## Resources
+
+| Resource | Link |
+|----------|------|
+| API Reference | [Authentication](/docs/api-reference/authentication) |
+| Architecture | [Security](/docs/architecture/security) |
+
+## Getting Started
+
+Gateway is managed infrastructure. Contact the platform team for integration credentials.

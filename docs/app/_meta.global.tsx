@@ -59,6 +59,15 @@ const DEVELOPER_TOOLS: MetaRecord = {
   'workflows': 'Workflows'
 }
 
+const PRODUCTS: MetaRecord = {
+  overview: 'Overview',
+  'healthtalk': 'HealthTalk',
+  'helpdesk': 'Helpdesk',
+  'gateway': 'Gateway',
+  'agents': 'AI Agents',
+  'ehr-platform': 'EHR Platform'
+}
+
 export default {
   index: {
     type: 'page',
@@ -76,6 +85,10 @@ export default {
       'user-guide': { 
         title: 'User Guide',
         items: USER_GUIDE 
+      },
+      'products': {
+        title: 'Products',
+        items: PRODUCTS
       },
       _: {
         type: 'separator',

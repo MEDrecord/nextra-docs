@@ -1,0 +1,73 @@
+# HealthTalk
+
+HealthTalk is a secure patient communication platform that enables healthcare providers to engage with patients through multiple channels while maintaining full compliance with healthcare regulations.
+
+## Overview
+
+HealthTalk provides healthcare organizations with a unified communication platform that integrates seamlessly with existing EHR systems and workflows.
+
+### Key Features
+
+- **Secure Messaging** - End-to-end encrypted patient-provider communication
+- **Appointment Reminders** - Automated SMS, email, and push notifications
+- **Message Templates** - Standardized communication templates for common scenarios
+- **Multi-Channel Support** - SMS, email, in-app messaging, and voice
+- **Patient Portal** - Self-service portal for patients to view messages and appointments
+- **Analytics Dashboard** - Communication metrics and engagement tracking
+
+## Architecture
+
+HealthTalk is built on the MEDrecord platform and uses:
+
+- **Gateway** for authentication and API routing
+- **EHR Platform** for patient data integration
+- **AI Agents** for automated message generation and response suggestions
+
+```
+Patient App → Gateway → HealthTalk API → EHR Platform
+                ↓
+           AI Agents (message suggestions)
+```
+
+## Integration
+
+### With EHR Systems
+
+HealthTalk integrates with the MEDrecord EHR Platform via openEHR archetypes for:
+
+- Patient demographics
+- Appointment schedules
+- Clinical notes (for context-aware messaging)
+
+### With External Systems
+
+- **SMS Providers** - Twilio, MessageBird
+- **Email** - SendGrid, custom SMTP
+- **Push Notifications** - Firebase Cloud Messaging
+
+## Security and Compliance
+
+HealthTalk is designed to meet:
+
+- **NEN 7510** - Dutch healthcare information security standard
+- **GDPR** - Patient data protection and consent management
+- **ISO 13485** - Medical device quality management
+
+All communications are:
+
+- Encrypted in transit (TLS 1.3)
+- Encrypted at rest (AES-256)
+- Fully audited with immutable logs
+
+## Resources
+
+| Resource | Link |
+|----------|------|
+| GitHub Repository | [MEDrecord/nextra-docs](https://github.com/MEDrecord/nextra-docs) |
+| v0 Project | nextra-docs |
+| API Documentation | [API Reference](/docs/api-reference/overview) |
+| User Guide | [User Guide](/docs/user-guide/overview) |
+
+## Getting Started
+
+See [Getting Started](/docs/getting-started/introduction) for installation and configuration instructions.
