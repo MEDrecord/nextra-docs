@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from '../../../lib/contexts/AuthContext'
+import { ROLES } from '../../../lib/auth/types'
 
 interface PageData {
   id: string
@@ -20,12 +22,52 @@ interface ImportResult {
 }
 
 export default function ConfluenceImportPage() {
+  const { user, isLoading, isAuthenticated } = useAuth()
   const [spaceKey, setSpaceKey] = useState('ISMS')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<ImportResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedPage, setSelectedPage] = useState<PageData | null>(null)
+
+  // Pre-fill email from authenticated user
+  useEffect(() => {
+    if (user?.email && !email) {
+      setEmail(user.email)
+    }
+  }, [user, email])
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      </div>
+    )
+  }
+
+  // Check authentication
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="max-w-6xl mx-auto p-8">
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded">
+          <strong>Authentication Required:</strong> Please sign in to access this page.
+        </div>
+      </div>
+    )
+  }
+
+  // Check for tenant_admin role
+  if (user.role !== ROLES.TENANT_ADMIN) {
+    return (
+      <div className="max-w-6xl mx-auto p-8">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <strong>Access Denied:</strong> You need the <code className="bg-red-200 px-1 rounded">{ROLES.TENANT_ADMIN}</code> role to access this admin page.
+          <p className="mt-2 text-sm">Your current role: <code className="bg-red-200 px-1 rounded">{user.role}</code></p>
+        </div>
+      </div>
+    )
+  }
 
   const handleImport = async () => {
     if (!email) {

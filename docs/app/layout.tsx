@@ -2,7 +2,10 @@ import { getEnhancedPageMap } from '@components/get-page-map'
 import type { Metadata } from 'next'
 import { Layout } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
-import type { FC } from 'react'
+import type React from 'react'
+import { AuthProvider } from '../lib/contexts/AuthContext'
+import { getUser } from '../lib/auth/server'
+import { isCrossDomainMode } from '../lib/auth/config'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -42,8 +45,17 @@ export const metadata: Metadata = {
   }
 }
 
-const RootLayout: FC<LayoutProps<'/'>> = async ({ children }) => {
+const RootLayout = async ({ children }: { children: React.ReactNode }) => {
+  // Fetch page map first
   const pageMap = await getEnhancedPageMap()
+  
+  // In cross-domain mode, user is managed via localStorage on the client
+  // In same-domain mode, we can fetch the user server-side using cookies
+  const isCrossDomain = isCrossDomainMode()
+  const user = isCrossDomain 
+    ? null  // Client will handle auth via localStorage
+    : await getUser().catch(() => null)
+  
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
