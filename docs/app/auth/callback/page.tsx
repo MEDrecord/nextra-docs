@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { exchangeWebToken } from '../../../lib/auth/client'
 import { isCrossDomainModeClient } from '../../../lib/auth/config'
 
 /**
- * Authentication Callback Page
+ * Authentication Callback Handler
  * 
  * Handles OAuth callback from HealthTalk Gateway.
  * 
@@ -19,7 +19,7 @@ import { isCrossDomainModeClient } from '../../../lib/auth/config'
  * - WebToken is single-use and expires in 60 seconds
  * - SessionId is opaque (no embedded claims)
  */
-export default function CallbackPage() {
+function CallbackHandler() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
@@ -105,5 +105,28 @@ export default function CallbackPage() {
         <p className="text-gray-600">Completing sign-in...</p>
       </div>
     </div>
+  )
+}
+
+/**
+ * Callback Page - Wrapped in Suspense for useSearchParams
+ * 
+ * Next.js requires useSearchParams to be wrapped in a Suspense boundary
+ * to enable static generation with dynamic params.
+ */
+export default function CallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4" />
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <CallbackHandler />
+    </Suspense>
   )
 }
