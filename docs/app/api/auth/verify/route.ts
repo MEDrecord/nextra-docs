@@ -10,9 +10,13 @@ import { getUser } from '@/lib/auth/server'
  * Used by client components that need to check auth status
  * without making a direct call to the gateway.
  * 
+ * Supports both authentication modes:
+ * - Same-domain: Uses auth.sid cookie
+ * - Cross-domain: Uses X-Session-Id header
+ * 
  * SECURITY:
  * - Runs on server only
- * - Forwards auth.sid cookie to gateway
+ * - Forwards credentials to gateway
  * - Does not expose any tokens or secrets
  */
 export async function GET() {

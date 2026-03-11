@@ -1,43 +1,70 @@
 import 'server-only'
 
-import { cookies } from 'next/headers'
-import { GATEWAY_ENDPOINTS } from './config'
+import { cookies, headers } from 'next/headers'
+import { GATEWAY_ENDPOINTS, isCrossDomainMode, SESSION_STORAGE_KEY } from './config'
 import type { Session, User, AuthResponse } from './types'
 
 /**
  * Server-side authentication utilities
  * 
+ * Supports TWO authentication modes:
+ * 1. Cookie mode - Uses auth.sid HttpOnly cookie (same domain)
+ * 2. SessionId mode - Uses X-Session-Id header (cross-domain)
+ * 
  * SECURITY: These functions run ONLY on the server.
- * They forward the auth.sid cookie to the gateway for session validation.
  */
 
 /**
- * Forward cookies from the incoming request to the gateway
- * Required for session validation
+ * Get authentication credentials for gateway requests
+ * Returns either Cookie header (same-domain) or X-Session-Id header (cross-domain)
  */
-async function getForwardedCookies(): Promise<string> {
-  const cookieStore = await cookies()
-  const authCookie = cookieStore.get('auth.sid')
+async function getAuthCredentials(): Promise<{ 
+  headers: Record<string, string>
+  hasCredentials: boolean 
+}> {
+  const isCrossDomain = isCrossDomainMode()
   
-  if (!authCookie) {
-    return ''
+  if (isCrossDomain) {
+    // Cross-domain mode: Look for X-Session-Id in incoming request headers
+    const headerStore = await headers()
+    const sessionId = headerStore.get('x-session-id')
+    
+    if (!sessionId) {
+      return { headers: {}, hasCredentials: false }
+    }
+    
+    return { 
+      headers: { 'X-Session-Id': sessionId },
+      hasCredentials: true 
+    }
+  } else {
+    // Same-domain mode: Forward auth.sid cookie
+    const cookieStore = await cookies()
+    const authCookie = cookieStore.get('auth.sid')
+    
+    if (!authCookie) {
+      return { headers: {}, hasCredentials: false }
+    }
+    
+    return { 
+      headers: { 'Cookie': `auth.sid=${authCookie.value}` },
+      hasCredentials: true 
+    }
   }
-  
-  return `auth.sid=${authCookie.value}`
 }
 
 /**
  * Make an authenticated fetch to the gateway
- * Automatically forwards cookies and handles errors
+ * Automatically uses correct auth method based on domain
  */
 export async function serverFetch<T>(
   url: string,
   options: RequestInit = {}
 ): Promise<{ data: T | null; error: string | null; status: number }> {
-  const forwardedCookies = await getForwardedCookies()
+  const { headers: authHeaders, hasCredentials } = await getAuthCredentials()
   
-  if (!forwardedCookies) {
-    return { data: null, error: 'No auth cookie present', status: 401 }
+  if (!hasCredentials) {
+    return { data: null, error: 'No auth credentials present', status: 401 }
   }
   
   try {
@@ -46,7 +73,7 @@ export async function serverFetch<T>(
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'Cookie': forwardedCookies,
+        ...authHeaders,
         ...options.headers,
       },
       // Disable caching for auth requests
@@ -79,7 +106,14 @@ export async function serverFetch<T>(
  * Returns null if not authenticated
  */
 export async function getSession(): Promise<Session | null> {
-  const { data, error, status } = await serverFetch<Session>(GATEWAY_ENDPOINTS.session)
+  const isCrossDomain = isCrossDomainMode()
+  
+  // For cross-domain, use the web-session/verify endpoint
+  const endpoint = isCrossDomain 
+    ? GATEWAY_ENDPOINTS.webSessionVerify 
+    : GATEWAY_ENDPOINTS.session
+    
+  const { data, error, status } = await serverFetch<Session>(endpoint)
   
   if (error || !data) {
     if (status !== 401) {
@@ -120,9 +154,11 @@ export async function validateSession(): Promise<boolean> {
   }
   
   // Check if session has expired
-  const expiresAt = new Date(session.expiresAt)
-  if (expiresAt <= new Date()) {
-    return false
+  if (session.expiresAt) {
+    const expiresAt = new Date(session.expiresAt)
+    if (expiresAt <= new Date()) {
+      return false
+    }
   }
   
   return true
@@ -155,10 +191,26 @@ export async function hasRole(requiredRole: string): Promise<boolean> {
 }
 
 /**
- * Check if request has auth cookie (for middleware - doesn't validate session)
- * Use this only in middleware where async cookies() is not available
+ * Check if request has auth credentials (for middleware)
+ * Works with both cookie mode and cross-domain session ID mode
  */
-export function hasAuthCookie(request: Request): boolean {
-  const cookieHeader = request.headers.get('cookie') || ''
-  return cookieHeader.includes('auth.sid=')
+export function hasAuthCredentials(request: Request): boolean {
+  const isCrossDomain = isCrossDomainMode()
+  
+  if (isCrossDomain) {
+    // Check for X-Session-Id header OR sessionId in localStorage (client must send it)
+    const sessionIdHeader = request.headers.get('x-session-id')
+    return !!sessionIdHeader
+  } else {
+    // Check for auth.sid cookie
+    const cookieHeader = request.headers.get('cookie') || ''
+    return cookieHeader.includes('auth.sid=')
+  }
+}
+
+/**
+ * Extract session ID from request (for cross-domain mode)
+ */
+export function getSessionIdFromRequest(request: Request): string | null {
+  return request.headers.get('x-session-id')
 }

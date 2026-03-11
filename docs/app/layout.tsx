@@ -5,6 +5,7 @@ import { Head } from 'nextra/components'
 import type { FC } from 'react'
 import { AuthProvider } from '@/lib/contexts/AuthContext'
 import { getUser } from '@/lib/auth/server'
+import { isCrossDomainMode } from '@/lib/auth/config'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -45,12 +46,15 @@ export const metadata: Metadata = {
 }
 
 const RootLayout: FC<LayoutProps<'/'>> = async ({ children }) => {
-  // Fetch page map and user in parallel for performance
-  // getUser() may return null for auth pages (before login) - this is expected
-  const [pageMap, user] = await Promise.all([
-    getEnhancedPageMap(),
-    getUser().catch(() => null), // Gracefully handle auth failures during login flow
-  ])
+  // Fetch page map first
+  const pageMap = await getEnhancedPageMap()
+  
+  // In cross-domain mode, user is managed via localStorage on the client
+  // In same-domain mode, we can fetch the user server-side using cookies
+  const isCrossDomain = isCrossDomainMode()
+  const user = isCrossDomain 
+    ? null  // Client will handle auth via localStorage
+    : await getUser().catch(() => null)
   
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>

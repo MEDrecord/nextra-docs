@@ -1,13 +1,19 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { isCrossDomainMode } from '@/lib/auth/config'
 
 /**
  * Middleware for Route Protection
  * 
- * Protects all routes by checking for the auth.sid cookie.
- * Redirects unauthenticated users to the signin page.
+ * Supports TWO authentication modes:
+ * 1. Cookie mode (same-domain): Checks for auth.sid cookie
+ * 2. SessionId mode (cross-domain): Checks for X-Session-Id header
+ * 
+ * In cross-domain mode, since localStorage is only accessible client-side,
+ * the middleware cannot check sessionId directly. Instead, we allow the request
+ * through and let client-side code handle the redirect if needed.
  * 
  * SECURITY NOTES:
- * - Only checks cookie presence (fast, no network call)
+ * - Only checks credential presence (fast, no network call)
  * - Actual session validation happens server-side in components/API routes
  * - Cookie is HttpOnly, Secure, SameSite=Lax (set by gateway)
  */
@@ -17,7 +23,7 @@ const PUBLIC_PATHS = [
   '/auth/signin',
   '/auth/callback',
   '/auth/signout',
-  '/api/auth/verify', // Auth verification API is public (returns 401 if not authenticated)
+  '/api/auth/verify',
 ]
 
 // Static asset paths to always exclude
@@ -33,6 +39,7 @@ const STATIC_PATHS = [
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const isCrossDomain = isCrossDomainMode()
 
   // Skip static assets (performance optimization)
   if (STATIC_PATHS.some(path => pathname.startsWith(path))) {
@@ -49,37 +56,46 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Check for auth cookie
-  const authCookie = request.cookies.get('auth.sid')
+  if (isCrossDomain) {
+    // Cross-domain mode: Check for X-Session-Id header
+    // Note: For initial page loads, sessionId is in localStorage (client-side only)
+    // The AuthContext will handle redirect if session is invalid
+    // For API requests, the header should be present
+    const sessionIdHeader = request.headers.get('x-session-id')
+    
+    // For page requests (not API), we can't check localStorage from middleware
+    // Let the request through and rely on client-side AuthContext for protection
+    if (pathname.startsWith('/api/') && !sessionIdHeader) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+    
+    // For non-API routes in cross-domain mode, allow through
+    // Client-side AuthContext will handle redirect if not authenticated
+    return NextResponse.next()
+  } else {
+    // Same-domain mode: Check for auth cookie
+    const authCookie = request.cookies.get('auth.sid')
 
-  if (!authCookie || !authCookie.value) {
-    // No auth cookie - redirect to signin
-    const signinUrl = new URL('/auth/signin', request.url)
-    
-    // Save the original destination for redirect after login
-    signinUrl.searchParams.set('callbackUrl', pathname)
-    
-    return NextResponse.redirect(signinUrl)
+    if (!authCookie || !authCookie.value) {
+      // No auth cookie - redirect to signin
+      const signinUrl = new URL('/auth/signin', request.url)
+      
+      // Save the original destination for redirect after login
+      signinUrl.searchParams.set('callbackUrl', pathname)
+      
+      return NextResponse.redirect(signinUrl)
+    }
   }
 
-  // Auth cookie exists - allow request
-  // Actual session validation happens in server components/API routes
+  // Auth credentials exist - allow request
   return NextResponse.next()
 }
 
 export const config = {
-  /*
-   * Match all paths except:
-   * - _next (Next.js internals)
-   * - Static files with extensions
-   */
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\..*|_next).*)',
   ],
 }
