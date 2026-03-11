@@ -113,13 +113,20 @@ function slugify(title: string): string {
 }
 
 export async function GET(request: NextRequest) {
-  const email = process.env.CONFLUENCE_EMAIL
+  const email = request.nextUrl.searchParams.get('email')
   const apiToken = process.env.CONFLUENCE_API_TOKEN
   const spaceKey = request.nextUrl.searchParams.get('space') || 'ISMS'
 
-  if (!email || !apiToken) {
+  if (!email) {
     return NextResponse.json(
-      { error: 'Missing CONFLUENCE_EMAIL or CONFLUENCE_API_TOKEN environment variables' },
+      { error: 'Missing email parameter - enter your Atlassian email in the form' },
+      { status: 400 }
+    )
+  }
+
+  if (!apiToken) {
+    return NextResponse.json(
+      { error: 'Missing CONFLUENCE_API_TOKEN environment variable - add it in v0 Vars' },
       { status: 500 }
     )
   }

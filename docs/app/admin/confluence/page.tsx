@@ -21,18 +21,24 @@ interface ImportResult {
 
 export default function ConfluenceImportPage() {
   const [spaceKey, setSpaceKey] = useState('ISMS')
+  const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<ImportResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedPage, setSelectedPage] = useState<PageData | null>(null)
 
   const handleImport = async () => {
+    if (!email) {
+      setError('Please enter your Atlassian email')
+      return
+    }
+    
     setLoading(true)
     setError(null)
     setResult(null)
 
     try {
-      const response = await fetch(`/api/confluence/import?space=${spaceKey}`)
+      const response = await fetch(`/api/confluence/import?space=${spaceKey}&email=${encodeURIComponent(email)}`)
       const data = await response.json()
 
       if (!response.ok) {
@@ -81,14 +87,20 @@ export default function ConfluenceImportPage() {
       <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg mb-8">
         <h2 className="text-xl font-semibold mb-4">Configuration</h2>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Make sure you have set the following environment variables in v0 Vars:
+          Make sure you have set <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">CONFLUENCE_API_TOKEN</code> in v0 Vars (from id.atlassian.com/manage-profile/security/api-tokens)
         </p>
-        <ul className="list-disc list-inside text-sm mb-4 space-y-1">
-          <li><code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">CONFLUENCE_EMAIL</code> - Your Atlassian email</li>
-          <li><code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">CONFLUENCE_API_TOKEN</code> - Your API token from id.atlassian.com</li>
-        </ul>
         
-        <div className="flex gap-4 items-end">
+        <div className="flex gap-4 items-end flex-wrap">
+          <div>
+            <label className="block text-sm font-medium mb-1">Your Atlassian Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 w-64"
+              placeholder="your.email@medvision360.com"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium mb-1">Space Key</label>
             <input
