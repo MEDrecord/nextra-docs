@@ -1,0 +1,75 @@
+# Helpdesk
+
+The MEDrecord Helpdesk is an internal support and ticketing system designed for healthcare organizations, featuring AI-powered automation and seamless integration with the MEDrecord product ecosystem.
+
+## Overview
+
+Helpdesk provides IT teams and support staff with a modern ticketing system that leverages AI agents to automate routine tasks and improve response times.
+
+### Key Features
+
+- **Ticket Management** - Create, assign, track, and resolve support tickets
+- **Workspaces** - Organized views for different teams and workflows
+- **AI-Powered Responses** - Automated suggestions and draft responses
+- **Knowledge Base** - Integrated documentation and FAQ system
+- **SLA Tracking** - Service level agreement monitoring and alerts
+- **Multi-Tenant** - Support for multiple organizations with data isolation
+
+## Workspaces
+
+Helpdesk organizes work into specialized workspaces:
+
+| Workspace | Purpose |
+|-----------|---------|
+| **Tickets** | Main ticket queue and management |
+| **Knowledge** | Documentation and FAQ articles |
+| **Docs** | Integrated Nextra documentation viewer |
+| **Reports** | Analytics and performance metrics |
+| **Settings** | System configuration and user management |
+
+## Architecture
+
+Helpdesk is built with:
+
+- **Frontend** - Next.js 15 with App Router
+- **Backend** - Supabase (PostgreSQL, Auth, Realtime)
+- **AI** - 20+ specialized agents via Gateway
+- **Docs** - Nextra integration via iframe
+
+```
+User → Helpdesk UI → Gateway → Supabase
+                       ↓
+                  AI Agents
+                       ↓
+                  Nextra Docs
+```
+
+## AI Agents Integration
+
+Helpdesk leverages the MEDrecord AI Agents ecosystem:
+
+- **Ticket Classifier** - Automatically categorize and route tickets
+- **Response Suggester** - Draft responses based on similar tickets
+- **Knowledge Finder** - Surface relevant documentation
+- **Escalation Predictor** - Identify tickets likely to escalate
+
+See [AI Agents](/docs/products/agents) for the full agent catalog.
+
+## Security
+
+- **Gateway Authentication** - HMAC-signed requests
+- **Row Level Security** - Supabase RLS for data isolation
+- **Audit Logging** - Full audit trail for compliance
+- **Role-Based Access** - Admin, Agent, Viewer roles
+
+## Resources
+
+| Resource | Link |
+|----------|------|
+| GitHub Repository | [MEDrecord/v0-ticketing-system](https://github.com/MEDrecord/v0-ticketing-system) |
+| v0 Project | v0-ticketing-system |
+| Live Demo | Internal deployment |
+
+## Getting Started
+
+Helpdesk is deployed internally. Contact your administrator for access credentials.

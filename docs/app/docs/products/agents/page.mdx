@@ -1,0 +1,136 @@
+# AI Agents
+
+MEDrecord operates a fleet of 20+ specialized AI agents that automate healthcare workflows, improve documentation, and assist staff across all products.
+
+## Overview
+
+AI Agents are purpose-built assistants that integrate with MEDrecord products to provide intelligent automation while maintaining full compliance and audit trails.
+
+### Key Capabilities
+
+- **Task Automation** - Automate repetitive workflows
+- **Content Generation** - Draft messages, documentation, and reports
+- **Data Analysis** - Extract insights from healthcare data
+- **Decision Support** - Provide recommendations (with human approval)
+- **Quality Assurance** - Review content for compliance and accuracy
+
+## Agent Catalog
+
+### Communication Agents
+
+| Agent | Purpose | Products |
+|-------|---------|----------|
+| **Message Drafter** | Draft patient communications | HealthTalk |
+| **Response Suggester** | Suggest ticket responses | Helpdesk |
+| **Translation Agent** | Translate messages | HealthTalk, Helpdesk |
+| **Tone Analyzer** | Ensure appropriate tone | All |
+
+### Documentation Agents
+
+| Agent | Purpose | Products |
+|-------|---------|----------|
+| **Doc Improver** | Improve documentation quality | Docs |
+| **FAQ Generator** | Generate FAQs from tickets | Helpdesk |
+| **Release Notes** | Generate release notes | All |
+| **Compliance Checker** | Verify compliance requirements | Docs |
+
+### Operations Agents
+
+| Agent | Purpose | Products |
+|-------|---------|----------|
+| **Ticket Classifier** | Categorize and route tickets | Helpdesk |
+| **Priority Predictor** | Predict ticket priority | Helpdesk |
+| **SLA Monitor** | Track SLA compliance | Helpdesk |
+| **Escalation Detector** | Identify escalation risks | Helpdesk |
+
+### Analytics Agents
+
+| Agent | Purpose | Products |
+|-------|---------|----------|
+| **Trend Analyzer** | Identify communication trends | HealthTalk |
+| **Sentiment Analyzer** | Analyze message sentiment | All |
+| **Report Generator** | Generate analytics reports | All |
+| **Anomaly Detector** | Detect unusual patterns | All |
+
+### Security Agents
+
+| Agent | Purpose | Products |
+|-------|---------|----------|
+| **Security Auditor** | Review for security issues | All |
+| **Access Reviewer** | Review access permissions | All |
+| **Compliance Validator** | Validate against regulations | All |
+
+## Architecture
+
+Agents are accessed through the Gateway:
+
+```
+Product → Gateway → Agent Router → AI Provider
+                         ↓
+                    Agent Config
+                    (prompts, context)
+```
+
+### Agent Configuration
+
+Each agent has:
+
+- **System Prompt** - Role and behavior definition
+- **Context** - Product-specific context injection
+- **Guardrails** - Output validation rules
+- **Audit Level** - Logging requirements
+
+## Integration
+
+### Calling Agents
+
+```javascript
+const response = await fetch('/api/agents/message-drafter', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Gateway-Signature': signature
+  },
+  body: JSON.stringify({
+    context: { patientId, appointmentType },
+    prompt: 'Draft appointment reminder'
+  })
+})
+```
+
+### Human-in-the-Loop
+
+All agent outputs require human approval before:
+
+- Sending to patients
+- Modifying records
+- Changing configurations
+
+This ensures compliance and maintains accountability.
+
+## Security and Compliance
+
+- **No PHI in Prompts** - Patient data is referenced by ID, not content
+- **Audit Logging** - All agent interactions are logged
+- **Output Validation** - Responses are validated against schemas
+- **Rate Limiting** - Per-agent and per-tenant limits
+
+## Creating Custom Agents
+
+To create a custom agent:
+
+1. Define the agent purpose and scope
+2. Create system prompt with guardrails
+3. Configure context injection
+4. Set up audit logging
+5. Test with sample inputs
+6. Deploy via Gateway configuration
+
+See [Developer Tools](/docs/developer-tools/overview) for AI development best practices.
+
+## Resources
+
+| Resource | Link |
+|----------|------|
+| AI Assistance Guide | [AI Assistance](/docs/developer-tools/ai-assistance) |
+| Project Rules | [Project Rules](/docs/developer-tools/project-rules) |

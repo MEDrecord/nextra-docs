@@ -1,0 +1,136 @@
+# EHR Platform
+
+The MEDrecord EHR Platform is the core Electronic Health Record system that provides the foundation for patient data management, clinical workflows, and integration with other MEDrecord products.
+
+## Overview
+
+The EHR Platform is built on openEHR standards, providing a flexible and interoperable foundation for healthcare data management.
+
+### Key Features
+
+- **openEHR Architecture** - Standards-based clinical data modeling
+- **Patient Records** - Comprehensive patient health records
+- **Clinical Workflows** - Customizable clinical processes
+- **Interoperability** - HL7 FHIR and openEHR APIs
+- **Multi-Tenant** - Secure data isolation per organization
+- **Audit Trail** - Complete history of all data changes
+
+## Architecture
+
+### openEHR Foundation
+
+The EHR Platform uses openEHR architecture:
+
+- **Archetypes** - Reusable clinical data models
+- **Templates** - Organization-specific data structures
+- **Compositions** - Clinical documents and records
+- **EHR** - Patient-centric health record
+
+```
+Archetype (universal)
+    ↓
+Template (organization)
+    ↓
+Composition (document)
+    ↓
+EHR (patient)
+```
+
+### Data Model
+
+| Component | Description |
+|-----------|-------------|
+| **Demographics** | Patient identity and contact information |
+| **Encounters** | Clinical visits and interactions |
+| **Observations** | Vital signs, lab results, assessments |
+| **Orders** | Medications, procedures, referrals |
+| **Documents** | Clinical notes, letters, reports |
+
+## Integration
+
+### With MEDrecord Products
+
+| Product | Integration |
+|---------|-------------|
+| **HealthTalk** | Patient demographics, appointment data |
+| **Helpdesk** | User context, organization data |
+| **AI Agents** | Clinical context for decision support |
+| **Gateway** | Authentication and authorization |
+
+### External Systems
+
+- **HL7 FHIR R4** - REST API for interoperability
+- **openEHR REST** - Native openEHR API
+- **CDA** - Clinical Document Architecture export
+- **XDS** - Cross-enterprise document sharing
+
+## Security
+
+### Data Protection
+
+- **Encryption at Rest** - AES-256 encryption
+- **Encryption in Transit** - TLS 1.3
+- **Access Control** - Role-based and attribute-based
+- **Consent Management** - Patient consent tracking
+
+### Compliance
+
+The EHR Platform is designed to meet:
+
+- **ISO 13485** - Medical device quality management
+- **ISO 62304** - Medical device software lifecycle
+- **NEN 7510** - Dutch healthcare information security
+- **GDPR** - Data protection regulation
+
+### Audit Trail
+
+Every data change is logged with:
+
+- User identity
+- Timestamp
+- Previous and new values
+- Reason for change (if provided)
+
+Audit logs are immutable and retained per regulatory requirements.
+
+## API
+
+### Patient Query
+
+```http
+GET /api/ehr/patients/{patientId}
+Authorization: Bearer {token}
+X-Tenant-Id: {tenantId}
+```
+
+### Composition Create
+
+```http
+POST /api/ehr/compositions
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+  "templateId": "encounter.v1",
+  "ehrId": "{ehrId}",
+  "content": { ... }
+}
+```
+
+See [API Reference](/docs/api-reference/overview) for complete API documentation.
+
+## Resources
+
+| Resource | Link |
+|----------|------|
+| openEHR Specifications | [openehr.org](https://openehr.org) |
+| HL7 FHIR | [hl7.org/fhir](https://hl7.org/fhir) |
+| Compliance | [Compliance Overview](/docs/compliance/overview) |
+
+## Getting Started
+
+The EHR Platform is core infrastructure. Contact the platform team for:
+
+- API access credentials
+- Template development
+- Integration support
