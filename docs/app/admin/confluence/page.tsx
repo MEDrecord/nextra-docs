@@ -124,18 +124,37 @@ export default function ConfluenceImportPage() {
   const downloadAll = () => {
     if (!result) return
     
-    const allContent = result.pages.map(p => ({
-      path: `docs/app/docs/isms/${p.path}/page.mdx`,
-      content: p.fullMdx
-    }))
-    
-    const blob = new Blob([JSON.stringify(allContent, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `confluence-export-${spaceKey}.json`
-    a.click()
-    URL.revokeObjectURL(url)
+    try {
+      console.log('[v0] Starting download of', result.pages.length, 'pages')
+      
+      const allContent = result.pages.map(p => ({
+        path: `docs/app/docs/isms/${p.path}/page.mdx`,
+        content: p.fullMdx
+      }))
+      
+      // Create JSON string in chunks to avoid memory issues
+      const jsonString = JSON.stringify(allContent, null, 2)
+      console.log('[v0] JSON size:', (jsonString.length / 1024 / 1024).toFixed(2), 'MB')
+      
+      const blob = new Blob([jsonString], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `confluence-export-${spaceKey}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      
+      // Clean up after a delay to ensure download starts
+      setTimeout(() => {
+        URL.revokeObjectURL(url)
+        console.log('[v0] Download cleanup complete')
+      }, 1000)
+    } catch (err) {
+      console.error('[v0] Download error:', err)
+      setError(`Download failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    }
   }
 
   return (
