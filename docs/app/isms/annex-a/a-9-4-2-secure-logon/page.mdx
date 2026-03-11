@@ -1,0 +1,40 @@
+# A.9.4.2 Secure log-on procedures
+
+## Control Details
+
+| Field | Value |
+|-------|-------|
+| **Requirement** | Where required by the access control policy, access to systems and applications shall be controlled by a secure log-on procedure. |
+| **Applicable** | Yes |
+| **Status** | Implemented |
+
+## Instruction
+
+Taking into account the [Access Control Policy](/helpdesk/isms/access-control-policy) and [Information Classification Policy](/helpdesk/isms/information-classification-policy), suitable authentication mechanisms should be used.
+
+**Important**: Is it OK that information labelled as "confidential" is stored in a cloud service that is accessible using just username + password? (Hint: no, it is not!)
+
+## Implementation
+
+The requirements for authentication mechanisms differ for each level of confidentiality:
+
+| Classification | Authentication Required |
+|----------------|------------------------|
+| Public | Username + password |
+| Internal | Username + password + MFA optional |
+| Confidential | Username + password + MFA required |
+| Restricted | Username + password + MFA + additional controls |
+
+## Check Details
+
+| Field | Value |
+|-------|-------|
+| **Owner** | Information Security Officer |
+| **Frequency** | Quarterly |
+| **Instruction** | Review the overview of all used systems and verify authentication mechanisms match the Information Classification Policy |
+
+## Related Controls
+
+- [Access Control Policy](/helpdesk/isms/access-control-policy)
+- [Password Policy](/helpdesk/isms/password-policy)
+- [Information Classification Policy](/helpdesk/isms/information-classification-policy)

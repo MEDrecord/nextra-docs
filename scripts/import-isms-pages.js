@@ -6,9 +6,9 @@
 const { readFileSync, writeFileSync, mkdirSync, existsSync } = require('fs');
 const { dirname, join } = require('path');
 
-// Read the JSON export
-const exportPath = process.argv[2] || './confluence-export-ISMS.json';
-const outputBase = './docs/app/isms';
+// Read the JSON export - use absolute paths
+const exportPath = '/vercel/share/v0-project/scripts/confluence-export-ISMS.json';
+const outputBase = '/vercel/share/v0-project/docs/app/isms';
 
 // Link replacements map
 const linkReplacements = {
