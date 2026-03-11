@@ -1,0 +1,189 @@
+# Workflows
+
+Development workflows for efficient team collaboration, CI/CD integration, and environment management.
+
+## Environment Setup
+
+### Color-Coded Terminals
+
+Prevent production accidents by visually distinguishing environments:
+
+**Terminal Colors:**
+- Development: Green prompt/background
+- Staging/Test: Yellow prompt/background  
+- Production: Red prompt/background
+
+**Implementation (bash/zsh):**
+```bash
+# Add to .bashrc or .zshrc
+if [[ "$ENV" == "production" ]]; then
+  PS1='\[\033[0;31m\][PROD]\[\033[0m\] \w $ '
+elif [[ "$ENV" == "staging" ]]; then
+  PS1='\[\033[0;33m\][STAGE]\[\033[0m\] \w $ '
+else
+  PS1='\[\033[0;32m\][DEV]\[\033[0m\] \w $ '
+fi
+```
+
+### IDE Configuration
+
+Maintain consistent settings across team:
+
+```json
+// .vscode/settings.json
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true
+  }
+}
+```
+
+## Git Workflows
+
+### Branch Naming
+
+```
+feature/TICKET-123-short-description
+bugfix/TICKET-456-fix-auth-error
+hotfix/TICKET-789-critical-security-fix
+chore/update-dependencies
+docs/add-api-documentation
+```
+
+### Commit Messages
+
+Follow conventional commits:
+
+```
+type(scope): description
+
+feat(auth): add OAuth2 support
+fix(api): handle null response from gateway
+docs(readme): update installation steps
+refactor(components): extract shared button logic
+test(auth): add unit tests for login flow
+chore(deps): update next.js to 16.0.10
+```
+
+### Pull Request Process
+
+1. **Create PR with template**
+   - Description of changes
+   - Link to ticket/issue
+   - Screenshots for UI changes
+   - Testing instructions
+
+2. **Automated checks**
+   - Linting passes
+   - Tests pass
+   - Build succeeds
+   - Security scan clean
+
+3. **Human review**
+   - Code review by peer
+   - Approval from code owner
+   - QA verification if needed
+
+4. **Merge and deploy**
+   - Squash merge to main
+   - Automatic deployment to staging
+   - Manual promotion to production
+
+## CI/CD Integration
+
+### AI-Assisted Debugging
+
+When CI fails, feed the logs to AI:
+
+```markdown
+Here are the CI failure logs:
+
+[paste logs]
+
+Please analyze:
+1. Root cause of failure
+2. Suggested fix
+3. Steps to verify fix locally
+```
+
+### Automated Quality Gates
+
+```yaml
+# Example GitHub Actions workflow
+name: Quality Gates
+
+on: [push, pull_request]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Type check
+        run: pnpm typecheck
+        
+      - name: Lint
+        run: pnpm lint
+        
+      - name: Test
+        run: pnpm test
+        
+      - name: Build
+        run: pnpm build
+```
+
+## Documentation Workflow
+
+### Docs as Code
+
+Keep documentation in the same repository as code:
+
+```
+project/
+├── src/
+├── docs/           # User documentation
+├── README.md       # Project overview
+├── CONTRIBUTING.md # Contribution guide
+├── CLAUDE.md       # AI assistant rules
+└── CHANGELOG.md    # Version history
+```
+
+### Documentation Updates
+
+1. **With code changes** - Update docs in same PR
+2. **Review process** - Technical writer or peer review
+3. **Automated checks** - Broken link detection, spell check
+4. **Versioning** - Docs versioned with releases
+
+## Team Collaboration
+
+### Knowledge Sharing
+
+- Weekly tech talks on new patterns
+- Document decisions in ADRs (Architecture Decision Records)
+- Pair programming for complex features
+- Code review as learning opportunity
+
+### Onboarding New Developers
+
+1. Point to documentation first
+2. Enable AI "learning mode" for detailed explanations
+3. Assign buddy for questions
+4. Start with small, well-defined tasks
+5. Review first PRs thoroughly with feedback
+
+### Incident Response
+
+1. **Detect** - Monitoring alerts or user reports
+2. **Respond** - Acknowledge, assess severity
+3. **Mitigate** - Quick fix or rollback
+4. **Resolve** - Permanent fix
+5. **Review** - Post-mortem, update runbooks

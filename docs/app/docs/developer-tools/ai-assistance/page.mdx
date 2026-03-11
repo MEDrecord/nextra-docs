@@ -1,0 +1,105 @@
+# AI Assistance
+
+Best practices for working effectively with AI coding assistants like Claude Code, GitHub Copilot, and similar tools.
+
+## Core Principles
+
+### 1. Use Parallel Worktrees
+
+Run multiple AI sessions for different parts of your codebase simultaneously:
+
+- One session for frontend work
+- One session for API/backend
+- One session for infrastructure or agents
+
+This maximizes throughput while maintaining context separation.
+
+### 2. Plan Before Implementing
+
+Always propose architecture and get approval before writing code:
+
+- Start with a high-level plan
+- Get stakeholder buy-in on approach
+- Document decisions before implementation
+- Use planning mode for complex features
+
+### 3. Invest in Project Rules
+
+Create and maintain project-specific rules files that capture:
+
+- API architecture patterns
+- Data access rules
+- UI framework preferences
+- Naming conventions
+- Security requirements
+
+See [Project Rules](/docs/developer-tools/project-rules) for templates.
+
+### 4. Create Custom Commands
+
+Define reusable commands for common tasks:
+
+- `/techdebt` - Identify and document technical debt
+- `/security-audit` - Review code for security issues
+- `/compliance-check` - Verify regulatory compliance
+- `/explain` - Get detailed explanations of code
+
+See [Custom Commands](/docs/developer-tools/custom-commands) for examples.
+
+### 5. Automate Bug Fixing
+
+Point AI at CI failures or logs to troubleshoot:
+
+- Feed CI/CD failure logs directly to AI
+- Include Docker/container logs for context
+- Let AI propose fixes with full error context
+
+### 6. Write Better Prompts
+
+Effective prompting improves results:
+
+- Write detailed specs for features
+- Include acceptance criteria
+- Provide examples of expected output
+- Ask AI to "grill" you on changes before committing
+
+### 7. Color-Code Environments
+
+Use visual cues to prevent mistakes:
+
+- Different terminal colors per environment (dev/test/prod)
+- Clear naming conventions for branches
+- Environment indicators in prompts
+
+### 8. Use Subagents for Complex Tasks
+
+Delegate complex analysis to specialized subagents:
+
+- Compliance analysis across multiple files
+- Security vulnerability scanning
+- Documentation generation
+- Test coverage analysis
+
+### 9. AI for Data and Analytics
+
+Use AI with database tools for analysis:
+
+- Natural language queries instead of writing SQL
+- Generate reports and visualizations
+- Analyze metrics without deep database knowledge
+
+### 10. Enable Learning Mode
+
+Use explanatory output for onboarding:
+
+- Have AI explain changes in detail for new team members
+- Generate documentation alongside code
+- Create learning materials from real implementations
+
+## Anti-Patterns to Avoid
+
+- Blindly accepting AI suggestions without review
+- Using AI for security-sensitive operations without validation
+- Skipping tests because "AI wrote it"
+- Ignoring context limits - break large tasks into smaller ones
+- Not maintaining project rules as codebase evolves

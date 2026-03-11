@@ -51,6 +51,14 @@ const ISMS: MetaRecord = {
   'access-control': 'Access Control'
 }
 
+const DEVELOPER_TOOLS: MetaRecord = {
+  overview: 'Overview',
+  'ai-assistance': 'AI Assistance',
+  'project-rules': 'Project Rules',
+  'custom-commands': 'Custom Commands',
+  'workflows': 'Workflows'
+}
+
 export default {
   index: {
     type: 'page',
@@ -80,6 +88,10 @@ export default {
       'architecture': { 
         title: 'Architecture',
         items: ARCHITECTURE 
+      },
+      'developer-tools': {
+        title: 'Developer Tools',
+        items: DEVELOPER_TOOLS
       },
       __: {
         type: 'separator',
