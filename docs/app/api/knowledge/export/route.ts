@@ -7,11 +7,15 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
 }
 
 export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders })
 }
+
+// Enable edge caching
+export const revalidate = 300 // Cache for 5 minutes
 
 interface KnowledgeItem {
   id: string
