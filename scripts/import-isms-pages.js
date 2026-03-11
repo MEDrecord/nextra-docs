@@ -3,8 +3,8 @@
  * Processes the Confluence export JSON and creates MDX files for Nextra docs
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
-import { dirname, join } from 'path';
+const { readFileSync, writeFileSync, mkdirSync, existsSync } = require('fs');
+const { dirname, join } = require('path');
 
 // Read the JSON export
 const exportPath = process.argv[2] || './confluence-export-ISMS.json';
