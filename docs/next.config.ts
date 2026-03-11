@@ -85,6 +85,36 @@ const nextConfig = withNextra({
   outputFileTracingIncludes: {
     '/*': ['./tsconfig.json']
   },
+  headers: async () => [
+    {
+      // Cache ISMS pages for better performance when embedded
+      source: '/isms/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+        {
+          key: 'Access-Control-Allow-Origin',
+          value: '*',
+        },
+      ],
+    },
+    {
+      // Cache API responses
+      source: '/api/knowledge/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+        {
+          key: 'Access-Control-Allow-Origin',
+          value: '*',
+        },
+      ],
+    },
+  ],
   redirects: async () => [
     // Redirects for Helpdesk app compatibility
     {

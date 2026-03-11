@@ -67,22 +67,36 @@ export async function GET(request: NextRequest) {
   const typeFilter = request.nextUrl.searchParams.get('type')
   
   try {
+    // Find the app directory - check multiple possible locations
     const cwd = process.cwd()
-    let appDir = path.join(cwd, 'app')
+    const possiblePaths = [
+      path.join(cwd, 'app'),
+      path.join(cwd, 'docs', 'app'),
+      '/var/task/app',
+      '/var/task/docs/app',
+    ]
     
-    try {
-      await fs.access(appDir)
-    } catch {
-      appDir = path.join(cwd, 'docs', 'app')
+    let appDir: string | null = null
+    for (const p of possiblePaths) {
       try {
-        await fs.access(appDir)
+        await fs.access(p)
+        // Verify it has isms folder
+        await fs.access(path.join(p, 'isms'))
+        appDir = p
+        break
       } catch {
-        return NextResponse.json({
-          success: true,
-          itemCount: 0,
-          items: []
-        }, { headers: corsHeaders })
+        continue
       }
+    }
+    
+    if (!appDir) {
+      console.error('[Knowledge List] No valid app directory found. CWD:', cwd)
+      return NextResponse.json({
+        success: true,
+        itemCount: 0,
+        items: [],
+        debug: { cwd, checked: possiblePaths }
+      }, { headers: corsHeaders })
     }
     
     const allItems: KnowledgeListItem[] = []
