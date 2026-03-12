@@ -1,77 +1,214 @@
 # Gateway
 
-The MEDrecord Gateway is a secure API Gateway that provides unified authentication, routing, and request validation for all MEDrecord products.
+The MEDrecord Gateway is a secure API Gateway that provides unified authentication, routing, and request validation for all MEDrecord products and web applications.
 
 ## Overview
 
-Gateway serves as the central entry point for all API requests, ensuring consistent security, authentication, and audit logging across the entire product ecosystem.
+Gateway serves as the central entry point for all authentication and API requests, ensuring consistent security, session management, and audit logging across the entire product ecosystem.
 
 ### Key Features
 
-- **HMAC Authentication** - Cryptographic request signing and validation
+- **Azure B2C Integration** - Single sign-on via Azure Active Directory B2C
+- **Session Cookie Management** - HttpOnly secure cookies for web applications
+- **HMAC Authentication** - Cryptographic request signing for backend services
 - **Multi-Tenant Routing** - Automatic tenant context injection
-- **Rate Limiting** - Configurable rate limits per endpoint and tenant
-- **Request Validation** - Schema validation and sanitization
+- **Role-Based Access Control** - Path-based access restrictions per role
 - **Audit Logging** - Comprehensive request/response logging
-- **AI Model Routing** - Intelligent routing to AI providers
 
-## Authentication
+## Service Types
 
-Gateway uses HMAC (Hash-based Message Authentication Code) for request authentication:
+Gateway supports two types of services:
+
+| Type | Authentication | Example |
+|------|----------------|---------|
+| **Web App** | Session cookie (from Azure B2C) | Docs, Helpdesk, HealthTalk |
+| **Backend Service** | HMAC signature | EHR API, AI Services |
+
+### Web App Services
+
+Web applications authenticate users through Azure B2C and receive session cookies from Gateway:
+
+```
+┌──────────────┐     ┌─────────────────────────────────┐
+│   Browser    │     │          API Gateway            │
+│              │     │                                 │
+└──────┬───────┘     └────────────┬────────────────────┘
+       │                          │
+       │  1. Sign In              │
+       ├─────────────────────────>│ → Azure B2C
+       │                          │
+       │  2. Session Cookie       │
+       │<─────────────────────────┤
+       │     (auth.sid)           │
+       │                          │
+       │  3. Access Web App       │
+       │     (Cookie included)    │
+       ├─────────────────────────>│
+       │                          │
+       │  4. Validate Cookie      │
+       │     Return content       │
+       │<─────────────────────────┤
+```
+
+**Example: Docs Service**
+
+The Docs service (`docs-tst.healthtalk.ai`) is a web application that:
+
+1. User authenticates via Helpdesk or any MEDrecord app
+2. Gateway issues `auth.sid` session cookie
+3. User navigates to Docs - cookie is automatically included
+4. Docs middleware validates cookie with Gateway
+5. Gateway returns user info including role
+6. Docs applies path-based access control based on role
+
+### Backend Services
+
+Backend services use HMAC signatures for secure server-to-server communication:
+
+```
+┌──────────────┐     ┌─────────────────────────────────┐     ┌──────────────┐
+│   Frontend   │     │          API Gateway            │     │   Backend    │
+└──────┬───────┘     └────────────┬────────────────────┘     └──────┬───────┘
+       │                          │                                  │
+       │  API Call (Cookie)       │                                  │
+       ├─────────────────────────>│                                  │
+       │                          │  Sign Request (HMAC)             │
+       │                          ├─────────────────────────────────>│
+       │                          │  X-Gateway-Key: gwk_xxx          │
+       │                          │  X-Gateway-Signature: ...        │
+       │                          │  X-User-Id: user123              │
+       │                          │                                  │
+       │                          │  Verify & Process         <──────┤
+       │  Response                │                                  │
+       │<─────────────────────────┤<─────────────────────────────────┤
+```
+
+## Cookie-Based Authentication
+
+### Session Cookie
+
+After Azure B2C sign-in, Gateway issues:
+
+```
+Set-Cookie: auth.sid=<session_token>; 
+  HttpOnly; 
+  Secure; 
+  SameSite=Lax; 
+  Domain=.healthtalk.ai
+```
+
+**Properties:**
+- `HttpOnly` - Not accessible via JavaScript (XSS protection)
+- `Secure` - Only sent over HTTPS
+- `SameSite=Lax` - CSRF protection
+- `Domain=.healthtalk.ai` - Shared across all subdomains
+
+### Cross-App Authentication
+
+Because the cookie domain is `.healthtalk.ai`, users authenticated to one app can access other apps:
+
+| App | URL | Access |
+|-----|-----|--------|
+| Helpdesk | helpdesk-tst.healthtalk.ai | Cookie shared |
+| Docs | docs-tst.healthtalk.ai | Cookie shared |
+| HealthTalk | healthtalk-tst.healthtalk.ai | Cookie shared |
+
+### Validating Cookies
+
+Web apps validate cookies by calling Gateway:
+
+```javascript
+const response = await fetch(`${GATEWAY_URL}/api/user/me`, {
+  headers: {
+    'Cookie': `auth.sid=${cookieValue}`,
+  },
+  cache: 'no-store',
+})
+
+const { user } = await response.json()
+// user = { id, email, role, tenantId, ... }
+```
+
+## Role-Based Access Control (RBAC)
+
+### Path-Based Restrictions
+
+Web apps can restrict paths based on user roles:
+
+```typescript
+// Example: Docs middleware configuration
+const PATH_ROLES = {
+  '/isms/policies': ['user', 'admin', 'security_officer'],
+  '/isms/risks': ['admin', 'security_officer'],
+  '/isms/audit': ['admin', 'security_officer'],
+  '/isms/registers': ['admin'],
+  '/admin': ['admin'],
+}
+```
+
+### Role Hierarchy
+
+| Role | Description | Access Level |
+|------|-------------|--------------|
+| `user` | Standard authenticated user | Public paths only |
+| `reporter` | Reporting access | + Report paths |
+| `security_officer` | Security management | + ISMS restricted |
+| `admin` | Full administrative access | All paths |
+
+### Settings Page Configuration
+
+Admins can configure path-role mappings via the Settings page:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Path Access Settings                                       │
+├─────────────────────────────────────────────────────────────┤
+│  Path                    │  Allowed Roles                   │
+│  ─────────────────────────────────────────────────────────  │
+│  /isms/policies          │  ☑ user ☑ admin ☑ security      │
+│  /isms/risks             │  ☐ user ☑ admin ☑ security      │
+│  /isms/audit             │  ☐ user ☑ admin ☑ security      │
+│  /isms/registers         │  ☐ user ☑ admin ☐ security      │
+│  /admin/*                │  ☐ user ☑ admin ☐ security      │
+│                                                             │
+│  [+ Add Path Rule]                        [Save Settings]   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## HMAC Authentication (Backend)
+
+For backend services, Gateway uses HMAC signing:
 
 ### Request Headers
 
 ```
-X-Gateway-Signature: HMAC-SHA256 signature of request body
+X-Gateway-Key: gwk_xxx (identifies the Gateway)
+X-Gateway-Signature: HMAC-SHA256 signature
 X-User-Id: Authenticated user identifier
 X-Tenant-Id: Tenant/organization identifier
 X-Tenant-Role: User role within tenant
-X-Request-Id: Unique request identifier for tracing
+X-Request-Id: Unique request identifier
 ```
 
 ### Signature Calculation
 
 ```javascript
 const signature = crypto
-  .createHmac('sha256', secretKey)
+  .createHmac('sha256', serviceSecretKey)
   .update(JSON.stringify(requestBody))
   .digest('hex')
 ```
 
-No API keys are transmitted - authentication is based entirely on cryptographic signatures.
+## Key System
 
-## Routing
+| Key Type | Purpose | Used By |
+|----------|---------|---------|
+| `gwk_` | Gateway Key - Identifies Gateway to Backend | Gateway → Backend |
+| `ssk_` | Service Secret Key - HMAC signing (never transmitted) | Both sides |
+| `sak_` | Service API Key - Admin operations | Admin tools |
+| `cak_` | Client API Key - Machine-to-machine | External integrations |
 
-Gateway routes requests to appropriate backend services:
-
-```
-Client Request
-      ↓
-   Gateway
-      ↓
-┌─────┼─────┐
-↓     ↓     ↓
-EHR  AI   Helpdesk
-```
-
-### Route Configuration
-
-Routes are defined per tenant with:
-
-- **Path matching** - URL pattern matching
-- **Authentication requirements** - Public, authenticated, or admin-only
-- **Rate limits** - Requests per minute/hour
-- **Backend target** - Service URL and timeout
-
-## AI Model Routing
-
-Gateway intelligently routes AI requests to appropriate providers:
-
-| Model Type | Provider | Use Case |
-|------------|----------|----------|
-| Chat | OpenAI GPT-4 | Conversational AI |
-| Embeddings | OpenAI Ada | Semantic search |
-| Medical | Custom | Clinical decision support |
+**Important:** Frontend web apps use session cookies only - no API keys needed!
 
 ## Security
 
@@ -88,36 +225,58 @@ Every request is logged with:
 
 - Timestamp
 - User and tenant context
-- Request/response bodies (sanitized)
+- Request path and method
+- Response status
 - Response time
-- Error details (if any)
 
 Logs are immutable and retained per compliance requirements.
 
 ## Integration
 
-### For Products
+### For Web Apps
 
-Products integrate with Gateway by:
+```typescript
+// middleware.ts
+async function validateSession(request: NextRequest) {
+  const authCookie = request.cookies.get('auth.sid')
+  if (!authCookie?.value) return null
 
-1. Configuring HMAC secret key
-2. Signing all outgoing requests
-3. Handling tenant context headers
+  const response = await fetch(`${GATEWAY_URL}/api/user/me`, {
+    headers: { 'Cookie': `auth.sid=${authCookie.value}` },
+  })
+
+  if (!response.ok) return null
+  return (await response.json()).user
+}
+```
+
+### For Backend Services
+
+```typescript
+// Verify incoming Gateway request
+function verifyGatewaySignature(req, secretKey) {
+  const signature = req.headers['x-gateway-signature']
+  const expected = crypto
+    .createHmac('sha256', secretKey)
+    .update(JSON.stringify(req.body))
+    .digest('hex')
+  return signature === expected
+}
+```
 
 ### Environment Variables
 
 ```
-GATEWAY_URL=https://gateway.medrecord.nl
-GATEWAY_SECRET=your-hmac-secret
+GATEWAY_URL=https://auth-test-b2c.healthtalk.ai
 ```
 
 ## Resources
 
 | Resource | Link |
 |----------|------|
-| Platform Stack | [Developer Tools](/developer/developer-tools/platform-stack) |
 | ISMS Security | [ISMS Policies](/isms/policies) |
+| Access Control Policy | [Access Control](/isms/policies/access-control) |
 
 ## Getting Started
 
-Gateway is managed infrastructure. Contact the platform team for integration credentials.
+Gateway is managed infrastructure. Web apps automatically receive cookie-based authentication when deployed to `*.healthtalk.ai` domains.
