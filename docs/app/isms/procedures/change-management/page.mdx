@@ -1,0 +1,156 @@
+# Change Management Procedure
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/procedures/change-management/page.mdx"
+/>
+
+## Purpose
+
+This procedure describes how to request, review, approve, implement, and document changes to MEDrecord systems and infrastructure.
+
+## Scope
+
+Applies to all changes including:
+- Application code changes
+- Infrastructure changes (servers, networks, cloud)
+- Database schema changes
+- Configuration changes
+- Security patches and updates
+- Third-party integrations
+
+## Related Documents
+
+| Type | Document | Link |
+|------|----------|------|
+| Policy | Secure Development Policy | [View](/helpdesk/isms/secure-development-policy) |
+| Control | A.12.1.2 Change management | [View](/isms/annex-a) |
+| Control | A.14.2.2 System change control | [View](/isms/annex-a) |
+| Control | A.14.2.3 Technical review of applications | [View](/isms/annex-a) |
+| Register | Changes Register | [View](/isms/registers/changes) |
+
+## Change Classification
+
+| Type | Description | Approval | Lead Time |
+|------|-------------|----------|-----------|
+| **Standard** | Pre-approved, low-risk routine changes | None required | Immediate |
+| **Normal** | Planned changes with known impact | CAB / Tech Lead | 3+ days |
+| **Emergency** | Urgent fixes for critical issues | Post-approval | Immediate |
+
+### Standard Changes (Pre-Approved)
+
+- Security patches for known vulnerabilities
+- Minor bug fixes (no feature changes)
+- Documentation updates
+- Test environment changes
+
+### Normal Changes (Require Approval)
+
+- New features or functionality
+- Database schema changes
+- Infrastructure scaling
+- Third-party integration changes
+- Security configuration changes
+
+## Procedure Steps
+
+### Phase 1: Request
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 1.1 | Create change request with details | Developer | Azure DevOps |
+| 1.2 | Include: description, impact, rollback plan, testing | Developer | Azure DevOps |
+| 1.3 | Link to related tickets/requirements | Developer | Azure DevOps |
+
+### Phase 2: Review & Approval
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 2.1 | Technical review by peer | Peer Developer | GitHub PR |
+| 2.2 | Security review (if applicable) | Security Officer | GitHub PR |
+| 2.3 | Risk assessment completed | Tech Lead | Azure DevOps |
+| 2.4 | Approval granted or changes requested | Tech Lead / CAB | Azure DevOps |
+
+### Phase 3: Implementation
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 3.1 | Changes deployed to test environment | Developer | CI/CD Pipeline |
+| 3.2 | Testing completed (unit, integration, security) | QA / Developer | Test Suite |
+| 3.3 | Deployment to staging environment | DevOps | CI/CD Pipeline |
+| 3.4 | User acceptance testing (if applicable) | Product Owner | Staging |
+| 3.5 | Deployment to production | DevOps | CI/CD Pipeline |
+
+### Phase 4: Verification
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 4.1 | Verify change successful in production | Developer | Monitoring |
+| 4.2 | Monitor for issues (15-30 minutes) | Developer | Azure Monitor |
+| 4.3 | Update change record with outcome | Developer | Azure DevOps |
+| 4.4 | Close change request | Tech Lead | Azure DevOps |
+
+## Emergency Change Procedure
+
+For critical production issues:
+
+1. **Implement** - Fix applied immediately by authorized developer
+2. **Notify** - Inform Tech Lead and Security Officer
+3. **Document** - Create change record within 4 hours
+4. **Review** - Post-implementation review next business day
+5. **Approve** - Retroactive approval from Tech Lead
+
+## Rollback Procedure
+
+If change causes issues:
+
+1. **Detect** - Issue identified via monitoring or user report
+2. **Decide** - Tech Lead decides to rollback within 30 minutes
+3. **Execute** - Rollback to previous version via CI/CD
+4. **Verify** - Confirm system restored to working state
+5. **Document** - Record rollback reason and lessons learned
+
+## Change Advisory Board (CAB)
+
+For high-impact changes:
+
+| Role | Responsibility |
+|------|----------------|
+| Tech Lead | Chair, final approval |
+| Security Officer | Security impact assessment |
+| Product Owner | Business impact assessment |
+| DevOps Engineer | Technical feasibility |
+
+CAB meets weekly or ad-hoc for urgent changes.
+
+## CI/CD Pipeline
+
+All changes flow through automated pipeline:
+
+```
+Code → Build → Test → Security Scan → Staging → Production
+         ↓       ↓          ↓
+      Fail?   Fail?      Issues?
+         ↓       ↓          ↓
+      Block   Block      Block
+```
+
+## Metrics
+
+| Metric | Target | Measured |
+|--------|--------|----------|
+| Change success rate | > 95% | Monthly |
+| Failed changes (rollbacks) | < 5% | Monthly |
+| Emergency changes | < 10% of total | Monthly |
+| Mean time to deploy (normal) | < 3 days | Monthly |
+
+## Audit Evidence
+
+- Change requests in Azure DevOps
+- Pull request reviews in GitHub
+- CI/CD pipeline logs
+- Deployment history
+- Rollback records

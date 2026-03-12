@@ -1,0 +1,163 @@
+# Onboarding & Offboarding Procedure
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/procedures/onboarding-offboarding/page.mdx"
+/>
+
+## Purpose
+
+This procedure describes how to securely onboard new employees and contractors, and how to offboard departing personnel to protect company assets and data.
+
+## Scope
+
+Applies to:
+- Full-time employees
+- Part-time employees
+- Contractors and consultants
+- Interns
+- Third-party personnel with system access
+
+## Related Documents
+
+| Type | Document | Link |
+|------|----------|------|
+| Policy | Access Control Policy | [View](/helpdesk/isms/access-control-policy) |
+| Policy | Information Security Policy | [View](/helpdesk/isms/information-security-policy) |
+| Control | A.7.1.1 Screening | [View](/isms/annex-a) |
+| Control | A.7.3.1 Termination responsibilities | [View](/isms/annex-a) |
+| Control | A.9.2.1 User registration | [View](/isms/annex-a) |
+| Control | A.9.2.6 Removal of access rights | [View](/isms/annex-a) |
+| Procedure | Access Management | [View](/isms/procedures/access-management) |
+| Template | Onboarding Checklist | [SharePoint](https://medrecord.sharepoint.com/sites/ISMS/Templates/Onboarding-Checklist.docx) |
+| Template | Offboarding Checklist | [SharePoint](https://medrecord.sharepoint.com/sites/ISMS/Templates/Offboarding-Checklist.docx) |
+
+---
+
+## Onboarding Procedure
+
+### Before Start Date (HR + IT)
+
+| Step | Action | Responsible | Timeline | System |
+|------|--------|-------------|----------|--------|
+| 1.1 | Background check completed | HR | Before offer | External |
+| 1.2 | Employment contract signed (including NDA) | HR | Before start | DocuSign |
+| 1.3 | Create Helpdesk onboarding ticket | HR | 5 days before | Helpdesk |
+| 1.4 | Create Azure AD account | IT Admin | 3 days before | Azure AD |
+| 1.5 | Assign Microsoft 365 license | IT Admin | 3 days before | Azure AD |
+| 1.6 | Order equipment (laptop, phone) | IT Admin | 5 days before | Procurement |
+| 1.7 | Prepare workstation | IT Admin | 1 day before | Office |
+
+### Day 1 (HR + IT + Manager)
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 2.1 | Welcome and office orientation | HR | In person |
+| 2.2 | Provide equipment and credentials | IT Admin | In person |
+| 2.3 | Set up MFA on all accounts | New Employee | Azure AD |
+| 2.4 | Provide access badge | Office Manager | Access System |
+| 2.5 | Introduce to team and mentor | Manager | In person |
+| 2.6 | Explain role-specific procedures | Manager | Meeting |
+
+### First Week (Manager + Security Officer)
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 3.1 | Complete mandatory security awareness training | New Employee | MS Teams |
+| 3.2 | Read and acknowledge security policies | New Employee | Helpdesk |
+| 3.3 | Complete GDPR/privacy training | New Employee | MS Teams |
+| 3.4 | Grant role-specific system access | IT Admin | Various |
+| 3.5 | Verify training completion | Security Officer | MS Teams |
+| 3.6 | Close onboarding ticket | HR | Helpdesk |
+
+### Training Requirements
+
+| Training | When | Duration | System |
+|----------|------|----------|--------|
+| Security Awareness | First week | 2 hours | MS Teams |
+| GDPR/Privacy | First week | 1 hour | MS Teams |
+| Role-specific security | First 30 days | Varies | MS Teams |
+| Annual refresher | Yearly | 1 hour | MS Teams |
+
+---
+
+## Offboarding Procedure
+
+### Notice Period (HR + Manager)
+
+| Step | Action | Responsible | Timeline | System |
+|------|--------|-------------|----------|--------|
+| 1.1 | HR notifies IT of departure | HR | Immediately | Helpdesk |
+| 1.2 | Create offboarding ticket | HR | Same day | Helpdesk |
+| 1.3 | Schedule knowledge transfer | Manager | Notice period | Calendar |
+| 1.4 | Review access and data ownership | Manager | Notice period | Review |
+| 1.5 | Reassign responsibilities | Manager | Before last day | Various |
+
+### Last Day (IT + HR + Manager)
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 2.1 | Disable Azure AD account | IT Admin | Azure AD |
+| 2.2 | Disable email (convert to shared if needed) | IT Admin | Exchange |
+| 2.3 | Revoke GitHub/GitLab access | IT Admin | GitHub/GitLab |
+| 2.4 | Revoke Azure/AWS access | IT Admin | Cloud Portals |
+| 2.5 | Revoke VPN access | IT Admin | VPN System |
+| 2.6 | Disable access badge | Office Manager | Access System |
+| 2.7 | Collect equipment | IT Admin | In person |
+| 2.8 | Collect keys and badges | Office Manager | In person |
+
+### Post-Departure (IT + Security)
+
+| Step | Action | Responsible | Timeline | System |
+|------|--------|-------------|----------|--------|
+| 3.1 | Verify all access removed | IT Admin | +1 day | All Systems |
+| 3.2 | Transfer data ownership (files, projects) | IT Admin | +1 week | SharePoint/Azure |
+| 3.3 | Archive mailbox (if required) | IT Admin | +1 week | Exchange |
+| 3.4 | Delete account (after retention period) | IT Admin | +90 days | Azure AD |
+| 3.5 | Close offboarding ticket | HR | +1 week | Helpdesk |
+| 3.6 | Update ISMS access register | Security Officer | +1 week | ISMS |
+
+### Emergency Termination
+
+For immediate termination (security incident, gross misconduct):
+
+| Step | Action | Responsible | Timeline |
+|------|--------|-------------|----------|
+| 1 | HR notifies IT Admin immediately | HR | Immediate |
+| 2 | Disable all accounts | IT Admin | < 1 hour |
+| 3 | Disable physical access | Office Manager | < 1 hour |
+| 4 | Collect equipment (escort if needed) | IT Admin + Security | Same day |
+| 5 | Security review of recent activity | Security Officer | Same day |
+| 6 | Document in Helpdesk | HR | Same day |
+
+---
+
+## Roles and Responsibilities
+
+| Role | Onboarding | Offboarding |
+|------|------------|-------------|
+| HR | Contract, background check, initiate process | Notify IT, initiate process |
+| IT Admin | Create accounts, provide equipment | Disable accounts, collect equipment |
+| Manager | Role assignment, training plan | Knowledge transfer, reassignment |
+| Security Officer | Verify training, review access | Verify removal, audit |
+| Office Manager | Badge, physical access | Collect badge, disable access |
+
+## Metrics
+
+| Metric | Target | Measured |
+|--------|--------|----------|
+| Onboarding completion time | < 5 days | Per onboarding |
+| Offboarding access removal | < 24 hours | Per offboarding |
+| Training completion (new hires) | 100% in first week | Monthly |
+| Emergency termination response | < 1 hour | Per event |
+
+## Audit Evidence
+
+- Onboarding/offboarding tickets in Helpdesk
+- Training completion records in MS Teams
+- Azure AD audit logs (account creation/deletion)
+- Signed NDAs and contracts in DocuSign
+- Equipment inventory records

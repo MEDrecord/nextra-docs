@@ -1,0 +1,147 @@
+# Incident Response Procedure
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/procedures/incident-response/page.mdx"
+/>
+
+## Purpose
+
+This procedure describes how to detect, respond to, contain, and recover from information security incidents.
+
+## Scope
+
+Applies to all security incidents including:
+- Unauthorized access or access attempts
+- Malware infections
+- Data breaches or leaks
+- System outages or availability issues
+- Social engineering attacks
+- Physical security breaches
+
+## Related Documents
+
+| Type | Document | Link |
+|------|----------|------|
+| Policy | Information Security Policy | [View](/helpdesk/isms/information-security-policy) |
+| Control | A.16.1.1 Responsibilities and procedures | [View](/isms/annex-a/a-16-1-1-responsibilities-procedures) |
+| Control | A.16.1.2 Reporting security events | [View](/isms/annex-a/a-16-1-2-reporting-security-events) |
+| Control | A.16.1.7 Collection of evidence | [View](/isms/annex-a/a-16-1-7-collection-evidence) |
+| Register | Incidents Register | [View](/isms/registers/incidents) |
+| Template | Incident Report Form | [SharePoint](https://medrecord.sharepoint.com/sites/ISMS/Templates/Incident-Report.docx) |
+
+## Incident Classification
+
+| Severity | Description | Response Time | Examples |
+|----------|-------------|---------------|----------|
+| **Critical** | Major data breach, complete system outage | Immediate (< 15 min) | Patient data exposed, ransomware |
+| **High** | Significant security event, partial outage | < 1 hour | Unauthorized access, malware detected |
+| **Medium** | Limited impact, no data exposure | < 4 hours | Failed login attempts, policy violation |
+| **Low** | Minor event, informational | < 24 hours | Suspicious email reported, false alarm |
+
+## Procedure Steps
+
+### Phase 1: Detection & Reporting
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 1.1 | Incident detected (monitoring, user report, alert) | Anyone | Various |
+| 1.2 | Report incident immediately via Helpdesk or phone | Reporter | Helpdesk |
+| 1.3 | Helpdesk creates incident ticket with initial details | Helpdesk Agent | Helpdesk |
+| 1.4 | Severity assessed and assigned | Security Officer | Helpdesk |
+
+### Phase 2: Containment
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 2.1 | Activate incident response team (if High/Critical) | Security Officer | MS Teams |
+| 2.2 | Isolate affected systems if necessary | IT Admin | Azure / Network |
+| 2.3 | Preserve evidence (logs, screenshots, files) | IT Admin | Evidence Folder |
+| 2.4 | Document all actions taken with timestamps | Incident Lead | Helpdesk |
+
+### Phase 3: Investigation
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 3.1 | Collect and analyze logs | IT Admin | Azure Monitor / SIEM |
+| 3.2 | Determine root cause | Incident Team | Investigation |
+| 3.3 | Assess scope and impact | Security Officer | Helpdesk |
+| 3.4 | Identify affected data/users | Incident Team | Investigation |
+
+### Phase 4: Eradication & Recovery
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 4.1 | Remove threat (malware, unauthorized access) | IT Admin | Target System |
+| 4.2 | Apply patches/fixes | Development Team | Azure DevOps |
+| 4.3 | Restore systems from clean backups if needed | IT Admin | Azure Backup |
+| 4.4 | Verify systems are clean and operational | IT Admin | Monitoring |
+| 4.5 | Restore normal operations | IT Admin | All Systems |
+
+### Phase 5: Post-Incident
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 5.1 | Conduct post-incident review within 5 days | Security Officer | Meeting |
+| 5.2 | Document lessons learned | Incident Team | Helpdesk |
+| 5.3 | Update procedures/controls if needed | Security Officer | ISMS |
+| 5.4 | Report to management and stakeholders | Security Officer | Report |
+| 5.5 | Notify authorities if required (data breach) | Security Officer | Email / Portal |
+
+## Incident Response Team
+
+| Role | Responsibility | Contact |
+|------|----------------|---------|
+| Incident Lead | Coordinates response, makes decisions | Security Officer |
+| Technical Lead | Technical investigation and remediation | Senior Developer |
+| Communications | Internal and external communications | Management |
+| Legal/Compliance | Regulatory requirements, notifications | Legal Counsel |
+| HR | Employee-related incidents | HR Manager |
+
+## Communication
+
+### Internal Communication
+
+- Incident team: MS Teams channel
+- Management: Email escalation
+- All staff: Only if necessary, via official channels
+
+### External Communication
+
+| Audience | When | By Whom |
+|----------|------|---------|
+| Customers | Data breach affecting them | Management |
+| Authorities (AP) | Data breach within 72 hours | Security Officer |
+| Media | Only if necessary | Management |
+
+## Data Breach Notification
+
+Under GDPR, we must notify:
+
+1. **Dutch Data Protection Authority (Autoriteit Persoonsgegevens)**
+   - Within 72 hours of becoming aware
+   - Via https://datalekken.autoriteitpersoonsgegevens.nl
+
+2. **Affected Data Subjects**
+   - Without undue delay if high risk
+   - Clear language describing the breach and remediation
+
+## Metrics
+
+| Metric | Target | Measured |
+|--------|--------|----------|
+| Mean Time to Detect (MTTD) | < 24 hours | Per incident |
+| Mean Time to Respond (MTTR) | < 4 hours (High/Critical) | Per incident |
+| Post-incident review completion | 100% | Monthly |
+| Recurring incidents | 0 | Quarterly |
+
+## Audit Evidence
+
+- Incident tickets in Helpdesk
+- Timeline of actions in ticket
+- Evidence files in secure storage
+- Post-incident review reports
+- Authority notifications (if applicable)

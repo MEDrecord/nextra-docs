@@ -1,0 +1,72 @@
+# Procedures
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/procedures/page.mdx"
+/>
+
+This section documents the operational procedures that implement our ISMS policies. While policies define WHAT we do, procedures define HOW we do it.
+
+## Procedure Index
+
+| Procedure | Purpose | Related Policy | Related Controls |
+|-----------|---------|----------------|------------------|
+| [Access Management](/isms/procedures/access-management) | Request, grant, review, and revoke access | Access Control Policy | A.9.2.1, A.9.2.2, A.9.2.5, A.9.2.6 |
+| [Incident Response](/isms/procedures/incident-response) | Detect, respond, and recover from incidents | Information Security Policy | A.16.1.1 - A.16.1.7 |
+| [Change Management](/isms/procedures/change-management) | Request, approve, and implement changes | Secure Development Policy | A.12.1.2, A.14.2.2, A.14.2.3 |
+| [Backup & Restore](/isms/procedures/backup-restore) | Backup data and restore in case of loss | Information Retention Policy | A.12.3.1 |
+| [Onboarding & Offboarding](/isms/procedures/onboarding-offboarding) | Manage employee lifecycle | Access Control Policy | A.7.1.1, A.7.3.1, A.9.2.1, A.9.2.6 |
+
+## Procedure Status
+
+| Status | Count | Description |
+|--------|-------|-------------|
+| Approved | 5 | Procedures reviewed and approved by management |
+| Draft | 0 | Procedures under development |
+| Under Review | 0 | Procedures pending approval |
+
+## How Procedures Work
+
+### 1. Policy to Procedure Mapping
+
+Each procedure implements one or more policies:
+
+```
+Policy (WHAT) → Procedure (HOW) → Work Instruction (STEP-BY-STEP)
+```
+
+### 2. Document Control
+
+All procedures include:
+- **Version number** - Tracks document revisions
+- **Approval status** - Draft, Under Review, or Approved
+- **Approver** - Person responsible for approval
+- **Review date** - When the procedure was last reviewed
+
+### 3. Related Resources
+
+Each procedure links to:
+- Related policies (in Helpdesk)
+- Related Annex A controls
+- Templates and forms (in SharePoint)
+- Training materials (in MS Teams)
+
+## Templates
+
+| Template | Purpose | Location |
+|----------|---------|----------|
+| Access Request Form | Request new access | [SharePoint](https://medrecord.sharepoint.com/sites/ISMS/Templates/Access-Request.docx) |
+| Incident Report Form | Report security incident | [SharePoint](https://medrecord.sharepoint.com/sites/ISMS/Templates/Incident-Report.docx) |
+| Change Request Form | Request system change | [Azure DevOps](https://dev.azure.com/medrecord/HealthTalk/_workitems) |
+| Offboarding Checklist | Employee departure tasks | [SharePoint](https://medrecord.sharepoint.com/sites/ISMS/Templates/Offboarding-Checklist.docx) |
+
+## Audit Trail
+
+All procedure executions are logged in:
+- **Azure DevOps** - Change requests and approvals
+- **GitLab** - Code changes and deployments  
+- **Helpdesk** - Incidents and service requests
+- **MS Teams** - Training completion records

@@ -1,0 +1,114 @@
+# Access Management Procedure
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/procedures/access-management/page.mdx"
+/>
+
+## Purpose
+
+This procedure describes how to request, grant, review, and revoke access to MEDrecord systems and data.
+
+## Scope
+
+Applies to all employees, contractors, and third parties requiring access to:
+- Production systems (HealthTalk, MedSafe, Gateway)
+- Development environments
+- Cloud infrastructure (Azure, AWS)
+- Source code repositories (GitHub, GitLab)
+- Administrative tools
+
+## Related Documents
+
+| Type | Document | Link |
+|------|----------|------|
+| Policy | Access Control Policy | [View](/helpdesk/isms/access-control-policy) |
+| Control | A.9.2.1 User registration | [View](/isms/annex-a) |
+| Control | A.9.2.2 User access provisioning | [View](/isms/annex-a) |
+| Control | A.9.2.5 Review of user access rights | [View](/isms/annex-a) |
+| Control | A.9.2.6 Removal of access rights | [View](/isms/annex-a) |
+| Template | Access Request Form | [SharePoint](https://medrecord.sharepoint.com/sites/ISMS/Templates/Access-Request.docx) |
+
+## Procedure Steps
+
+### 1. Access Request
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 1.1 | Employee submits access request via Helpdesk | Requester | Helpdesk |
+| 1.2 | Request includes: system, access level, business justification | Requester | Helpdesk |
+| 1.3 | Ticket automatically assigned to team lead | System | Helpdesk |
+
+### 2. Approval
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 2.1 | Team lead reviews business justification | Team Lead | Helpdesk |
+| 2.2 | For privileged access: Security Officer approval required | Security Officer | Helpdesk |
+| 2.3 | Approval documented in ticket | Approver | Helpdesk |
+
+### 3. Provisioning
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 3.1 | IT creates account or grants access | IT Admin | Azure AD / GitHub |
+| 3.2 | Access configured per least privilege principle | IT Admin | Target System |
+| 3.3 | User notified of access and initial credentials | System | Email |
+| 3.4 | User completes security awareness training | User | MS Teams |
+
+### 4. Quarterly Access Review
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 4.1 | Generate access report per system | IT Admin | Azure AD |
+| 4.2 | Team leads review access for their team members | Team Lead | Helpdesk |
+| 4.3 | Remove unnecessary access | IT Admin | Target System |
+| 4.4 | Document review completion | Security Officer | ISMS Register |
+
+### 5. Access Revocation
+
+| Step | Action | Responsible | System |
+|------|--------|-------------|--------|
+| 5.1 | HR notifies IT of employee departure | HR | Helpdesk |
+| 5.2 | IT disables all accounts within 24 hours | IT Admin | Azure AD |
+| 5.3 | Physical access (badges, keys) returned | HR | Helpdesk |
+| 5.4 | Access removal documented | IT Admin | ISMS Register |
+
+## Roles and Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| Requester | Submit access request with valid justification |
+| Team Lead | Approve/reject requests for team members |
+| Security Officer | Approve privileged access requests |
+| IT Admin | Provision and revoke access |
+| HR | Notify IT of joiners and leavers |
+
+## Emergency Access
+
+In case of emergency (e.g., critical production issue):
+
+1. Contact on-call IT Admin via phone
+2. Temporary access granted with 24-hour expiration
+3. Documented retroactively in Helpdesk within 4 hours
+4. Reviewed by Security Officer next business day
+
+## Metrics
+
+| Metric | Target | Measured |
+|--------|--------|----------|
+| Access request completion time | < 24 hours | Monthly |
+| Quarterly review completion | 100% | Quarterly |
+| Access revocation time (leavers) | < 24 hours | Per event |
+| Emergency access incidents | < 2/month | Monthly |
+
+## Audit Evidence
+
+- Access request tickets in Helpdesk
+- Approval chain in ticket history
+- Azure AD audit logs
+- GitHub/GitLab access logs
+- Quarterly review reports
