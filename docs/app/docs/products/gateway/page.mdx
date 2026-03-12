@@ -1,282 +1,1371 @@
-# Gateway
+# B2C Gateway Integration - Complete Reference Documentation
 
-The MEDrecord Gateway is a secure API Gateway that provides unified authentication, routing, and request validation for all MEDrecord products and web applications.
+## Project Overview
 
-## Overview
+MEDrecord B2C Gateway Integration is a comprehensive enterprise authentication and API gateway system built on Next.js that provides:
 
-Gateway serves as the central entry point for all authentication and API requests, ensuring consistent security, session management, and audit logging across the entire product ecosystem.
+- Multi-tenant Azure B2C integration with automatic synchronization
+- Role-based access control (RBAC) with both global and tenant-specific role management
+- API gateway with multiple authentication schemes and service proxying
+- Mobile authentication with dedicated token exchange and session management
+- Cross-domain authentication via web token exchange system
+- Advanced security features including CSRF protection, rate limiting, IP restrictions, and audit logging
+- Feature flag system for progressive rollout and A/B testing
 
-### Key Features
+## Table of Contents
 
-- **Azure B2C Integration** - Single sign-on via Azure Active Directory B2C
-- **Session Cookie Management** - HttpOnly secure cookies for web applications
-- **HMAC Authentication** - Cryptographic request signing for backend services
-- **Multi-Tenant Routing** - Automatic tenant context injection
-- **Role-Based Access Control** - Path-based access restrictions per role
-- **Audit Logging** - Comprehensive request/response logging
+1. [Architecture Overview](#architecture-overview)
+2. [Authentication System](#authentication-system)
+3. [Login Pages & User Interface](#login-pages--user-interface)
+4. [Authorization (RBAC)](#authorization-rbac)
+5. [API Gateway](#api-gateway)
+6. [API Key Management](#api-key-management)
+7. [Security Features](#security-features)
+8. [Multi-Tenant System](#multi-tenant-system)
+9. [Mobile Integration](#mobile-integration)
+10. [Configuration & Deployment](#configuration--deployment)
+11. [API Endpoints Reference](#api-endpoints-reference)
 
-## Service Types
+---
 
-Gateway supports two types of services:
+## Architecture Overview
 
-| Type | Authentication | Example |
-|------|----------------|---------|
-| **Web App** | Session cookie (from Azure B2C) | Docs, Helpdesk, HealthTalk |
-| **Backend Service** | HMAC signature | EHR API, AI Services |
-
-### Web App Services
-
-Web applications authenticate users through Azure B2C and receive session cookies from Gateway:
-
-```
-┌──────────────┐     ┌─────────────────────────────────┐
-│   Browser    │     │          API Gateway            │
-│              │     │                                 │
-└──────┬───────┘     └────────────┬────────────────────┘
-       │                          │
-       │  1. Sign In              │
-       ├─────────────────────────>│ → Azure B2C
-       │                          │
-       │  2. Session Cookie       │
-       │<─────────────────────────┤
-       │     (auth.sid)           │
-       │                          │
-       │  3. Access Web App       │
-       │     (Cookie included)    │
-       ├─────────────────────────>│
-       │                          │
-       │  4. Validate Cookie      │
-       │     Return content       │
-       │<─────────────────────────┤
-```
-
-**Example: Docs Service**
-
-The Docs service (`docs-tst.healthtalk.ai`) is a web application that:
-
-1. User authenticates via Helpdesk or any MEDrecord app
-2. Gateway issues `auth.sid` session cookie
-3. User navigates to Docs - cookie is automatically included
-4. Docs middleware validates cookie with Gateway
-5. Gateway returns user info including role
-6. Docs applies path-based access control based on role
-
-### Backend Services
-
-Backend services use HMAC signatures for secure server-to-server communication:
+### Core Components
 
 ```
-┌──────────────┐     ┌─────────────────────────────────┐     ┌──────────────┐
-│   Frontend   │     │          API Gateway            │     │   Backend    │
-└──────┬───────┘     └────────────┬────────────────────┘     └──────┬───────┘
-       │                          │                                  │
-       │  API Call (Cookie)       │                                  │
-       ├─────────────────────────>│                                  │
-       │                          │  Sign Request (HMAC)             │
-       │                          ├─────────────────────────────────>│
-       │                          │  X-Gateway-Key: gwk_xxx          │
-       │                          │  X-Gateway-Signature: ...        │
-       │                          │  X-User-Id: user123              │
-       │                          │                                  │
-       │                          │  Verify & Process         <──────┤
-       │  Response                │                                  │
-       │<─────────────────────────┤<─────────────────────────────────┤
+┌─────────────────────────────────────────────────────┐
+│          Web/Mobile Clients                          │
+└────────┬────────────────────────────────────────────┘
+         │
+         ├──────────────────────────┐
+         │                          │
+    ┌────▼────┐                ┌───▼────┐
+    │ Web Auth│                │ Mobile │
+    │ System  │                │ Auth   │
+    └────┬────┘                └───┬────┘
+         │                         │
+         └──────────────┬──────────┘
+                        │
+         ┌──────────────▼──────────────┐
+         │   Azure B2C Integration     │
+         │ (User store, MFA, etc.)     │
+         └──────────────┬──────────────┘
+                        │
+         ┌──────────────▼──────────────────┐
+         │  Session & Token Management    │
+         │  - Secure HttpOnly cookies     │
+         │  - JWT tokens                  │
+         │  - One-time web tokens         │
+         │  - Mobile session tokens       │
+         └──────────────┬──────────────────┘
+                        │
+         ┌──────────────▼──────────────────┐
+         │  RBAC Authorization Layer      │
+         │  - Global roles                │
+         │  - Tenant-specific roles       │
+         │  - Permission checks           │
+         └──────────────┬──────────────────┘
+                        │
+         ┌──────────────▼──────────────────┐
+         │  API Gateway & Proxy           │
+         │  - Service routing             │
+         │  - Request validation          │
+         │  - Rate limiting               │
+         │  - Audit logging               │
+         └──────────────┬──────────────────┘
+                        │
+         ┌──────────────▼──────────────────┐
+         │  Backend Services              │
+         │  (Proxied via gateway key)     │
+         └────────────────────────────────┘
 ```
 
-## Cookie-Based Authentication
+---
 
-### Session Cookie
+## Authentication System
 
-After Azure B2C sign-in, Gateway issues:
+### 1. Web Authentication Flow
+
+Web authentication handles browser-based user login via Azure B2C with PKCE authorization flow.
+
+**Flow Diagram:**
 
 ```
-Set-Cookie: auth.sid=<session_token>; 
-  HttpOnly; 
-  Secure; 
-  SameSite=Lax; 
-  Domain=.healthtalk.ai
+1. User visits app
+   ↓
+2. Redirect to Azure B2C signin
+   ↓
+3. User authenticates with MFA (if required)
+   ↓
+4. Azure B2C redirects to /auth/callback with auth code
+   ↓
+5. Backend exchanges code for tokens (confidential)
+   ↓
+6. Create HttpOnly session cookie
+   ↓
+7. Redirect to dashboard
 ```
 
-**Properties:**
-- `HttpOnly` - Not accessible via JavaScript (XSS protection)
-- `Secure` - Only sent over HTTPS
-- `SameSite=Lax` - CSRF protection
-- `Domain=.healthtalk.ai` - Shared across all subdomains
+**Key Files:**
+- `/lib/auth/b2c-flows.ts` - PKCE flow implementation
+- `/lib/auth/session.ts` - Session cookie management
+- `/app/api/auth/signin/route.ts` - Sign-in endpoint
+- `/app/api/auth/callback/route.ts` - OAuth callback handler
 
-### Cross-App Authentication
-
-Because the cookie domain is `.healthtalk.ai`, users authenticated to one app can access other apps:
-
-| App | URL | Access |
-|-----|-----|--------|
-| Helpdesk | helpdesk-tst.healthtalk.ai | Cookie shared |
-| Docs | docs-tst.healthtalk.ai | Cookie shared |
-| HealthTalk | healthtalk-tst.healthtalk.ai | Cookie shared |
-
-### Validating Cookies
-
-Web apps validate cookies by calling Gateway:
+**Session Cookie Structure:**
 
 ```javascript
-const response = await fetch(`${GATEWAY_URL}/api/user/me`, {
-  headers: {
-    'Cookie': `auth.sid=${cookieValue}`,
-  },
-  cache: 'no-store',
-})
-
-const { user } = await response.json()
-// user = { id, email, role, tenantId, ... }
-```
-
-## Role-Based Access Control (RBAC)
-
-### Path-Based Restrictions
-
-Web apps can restrict paths based on user roles:
-
-```typescript
-// Example: Docs middleware configuration
-const PATH_ROLES = {
-  '/isms/policies': ['user', 'admin', 'security_officer'],
-  '/isms/risks': ['admin', 'security_officer'],
-  '/isms/audit': ['admin', 'security_officer'],
-  '/isms/registers': ['admin'],
-  '/admin': ['admin'],
+// HttpOnly, Secure, SameSite=Strict
+{
+  sessionId: string,           // Unique session identifier
+  userId: string,              // Azure B2C object ID
+  email: string,               // User email
+  tenantId: string,            // Current tenant context
+  roles: string[],             // User roles in current tenant
+  globalRoles: string[],       // System-wide roles
+  lastActivity: timestamp,     // Last interaction time
+  createdAt: timestamp,        // Session creation time
+  mfaVerified: boolean,        // MFA status
+  nonce: string                // CSRF protection nonce
 }
 ```
+
+### 2. Mobile Authentication Flow
+
+Mobile apps use a dedicated login code system optimized for native app integration.
+
+**Flow Diagram:**
+
+```
+1. Mobile app requests login code
+   ↓
+2. Backend generates 6-digit code + session
+   ↓
+3. User enters code in browser (or scans QR)
+   ↓
+4. Browser authenticates with Azure B2C
+   ↓
+5. Server links browser session to mobile session
+   ↓
+6. Mobile exchanges code for mobile JWT token
+   ↓
+7. Mobile app stores token securely
+```
+
+**Endpoints:**
+- `POST /api/auth/mobile/login-code` - Request login code
+- `POST /api/auth/mobile/exchange` - Exchange code for token
+- `POST /api/auth/mobile/logout` - Logout and revoke token
+
+**Mobile Token Format (JWT):**
+
+```javascript
+{
+  sub: string,                 // User ID (Azure B2C object ID)
+  email: string,
+  tenantId: string,
+  roles: string[],
+  mobileSessionId: string,     // Unique mobile session ID
+  deviceId: string,            // Device fingerprint/identifier
+  issuer: "B2C-Gateway",
+  iat: timestamp,              // Issued at
+  exp: timestamp,              // Expires (24 hours)
+  nonce: string                // Replay attack prevention
+}
+```
+
+**Key Files:**
+- `/lib/auth/mobile-sessions.ts` - Mobile session management
+- `/lib/auth/mobile-pop.ts` - Proof-of-possession for mobile
+- `/app/api/auth/mobile/exchange/route.ts` - Token exchange
+
+### 3. Web Token Exchange (Cross-Domain Authentication)
+
+For scenarios requiring authentication transfer between domains (e.g., B2C web app → microservice portal), one-time use web tokens enable secure cross-domain authentication.
+
+**Flow:**
+
+```
+1. Authenticated web user requests one-time token
+   ↓
+2. Backend generates token (60-second TTL)
+   ↓
+3. User/app redirects to target domain with token as query param
+   ↓
+4. Target domain validates token (one-time use only)
+   ↓
+5. Target domain creates its own session
+   ↓
+6. Token invalidated (cannot be reused)
+```
+
+**Endpoints:**
+- `POST /api/auth/web-session/exchange` - Generate one-time token
+- `POST /api/auth/web-session/verify` - Verify token and create session
+
+**Use Cases:**
+- Single Sign-On (SSO) across internal applications
+- Secure handoff to partner systems
+- Portal login redirects
+
+**Key Files:**
+- `/lib/auth/web-tokens.ts` - Web token generation and validation
+- `/app/api/auth/web-session/exchange/route.ts` - Token generation
+- `/app/api/auth/web-session/verify/route.ts` - Token validation
+
+### 4. Azure B2C Synchronization
+
+The system automatically synchronizes user and tenant data from Azure B2C to maintain consistent state.
+
+**Sync Features:**
+- Automatic user sync when logging in
+- Tenant provisioning on first auth
+- Role mapping from B2C custom attributes
+- Graph API integration for admin operations
+- Retry logic with exponential backoff
+
+**Key Files:**
+- `/lib/auth/b2c-tenant-sync.ts` - Tenant/user synchronization
+- `/lib/auth/b2c-graph.ts` - Microsoft Graph API integration
+- `/app/api/cron/process-b2c-sync-queue/route.ts` - Async sync processor
+
+---
+
+## Login Pages & User Interface
+
+This section documents the Gateway-hosted authentication UI pages. These pages are part of the Gateway itself and are used by all consuming applications (web apps, mobile apps, external integrations) through redirect flows.
+
+### How External Apps Use These Pages
+
+External applications do NOT create their own login UI. Instead, they redirect users to the Gateway's login pages:
+
+```
+ Your App (any domain)                    This Gateway                    Azure B2C
+┌────────────────────┐              ┌────────────────────┐              ┌──────────┐
+│                    │              │                    │              │          │
+│ 1. User clicks     │              │                    │              │          │
+│    "Sign In"       │──────────────│ 2. /auth/signin    │──────────────│ 3. B2C   │
+│                    │   redirect   │    page loads      │   redirect   │    login │
+│                    │              │                    │              │          │
+│ 6. Receive token   │◄─────────────│ 5. Process B2C     │◄─────────────│ 4. User  │
+│    or sessionId    │   redirect   │    callback        │   callback   │    auth  │
+│                    │   + token    │                    │              │          │
+└────────────────────┘              └────────────────────┘              └──────────┘
+```
+
+**Integration patterns:**
+
+| App Type | Integration Method | What the App Receives |
+|----------|-------------------|----------------------|
+| Same-domain web app | Redirect to `/api/auth/signin` | Session cookie (automatic) |
+| Cross-domain web app | Redirect to `/api/auth/signin?callbackUrl=...` | webToken in URL, exchange for sessionId |
+| Mobile app (React Native) | System browser to `/api/auth/signin?clientNonce=...` | loginCode in callback URL, exchange for sessionToken |
+| Machine-to-machine | No login UI needed | Uses API keys (`cak_`, `sak_`) |
+
+### Page Overview
+
+| Route | Page | Purpose |
+|-------|------|---------|
+| `/auth/signin` | Sign In Page | Primary login entry point for all apps |
+| `/auth/signout` | Sign Out Page | Session termination with visual feedback |
+| `/auth/forgot-password` | Password Reset | Azure B2C password reset redirect |
+| `/auth/error` | Error Page | Authentication error display with i18n |
+
+### 1. Sign In Page (`/auth/signin`)
+
+The sign-in page is the primary entry point for user authentication. All external applications redirect here - they do not implement their own login forms.
+
+**Query Parameters (for external apps):**
+
+| Parameter | Required | Description | Example |
+|-----------|----------|-------------|---------|
+| `callbackUrl` | Yes (for cross-domain) | URL to redirect after auth | `https://myapp.vercel.app/auth/callback` |
+| `tenantId` | Optional | Tenant context for the session | `tenant_abc123` |
+| `clientNonce` | Mobile only | Binds login to mobile app instance | Random 32+ byte string |
+
+**How to redirect here from your app:**
+
+```javascript
+// Same-domain web app (cookie-based)
+window.location.href = '/api/auth/signin?callbackUrl=/dashboard';
+
+// Cross-domain web app (webToken exchange)
+const callback = encodeURIComponent('https://myapp.vercel.app/auth/callback');
+window.location.href = `https://gateway.example.com/api/auth/signin?callbackUrl=${callback}`;
+
+// Mobile app (loginCode exchange)
+const callback = encodeURIComponent('healthtalk://auth/callback');
+const nonce = generateClientNonce();
+InAppBrowser.openAuth(`https://gateway.example.com/api/auth/signin?callbackUrl=${callback}&clientNonce=${nonce}`);
+```
+
+**Layout:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Secure Authentication                │
+│              Enterprise-grade security with Azure AD B2C│
+├──────────────────────────┬──────────────────────────────┤
+│     Sign In Card         │    Security Info Cards       │
+│  ┌────────────────────┐  │  ┌──────────────────────┐   │
+│  │ Sign In            │  │  │ HttpOnly Cookies     │   │
+│  │                    │  │  │ Only a random session │   │
+│  │ [Sign in with      │  │  │ ID is stored...       │   │
+│  │  Azure B2C    ]    │  │  └──────────────────────┘   │
+│  │                    │  │  ┌──────────────────────┐   │
+│  │ Forgot password?   │  │  │ Redis Session        │   │
+│  │                    │  │  │ Access and refresh    │   │
+│  │ ┌───────────────┐  │  │  │ tokens are stored...  │   │
+│  │ │Auth Flow Info │  │  │  └──────────────────────┘   │
+│  │ │1. OAuth 2.0   │  │  │  ┌──────────────────────┐   │
+│  │ │2. Redis store │  │  │  │ API Gateway          │   │
+│  │ │3. HttpOnly    │  │  │  │ All API calls go     │   │
+│  │ │4. Auto refresh│  │  │  │ through secure...    │   │
+│  │ └───────────────┘  │  │  └──────────────────────┘   │
+│  └────────────────────┘  │                             │
+└──────────────────────────┴──────────────────────────────┘
+```
+
+**UI Components:**
+- Sign In Card - Main call-to-action with Azure B2C button
+- Authentication Flow Info - Explains OAuth 2.0 + OIDC with PKCE, server-side token storage
+- Security Feature Cards - Three cards highlighting HttpOnly cookies, Redis session storage, and API Gateway
+
+**Features:**
+- Callback URL preservation via `?callbackUrl=` query parameter
+- Loading state with "Signing in..." button text
+- Link to password reset (`/api/auth/forgot-password`)
+- Responsive two-column layout (single column on mobile)
+- Suspense boundary with loading spinner
+
+**Key Files:**
+- `/app/auth/signin/page.tsx` - Page with Suspense wrapper
+- `/components/auth/signin-content.tsx` - Main sign-in content component
+
+### 2. Sign Out Page (`/auth/signout`)
+
+Provides visual feedback during the sign-out process.
+
+**States:**
+
+| State | Icon | Title | Description |
+|-------|------|-------|-------------|
+| Loading | Spinner | "Signing Out" | "Please wait while we sign you out securely..." |
+| Success | Green checkmark | "Signed Out" | "You have been signed out successfully." |
+| Error | Red X | "Sign Out Error" | "An error occurred while signing out. Please try again." |
+
+**Features:**
+- Automatic sign-out initiation with 500ms delay (for UX)
+- Error recovery with "Try Again" button
+- "Go Home" navigation option on error
+- Centered card layout
+
+**Key Files:**
+- `/app/auth/signout/page.tsx` - Sign-out page with state management
+
+### 3. Forgot Password Page (`/auth/forgot-password`)
+
+Simple redirect page to Azure B2C password reset flow.
+
+**Features:**
+- Clear explanation of the password reset process
+- Loading state with "Redirecting..." text
+- Back to sign-in navigation link
+- Redirects to `/api/auth/forgot-password?callbackUrl=/`
+
+**Key Files:**
+- `/app/auth/forgot-password/page.tsx` - Password reset page
+
+### 4. Error Page (`/auth/error`)
+
+Branded error page with internationalization (i18n) support for authentication failures.
+
+**Error Types Handled:**
+
+| Error Code | Title (EN) | Action |
+|------------|------------|--------|
+| Session expired | Session Timed Out | Sign In |
+| Configuration | Configuration Error | Try Again |
+| AccessDenied | Access Denied | Try Again |
+| Verification | Verification Failed | Sign In |
+| OAuthSignin | Sign In Error | Try Again |
+| OAuthCallback | Callback Error | Try Again |
+| OAuthCreateAccount | Account Creation Failed | Try Again |
+| Callback | Callback Error | Try Again |
+| SessionRequired | Session Required | Sign In |
+| Default | Authentication Error | Try Again |
+
+**Internationalization (i18n):**
+- Supports English (en) and Dutch (nl)
+- Auto-detects locale from `navigator.language`
+- Falls back to English if locale not supported
+- Footer links adapt to locale prefix (`/en/` or `/`)
+
+**Key Files:**
+- `/app/auth/error/page.tsx` - Error page with Suspense wrapper
+- `/components/auth/error-content.tsx` - Error content component with branding
+- `/components/auth/auth-skeleton.tsx` - Loading skeleton matching brand layout
+- `/lib/auth/error-i18n.ts` - Internationalization translations
+
+### Design System & Styling
+
+**Color Palette:**
+- Primary: `#0033a0` (Blue) - Buttons, links, focus states
+- Accent: `#00bfa5` (Teal) - HealthTalk "Health" text
+- Secondary: `#1e3a8a` (Navy) - HealthTalk "Talk" text
+- Error: `#dc2626` (Red) - Error icons and states
+- Success: Green (Tailwind green-500) - Success states
+- Background gradient: `#d4d8e8` → `#c5cae0` - Brand panel
+
+**Typography:**
+- Headings: `font-semibold`, sizes from `text-2xl` to `text-4xl`
+- Body: `text-muted-foreground` for secondary text
+- Brand: Custom styled HealthTalk logo text
+
+---
+
+## Authorization (RBAC)
 
 ### Role Hierarchy
 
-| Role | Description | Access Level |
-|------|-------------|--------------|
-| `user` | Standard authenticated user | Public paths only |
-| `reporter` | Reporting access | + Report paths |
-| `security_officer` | Security management | + ISMS restricted |
-| `admin` | Full administrative access | All paths |
+The system supports two levels of role management:
 
-### Settings Page Configuration
+### 1. Global Roles
 
-Admins can configure path-role mappings via the Settings page:
+System-wide roles that apply across all tenants:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  Path Access Settings                                       │
-├─────────────────────────────────────────────────────────────┤
-│  Path                    │  Allowed Roles                   │
-│  ─────────────────────────────────────────────────────────  │
-│  /isms/policies          │  ☑ user ☑ admin ☑ security      │
-│  /isms/risks             │  ☐ user ☑ admin ☑ security      │
-│  /isms/audit             │  ☐ user ☑ admin ☑ security      │
-│  /isms/registers         │  ☐ user ☑ admin ☐ security      │
-│  /admin/*                │  ☐ user ☑ admin ☐ security      │
-│                                                             │
-│  [+ Add Path Rule]                        [Save Settings]   │
-└─────────────────────────────────────────────────────────────┘
-```
+| Role | Permission | Use Case |
+|------|------------|----------|
+| Super Admin | All system operations | System maintenance |
+| Global Admin | Tenant management, user management | Global administration |
+| Developer | Service creation, gateway key management | API integration |
+| Operator | Analytics, audit logs, monitoring | Operations team |
 
-## HMAC Authentication (Backend)
+### 2. Tenant-Specific Roles
 
-For backend services, Gateway uses HMAC signing:
+Each tenant can define custom roles for fine-grained access control.
 
-### Request Headers
+**Built-in Tenant Roles:**
+- `TenantAdmin` - Full tenant management
+- `Developer` - Service and API key management
+- `User` - Basic data access
+- Custom roles - User-defined with specific permissions
 
-```
-X-Gateway-Key: gwk_xxx (identifies the Gateway)
-X-Gateway-Signature: HMAC-SHA256 signature
-X-User-Id: Authenticated user identifier
-X-Tenant-Id: Tenant/organization identifier
-X-Tenant-Role: User role within tenant
-X-Request-Id: Unique request identifier
-```
-
-### Signature Calculation
+**Permission Model:**
 
 ```javascript
-const signature = crypto
-  .createHmac('sha256', serviceSecretKey)
-  .update(JSON.stringify(requestBody))
-  .digest('hex')
-```
-
-## Key System
-
-| Key Type | Purpose | Used By |
-|----------|---------|---------|
-| `gwk_` | Gateway Key - Identifies Gateway to Backend | Gateway → Backend |
-| `ssk_` | Service Secret Key - HMAC signing (never transmitted) | Both sides |
-| `sak_` | Service API Key - Admin operations | Admin tools |
-| `cak_` | Client API Key - Machine-to-machine | External integrations |
-
-**Important:** Frontend web apps use session cookies only - no API keys needed!
-
-## Security
-
-### Request Validation
-
-- JSON schema validation
-- SQL injection prevention
-- XSS sanitization
-- Request size limits
-
-### Audit Logging
-
-Every request is logged with:
-
-- Timestamp
-- User and tenant context
-- Request path and method
-- Response status
-- Response time
-
-Logs are immutable and retained per compliance requirements.
-
-## Integration
-
-### For Web Apps
-
-```typescript
-// middleware.ts
-async function validateSession(request: NextRequest) {
-  const authCookie = request.cookies.get('auth.sid')
-  if (!authCookie?.value) return null
-
-  const response = await fetch(`${GATEWAY_URL}/api/user/me`, {
-    headers: { 'Cookie': `auth.sid=${authCookie.value}` },
-  })
-
-  if (!response.ok) return null
-  return (await response.json()).user
+{
+  roleId: string,
+  tenantId: string,
+  name: string,                     // e.g., "Data Analyst"
+  description: string,
+  permissions: string[],            // e.g., ["read:analytics", "export:data"]
+  createdAt: timestamp,
+  createdBy: string,
+  isSystem: boolean                 // True for built-in roles
 }
 ```
 
-### For Backend Services
+### Permission System
 
-```typescript
-// Verify incoming Gateway request
-function verifyGatewaySignature(req, secretKey) {
-  const signature = req.headers['x-gateway-signature']
-  const expected = crypto
-    .createHmac('sha256', secretKey)
-    .update(JSON.stringify(req.body))
-    .digest('hex')
-  return signature === expected
+Permissions follow a `resource:action` pattern:
+
+**Common Permissions:**
+- `read:dashboard` - View dashboard
+- `write:settings` - Modify settings
+- `manage:users` - Add/remove users
+- `manage:roles` - Create/edit roles
+- `create:service` - Create API service
+- `manage:keys` - Generate API keys
+- `read:analytics` - View analytics
+- `read:audit` - View audit logs
+- `export:data` - Export data
+
+### Authorization Checks
+
+**Path-Based RBAC:**
+Protected routes enforce role requirements:
+
+```javascript
+// app/dashboard/admin/users
+// Requires: Global role "Global Admin"
+
+// app/dashboard/tenants/[tenantId]/settings
+// Requires: Tenant role "TenantAdmin" in specified tenant
+```
+
+**API Endpoint RBAC:**
+Backend routes validate permissions via middleware:
+
+```javascript
+// POST /api/tenant/[tenantId]/users
+// Required permission: "manage:users"
+// Scope: Current tenant
+```
+
+**Key Files:**
+- `/lib/rbac/types.ts` - Role and permission type definitions
+- `/lib/rbac/tenant-middleware.ts` - Tenant-specific RBAC enforcement
+- `/lib/rbac/middleware.ts` - Global RBAC middleware
+- `/lib/rbac/tenant-permissions.ts` - Permission definitions
+- `/app/api/tenant/[tenantId]/roles/route.ts` - Role management API
+
+---
+
+## API Gateway
+
+### Overview
+
+The API gateway provides a unified entry point for backend service authentication, request routing, and security enforcement.
+
+### Gateway Key System
+
+Backend services authenticate via HMAC-signed requests using gateway keys.
+
+**Key Format:**
+
+```
+gwk_<prefix>_<random-bytes>_<random-bytes>
+
+Example: gwk_svc_abc123def456ghi789jkl012mno345
+```
+
+**HMAC Signing:**
+
+```
+Signature = HMAC-SHA256(
+  message = HTTP_METHOD + '\n' + PATH + '\n' + BODY,
+  key = gateway_key_secret
+)
+```
+
+**Request Header:**
+
+```
+X-Gateway-Signature: <signature>
+X-Gateway-Key-ID: gwk_svc_abc123def456ghi789jkl012mno345
+```
+
+**Key Rotation:**
+- Keys have optional TTL configuration
+- Regeneration creates new key + grace period for old key
+- Automatic key retirement after TTL expires
+
+### Service Registration
+
+Backend services must be registered to use the gateway.
+
+**Service Configuration:**
+
+```javascript
+{
+  id: string,                       // Service UUID
+  name: string,                     // Display name
+  slug: string,                     // URL-safe identifier
+  baseUrl: string,                  // Backend service URL
+  description: string,
+  gatewayKey: {
+    id: string,
+    expiresAt?: timestamp,
+    rotatedAt: timestamp
+  },
+  endpoints: {
+    path: string,
+    methods: string[],
+    publicAccessibleKey?: string,   // For public endpoints
+    requiresAuth: boolean
+  }[],
+  rateLimitConfig: {
+    requestsPerMinute: number
+  },
+  tenantId?: string,                // Tenant association (if multi-tenant service)
+  createdAt: timestamp,
+  createdBy: string
 }
 ```
+
+**Management Endpoints:**
+- `GET /api/gateway/services` - List services
+- `POST /api/gateway/services` - Create service
+- `GET /api/gateway/services/[serviceId]` - Get service details
+- `PUT /api/gateway/services/[serviceId]` - Update service
+- `DELETE /api/gateway/services/[serviceId]` - Delete service
+- `GET /api/gateway/services/[serviceId]/openapi` - Get OpenAPI spec
+
+### Request Proxying
+
+**Request Flow:**
+
+```
+1. Client makes request to /api/gateway/proxy/[...path]
+   ↓
+2. Gateway authenticates client (session or API key)
+   ↓
+3. Gateway validates authorization based on service permissions
+   ↓
+4. Gateway checks rate limiting
+   ↓
+5. Gateway logs request (audit)
+   ↓
+6. Gateway HMAC-signs request with service gateway key
+   ↓
+7. Forward to backend service
+   ↓
+8. Log response (audit)
+   ↓
+9. Return response to client
+```
+
+**Proxy Endpoint:**
+
+```
+POST /api/gateway/proxy/[service-slug]/[endpoint-path]
+POST /api/gateway/proxy/users/list
+POST /api/gateway/proxy/crm/contacts/search
+```
+
+**Request Headers Forwarded:**
+
+```
+X-Forwarded-For: <original-ip>
+X-Forwarded-Proto: https
+X-Forwarded-Host: <gateway-host>
+X-User-ID: <current-user>
+X-Tenant-ID: <current-tenant>
+X-Gateway-Signature: <hmac-signature>
+X-Gateway-Key-ID: <service-key-id>
+```
+
+**Key Files:**
+- `/lib/gateway/proxy.ts` - Request proxying logic
+- `/lib/gateway/crypto.ts` - HMAC signing
+- `/app/api/gateway/proxy/[...path]/route.ts` - Proxy route handler
+- `/lib/gateway/service-registry.ts` - Service registration management
+
+---
+
+## API Key Management
+
+### Key Types
+
+The system supports multiple API key types for different use cases:
+
+### 1. Gateway Keys (`gwk_`)
+
+Used by backend services to authenticate with the gateway.
+
+| Prefix | Use Case |
+|--------|----------|
+| `gwk_` | Standard service gateway key |
+
+### 2. Service API Keys (`sak_`)
+
+Backend services use to make authenticated requests to the gateway proxy.
+
+| Prefix | Use Case |
+|--------|----------|
+| `sak_` | Service API key for proxy authentication |
+
+### 3. Client API Keys (`cak_`)
+
+Third-party integrations and external applications use to call the gateway.
+
+| Prefix | Use Case |
+|--------|----------|
+| `cak_` | Client/external integration key |
+
+### 4. User API Keys (`uak_`)
+
+Individual users can generate keys for programmatic access.
+
+| Prefix | Use Case |
+|--------|----------|
+| `uak_` | User personal API key |
+
+### 5. WebSocket Keys (`wsk_`)
+
+Specialized keys for WebSocket connections and real-time updates.
+
+| Prefix | Use Case |
+|--------|----------|
+| `wsk_` | WebSocket authentication key |
+
+### API Key Management Endpoints
+
+**User API Keys:**
+- `GET /api/user/api-keys` - List user's API keys
+- `POST /api/user/api-keys` - Create new API key
+- `DELETE /api/user/api-keys/[keyId]` - Revoke API key
+
+**Service API Keys:**
+- `GET /api/gateway/services/[serviceId]/keys` - List service keys
+- `POST /api/gateway/services/[serviceId]/keys` - Create key
+- `DELETE /api/gateway/services/[serviceId]/keys/[keyId]` - Delete key
+- `POST /api/gateway/services/[serviceId]/keys/regenerate/[keyId]` - Rotate key
+
+**Client API Keys:**
+- `GET /api/gateway/services/[serviceId]/client-keys` - List client keys
+- `POST /api/gateway/services/[serviceId]/client-keys` - Create client key
+- `DELETE /api/gateway/services/[serviceId]/client-keys/[keyId]` - Revoke key
+
+**Key Features:**
+- Optional expiration dates
+- Per-key rate limiting configuration
+- Endpoint-level access restrictions
+- Rotation with grace periods
+- Audit logging of all key operations
+
+---
+
+## Security Features
+
+### 1. CSRF Protection
+
+All state-modifying requests include CSRF tokens.
+
+**Implementation:**
+- Tokens generated per-session with 1-hour TTL
+- Auto-refresh when approaching expiration
+- Validated on all POST/PUT/DELETE requests
+- `SameSite=Strict` cookie policy
+
+**Endpoints:**
+- `POST /api/auth/csrf` - Get current CSRF token
+
+**Key Files:**
+- `/lib/security/csrf.ts` - CSRF token generation/validation
+- `/lib/api-gateway/middleware.ts` - CSRF middleware
+
+### 2. Rate Limiting
+
+Multi-level rate limiting protects against abuse:
+
+**Levels:**
+1. Global rate limit - Per-IP across entire system
+2. Per-user rate limit - Per authenticated user
+3. Per-API-key rate limit - Per service API key
+4. Per-endpoint rate limit - Per service endpoint
+
+**Configuration:**
+
+```javascript
+{
+  globalLimit: 1000,              // Requests per minute per IP
+  perUserLimit: 100,              // Requests per minute per user
+  perKeyLimit: 500,               // Requests per minute per API key
+  perEndpointLimit: 10000         // Requests per minute per endpoint
+}
+```
+
+**Rate Limit Headers:**
+
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 87
+X-RateLimit-Reset: 1643723400
+```
+
+**Implementation:**
+- Redis-backed counters for distributed rate limiting
+- Token bucket algorithm
+- Sliding window expiration
+
+**Key Files:**
+- `/lib/api-gateway/rate-limiter.ts` - Rate limiting logic
+- `/lib/auth/session-security.ts` - Session rate limiting
+
+### 3. IP Restrictions
+
+Services can restrict access to specific IP ranges.
+
+**Configuration:**
+
+```javascript
+{
+  serviceId: string,
+  whitelist: ["203.0.113.0/24", "203.0.113.42"],  // CIDR notation
+  blacklist: ["192.0.2.0/24"],
+  enforceClientIP: boolean        // Respect X-Forwarded-For
+}
+```
+
+**Validation:**
+- Checked on every gateway request
+- Supports CIDR notation
+- Both whitelist and blacklist modes
+- IPv4 and IPv6 support
+
+### 4. Request Validation
+
+All incoming requests are validated for security and correctness.
+
+**Validation Steps:**
+1. Content-Type checking - Validates media type
+2. Request size limits - Prevents payload attacks
+3. JSON schema validation - Validates request structure
+4. Input sanitization - Escapes/removes dangerous content
+5. SQL injection prevention - Parameterized queries only
+
+**Configuration:**
+
+```javascript
+{
+  maxRequestSize: 10 * 1024 * 1024,  // 10 MB
+  maxJsonSize: 1 * 1024 * 1024,      // 1 MB
+  allowedContentTypes: ["application/json", "application/x-www-form-urlencoded"],
+  validateJsonSchema: true
+}
+```
+
+**Key Files:**
+- `/lib/api-gateway/request-validator.ts` - Request validation
+- `/lib/api-gateway/request-size.ts` - Size limits
+
+### 5. Audit Logging
+
+All security-relevant events are logged with full context.
+
+**Logged Events:**
+- Authentication attempts (success/failure)
+- Authorization checks (allow/deny)
+- API key usage
+- Service configuration changes
+- Role modifications
+- Permission changes
+- Failed requests (>3 attempts per minute)
+
+**Log Structure:**
+
+```javascript
+{
+  timestamp: ISO8601,
+  eventType: string,              // "auth.success", "authz.denied", etc.
+  userId: string,
+  tenantId: string,
+  action: string,                 // Specific action taken
+  resource: string,               // Resource affected
+  status: "success" | "failure",
+  details: object,                // Event-specific details
+  ipAddress: string,
+  userAgent: string,
+  requestId: string              // Correlate with request logs
+}
+```
+
+**Audit Log Access:**
+- `GET /api/admin/audit-logs` - List audit logs (Global Admin only)
+- Query filters: eventType, userId, tenantId, dateRange
+- Retention: 90 days
+
+**Key Files:**
+- `/lib/api-gateway/audit-logger.ts` - Audit logging
+- `/lib/logging/logger.ts` - Core logging system
+- `/app/api/admin/audit-logs/route.ts` - Audit log endpoint
+
+### 6. Security Headers
+
+All responses include security headers:
+
+```
+Strict-Transport-Security: max-age=63072000; includeSubDomains
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: geolocation=(), microphone=(), camera=()
+Content-Security-Policy: default-src 'self'
+```
+
+**Key Files:**
+- `/lib/security/headers.ts` - Security header configuration
+
+### 7. Session Security
+
+**Session Timeout:**
+- Idle timeout: 30 minutes
+- Absolute timeout: 8 hours
+- Automatic renewal on activity
+
+**Session Validation:**
+- User agent checking (detect hijacking)
+- IP address validation (can be disabled)
+- Last activity tracking
+- Concurrent session limits (optional)
+
+**Key Files:**
+- `/lib/auth/session-security.ts` - Session validation
+- `/lib/auth/session.ts` - Session management
+
+---
+
+## Multi-Tenant System
+
+### Tenant Architecture
+
+Each tenant is an isolated business unit with:
+- Independent user base
+- Tenant-specific roles and permissions
+- Dedicated API services and keys
+- Separate analytics and audit logs
+- Custom configuration
+
+### Tenant Context
+
+User operations are scoped to their current tenant:
+
+```javascript
+// User can be in multiple tenants
+{
+  userId: string,
+  tenants: [
+    {
+      tenantId: string,
+      name: string,
+      role: string,               // User's role in this tenant
+      isDefault: boolean
+    }
+  ],
+  currentTenantId: string        // Active context
+}
+```
+
+### Tenant Switching
+
+Users can switch between tenants:
+
+**Endpoints:**
+- `POST /api/tenant/switch` - Switch active tenant
+- `GET /api/user/tenants` - List user's tenants
+
+**Session Update:**
+When switching tenants, the session is updated with:
+- New tenantId
+- New role set for that tenant
+- New permission set
+- Updated audit context
+
+### Tenant-Scoped Operations
+
+Most operations are automatically scoped to the current tenant:
+
+```
+GET /api/tenant/[tenantId]/users - List users in tenant
+POST /api/tenant/[tenantId]/users - Add user to tenant
+GET /api/tenant/[tenantId]/roles - List tenant roles
+POST /api/tenant/[tenantId]/roles - Create tenant role
+GET /api/tenant/[tenantId]/settings - Get tenant settings
+```
+
+### Tenant Isolation
+
+**Data Isolation:**
+- Queries filtered by tenantId
+- Row-level security at database level
+- No cross-tenant data leakage
+
+**API Key Isolation:**
+- Service API keys scoped per tenant
+- Client API keys associated with specific tenants
+- Gateway keys cannot access data outside scoped tenant
+
+**Audit Isolation:**
+- Audit logs filtered by tenant
+- Tenant admins only see their own tenant logs
+
+**Key Files:**
+- `/lib/tenant/context.ts` - Tenant context management
+- `/lib/tenant/resolver.ts` - Tenant context resolution
+- `/app/api/tenant/[tenantId]/` - Tenant-scoped endpoints
+
+---
+
+## Mobile Integration
+
+### Mobile Authentication Overview
+
+Mobile apps have specialized authentication flow optimized for native environments:
+
+**Advantages:**
+- 6-digit login code (easy to use)
+- No password entry needed in mobile app
+- Integrates with device security (biometric, PIN)
+- Automatic device fingerprinting
+- Secure token storage recommendations
+
+### Mobile Session Token
+
+Mobile sessions are managed with JWT tokens instead of cookies:
+
+**Token Claims:**
+
+```javascript
+{
+  sub: string,                 // User ID
+  email: string,
+  tenantId: string,
+  roles: string[],
+  deviceId: string,            // Device fingerprint
+  mobileSessionId: string,     // Session identifier
+  nonce: string,               // Replay prevention
+  iat: number,                 // Issued at
+  exp: number,                 // Expires (24 hours)
+  iss: string                  // Issuer
+}
+```
+
+**Key Rotation:**
+- Tokens expire after 24 hours
+- Refresh tokens rotate on each use
+- Grace period for token rotation (5 minutes)
+- Server tracks all active mobile sessions per user
+
+### Mobile Authentication Endpoints
+
+**1. Request Login Code**
+
+```
+POST /api/auth/mobile/login-code
+
+Request:
+{
+  deviceId: string,            // Device fingerprint
+  appIdentifier: string        // App package/bundle ID
+}
+
+Response (201):
+{
+  loginCode: "123456",
+  expiresIn: 600,              // Seconds
+  deviceToken: string          // For proof-of-possession
+}
+```
+
+**2. Exchange Code for Token**
+
+```
+POST /api/auth/mobile/exchange
+
+Request:
+{
+  loginCode: "123456",
+  deviceToken: string,
+  proof: string                // HMAC proof of possession
+}
+
+Response (200):
+{
+  accessToken: string,         // JWT token
+  refreshToken: string,
+  expiresIn: 86400,            // 24 hours
+  tokenType: "Bearer"
+}
+```
+
+**3. Logout/Revoke**
+
+```
+POST /api/auth/mobile/logout
+
+Headers:
+Authorization: Bearer <accessToken>
+
+Response (200):
+{
+  success: true
+}
+```
+
+### Mobile Session Management
+
+**Proof-of-Possession (PoP):**
+Prevents token theft if device is compromised.
+
+```javascript
+// Generate PoP proof
+proof = HMAC-SHA256(
+  message = deviceToken + timestamp + nonce,
+  key = deviceId
+)
+```
+
+**Device Fingerprinting:**
+- Collects device identifiers (anonymously)
+- Used to detect token theft
+- Can enforce single-device mode
+
+### Mobile Integration Best Practices
+
+**Security Recommendations:**
+1. Store tokens in secure enclave/keychain
+2. Implement certificate pinning
+3. Validate SSL certificates
+4. Never log tokens
+5. Clear tokens on logout
+6. Implement biometric unlock on app launch
+
+**Implementation Guide:**
+See `/docs/MOBILE_GATEWAY_INTEGRATION.md` for platform-specific examples.
+
+**Key Files:**
+- `/lib/auth/mobile-sessions.ts` - Mobile session management
+- `/lib/auth/mobile-pop.ts` - Proof-of-possession
+- `/app/api/auth/mobile/exchange/route.ts` - Token exchange
+- `/app/api/auth/mobile/logout/route.ts` - Logout
+
+---
+
+## Configuration & Deployment
 
 ### Environment Variables
 
+**Required:**
+
+```bash
+# Azure B2C Configuration
+AZURE_B2C_TENANT=<your-tenant>.onmicrosoft.com
+AZURE_B2C_CLIENT_ID=<application-id>
+AZURE_B2C_CLIENT_SECRET=<client-secret>
+AZURE_B2C_POLICY=B2C_1_SIGNIN
+
+# Session & Security
+SESSION_SECRET=<random-32-byte-hex>
+CSRF_SECRET=<random-32-byte-hex>
+ENCRYPTION_KEY=<random-32-byte-hex>
+
+# Redis (for rate limiting, session storage)
+REDIS_URL=redis://...
+
+# Optional: Feature Flags
+FEATURE_FLAGS_ENABLED=true
 ```
-GATEWAY_URL=https://auth-test-b2c.healthtalk.ai
+
+**Optional:**
+
+```bash
+# Mobile Configuration
+MOBILE_APP_IDS=com.myapp.ios,com.myapp.android
+MOBILE_TOKEN_EXPIRY=86400
+
+# Rate Limiting
+RATE_LIMIT_GLOBAL=1000
+RATE_LIMIT_PER_USER=100
+RATE_LIMIT_PER_KEY=500
+
+# Audit
+AUDIT_LOG_RETENTION_DAYS=90
+AUDIT_LOG_ENABLED=true
+
+# IP Restrictions
+IP_RESTRICT_ENABLED=false
 ```
 
-## Resources
+### Feature Flags
 
-| Resource | Link |
-|----------|------|
-| ISMS Security | [ISMS Policies](/isms/policies) |
-| Access Control Policy | [Access Control](/isms/policies/access-control) |
+Feature flags allow progressive rollout of features:
 
-## Getting Started
+**Configuration:**
 
-Gateway is managed infrastructure. Web apps automatically receive cookie-based authentication when deployed to `*.healthtalk.ai` domains.
+```typescript
+// lib/config/feature-flags.ts
+export const FEATURE_FLAGS = {
+  mobileAuth: process.env.FF_MOBILE_AUTH === 'true',
+  webTokenExchange: process.env.FF_WEB_TOKENS === 'true',
+  advancedRbac: process.env.FF_ADVANCED_RBAC === 'true',
+  tenantCustomRoles: process.env.FF_TENANT_ROLES === 'true',
+  // ...
+}
+```
+
+**Usage:**
+
+```typescript
+if (FEATURE_FLAGS.mobileAuth) {
+  // Mobile authentication flows
+}
+```
+
+### Deployment Checklist
+
+- [ ] All environment variables configured
+- [ ] Redis instance deployed
+- [ ] Azure B2C tenant configured
+- [ ] SSL certificate installed
+- [ ] Database migrations run
+- [ ] Audit logging verified
+- [ ] Rate limiting tested
+- [ ] CSRF protection verified
+- [ ] Security headers validated
+- [ ] Mobile app endpoints tested
+
+---
+
+## API Endpoints Reference
+
+### Authentication Endpoints
+
+**Web Authentication**
+
+```
+POST   /api/auth/signin              Sign in with credentials
+GET    /api/auth/callback            OAuth callback (Azure B2C)
+POST   /api/auth/signout             Sign out current user
+POST   /api/auth/csrf                Get CSRF token
+POST   /api/auth/edit-profile        Update user profile
+GET    /api/auth/providers           List auth providers
+```
+
+**Mobile Authentication**
+
+```
+POST   /api/auth/mobile/login-code   Request login code
+POST   /api/auth/mobile/exchange     Exchange code for token
+POST   /api/auth/mobile/logout       Logout mobile session
+```
+
+**Web Token Exchange (SSO)**
+
+```
+POST   /api/auth/web-session/exchange    Generate one-time token
+POST   /api/auth/web-session/verify      Verify and consume token
+```
+
+**Session Management**
+
+```
+GET    /api/auth/session             Get current session
+GET    /api/auth/sessions            List all user sessions
+POST   /api/auth/sessions            Manage sessions
+```
+
+### User Endpoints
+
+```
+GET    /api/user/me                  Get current user
+GET    /api/user/tenants             List user's tenants
+POST   /api/user/switch-tenant       Switch active tenant
+GET    /api/user/role                Get user's current role
+GET    /api/user/api-keys            List user's API keys
+POST   /api/user/api-keys            Create new API key
+DELETE /api/user/api-keys            Revoke API key
+```
+
+### Tenant Endpoints
+
+```
+GET    /api/tenant/[tenantId]/info        Get tenant info
+POST   /api/tenant/[tenantId]/settings    Update settings
+GET    /api/tenant/[tenantId]/users       List tenant users
+POST   /api/tenant/[tenantId]/users       Add user to tenant
+DELETE /api/tenant/[tenantId]/users/[uid] Remove user from tenant
+GET    /api/tenant/[tenantId]/roles       List tenant roles
+POST   /api/tenant/[tenantId]/roles       Create tenant role
+PUT    /api/tenant/[tenantId]/roles/[rid] Update tenant role
+DELETE /api/tenant/[tenantId]/roles/[rid] Delete tenant role
+```
+
+### Gateway Endpoints
+
+```
+GET    /api/gateway/services                List services
+POST   /api/gateway/services                Create service
+GET    /api/gateway/services/[serviceId]    Get service
+PUT    /api/gateway/services/[serviceId]    Update service
+DELETE /api/gateway/services/[serviceId]    Delete service
+
+GET    /api/gateway/services/[serviceId]/openapi              Get OpenAPI spec
+GET    /api/gateway/services/[serviceId]/public               Public service info
+GET    /api/gateway/services/[serviceId]/permissions          Get service permissions
+
+GET    /api/gateway/services/[serviceId]/keys                 List service keys
+POST   /api/gateway/services/[serviceId]/keys                 Create service key
+DELETE /api/gateway/services/[serviceId]/keys/[keyId]         Delete key
+POST   /api/gateway/services/[serviceId]/keys/regenerate/[id] Rotate key
+
+GET    /api/gateway/services/[serviceId]/gateway-key          Get gateway key
+POST   /api/gateway/services/[serviceId]/gateway-key          Create/rotate gateway key
+
+GET    /api/gateway/services/[serviceId]/client-keys          List client keys
+POST   /api/gateway/services/[serviceId]/client-keys          Create client key
+DELETE /api/gateway/services/[serviceId]/client-keys/[keyId]  Delete client key
+
+POST   /api/gateway/proxy/[...path]         Proxy request to service
+```
+
+### Admin Endpoints
+
+```
+GET    /api/admin/tenants                   List all tenants
+POST   /api/admin/tenants                   Create tenant
+GET    /api/admin/tenants/[tenantId]        Get tenant
+PUT    /api/admin/tenants/[tenantId]        Update tenant
+DELETE /api/admin/tenants/[tenantId]        Delete tenant
+
+GET    /api/admin/tenants/[tenantId]/users          List tenant users
+POST   /api/admin/tenants/[tenantId]/users          Add user
+DELETE /api/admin/tenants/[tenantId]/users/[userId] Remove user
+
+GET    /api/admin/users                     List all users
+POST   /api/admin/set-admin                 Grant admin role
+
+GET    /api/admin/audit-logs               List audit logs
+GET    /api/admin/analytics                Get system analytics
+
+GET    /api/admin/b2c-status               Check B2C sync status
+POST   /api/admin/b2c-users                Sync B2C users
+```
+
+### Health & Monitoring
+
+```
+GET    /api/health                  Basic health check
+GET    /api/health/ready            Readiness probe (deps ready)
+GET    /api/metrics                 Prometheus metrics
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**Session not persisting:**
+- Check `SESSION_SECRET` is set
+- Verify cookie domain matches hostname
+- Check browser allows third-party cookies (if applicable)
+
+**Mobile token expiration:**
+- Mobile tokens expire after 24 hours
+- Implement refresh token flow
+- Check server time sync
+
+**Rate limiting too strict:**
+- Adjust `RATE_LIMIT_*` environment variables
+- Check per-key limits not too low
+- Monitor rate limit headers in responses
+
+**CSRF token errors:**
+- Ensure CSRF endpoint called before state-modifying requests
+- Check CSRF token included in `X-CSRF-Token` header
+- Token auto-refreshes within 1 hour
+
+**Multi-tenant user access issues:**
+- Verify user added to tenant via `/api/tenant/[tenantId]/users`
+- Check role assigned in target tenant
+- Try switching tenant via `/api/user/switch-tenant`
+
+---
+
+## Additional Resources
+
+- **Azure B2C Setup:** See `/docs/AZURE_B2C_SETUP_GUIDE.md`
+- **Multi-Tenant Architecture:** See `/docs/MULTI_TENANT_ARCHITECTURE.md`
+- **Mobile Integration:** See `/docs/MOBILE_GATEWAY_INTEGRATION.md`
+- **Tenant Role Management:** See `/docs/TENANT_ROLE_QUICK_START.md`
+- **CRM Integration:** See `/docs/CRM_INTEGRATION_GUIDE.md`
+- **External Web App Integration:** See `/docs/EXTERNAL_WEB_APP_INTEGRATION.md`
+- **Production Readiness:** See `/docs/PRODUCTION_READINESS_AUDIT.md`
+
+---
+
+**Last Updated:** March 12, 2026  
+**Version:** 2.0 (Complete Reference)
