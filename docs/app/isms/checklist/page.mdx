@@ -1,0 +1,179 @@
+# ISMS Implementation Checklist
+
+<DocumentMeta
+  version="1.0"
+  status="draft"
+  approvedBy="Security Officer"
+  approvedDate="2026-03-12"
+  filePath="docs/app/isms/checklist/page.mdx"
+/>
+
+This checklist tracks all ISMS documentation that needs to be migrated, created, or linked. Use this to ensure audit readiness.
+
+---
+
+## Legend
+
+| Status | Meaning |
+|--------|---------|
+| Done | Implemented in docs site |
+| Partial | Started but incomplete |
+| Missing | Not yet created |
+| Link Only | Links to external source (Azure Wiki, SharePoint, etc.) |
+
+---
+
+## High Level Structure
+
+| Item | Status | Location | Notes |
+|------|--------|----------|-------|
+| ISMS Scope | Missing | - | Define scope of certification |
+| Context of Organization | Missing | - | Internal/external factors |
+| Leadership Commitment | Missing | - | Management statement |
+| Information Security Policy | Missing | - | Top-level policy document |
+| ISMS Objectives | Missing | - | Measurable security objectives |
+
+## Policies
+
+| Item | Status | Location | Notes |
+|------|--------|----------|-------|
+| Information Security Policy | Missing | - | Master policy |
+| Access Control Policy | Missing | - | [Azure Wiki](https://dev.azure.com/medrecord/MEDrecord%20ISMS/_wiki/wikis/MEDrecord-ISMS.wiki/) |
+| Information Retention Policy | Link Only | [Azure Wiki](https://dev.azure.com/medrecord/MEDrecord%20ISMS/_wiki/wikis/MEDrecord-ISMS.wiki/1174/Information-retention-policy) | Needs migration or embed |
+| Supplier Relationship Policy | Link Only | [Azure Wiki](https://dev.azure.com/medrecord/MEDrecord%20ISMS/_wiki/wikis/MEDrecord-ISMS.wiki/1190/Supplier-relationship-policy) | Needs migration or embed |
+| Acceptable Use Policy | Missing | - | Employee IT usage rules |
+| Password Policy | Missing | - | Password requirements |
+| Remote Working Policy | Missing | - | WFH security requirements |
+| Mobile Device Policy | Missing | - | BYOD rules |
+| Data Classification Policy | Missing | - | Confidential/Internal/Public |
+| Cryptographic Policy | Missing | - | Encryption standards |
+
+## Procedures
+
+| Item | Status | Location | Notes |
+|------|--------|----------|-------|
+| Access Management | Done | [/isms/procedures/access-management](/isms/procedures/access-management) | |
+| Incident Response | Done | [/isms/procedures/incident-response](/isms/procedures/incident-response) | |
+| Change Management | Done | [/isms/procedures/change-management](/isms/procedures/change-management) | |
+| Backup & Restore | Done | [/isms/procedures/backup-restore](/isms/procedures/backup-restore) | |
+| Onboarding & Offboarding | Done | [/isms/procedures/onboarding-offboarding](/isms/procedures/onboarding-offboarding) | |
+| Vulnerability Management | Missing | - | Scanning, patching, remediation |
+| Business Continuity | Missing | - | BCP/DR procedures |
+| Supplier Assessment | Missing | - | How to evaluate suppliers |
+
+## Annex A Controls (ISO 27001)
+
+| Section | Status | Notes |
+|---------|--------|-------|
+| A.5 Information Security Policies | Partial | Need policy documents |
+| A.6 Organization of Information Security | Missing | Roles, responsibilities |
+| A.7 Human Resource Security | Partial | Onboarding done, need training records |
+| A.8 Asset Management | Missing | Asset register, classification |
+| A.9 Access Control | Partial | Some controls documented |
+| A.10 Cryptography | Missing | Key management |
+| A.11 Physical Security | Missing | Not applicable? Document N/A justification |
+| A.12 Operations Security | Partial | Change/backup done |
+| A.13 Communications Security | Missing | Network security |
+| A.14 System Acquisition | Missing | Secure development |
+| A.15 Supplier Relationships | Partial | Supplier register exists |
+| A.16 Incident Management | Partial | Procedure done, need incident register |
+| A.17 Business Continuity | Missing | BCP/DR documentation |
+| A.18 Compliance | Partial | Legal requirements exist |
+
+## Registers
+
+| Item | Status | Location | Notes |
+|------|--------|----------|-------|
+| Asset Register | Missing | - | All IT assets with owners |
+| Supplier Register | Done | [/isms/registers/suppliers](/isms/registers/suppliers) | |
+| Risk Register | Partial | [/isms/risks](/isms/risks) | Need more risks from Confluence |
+| Incident Register | Link Only | [GitLab](https://gitlab.medvision360.org/management/reports-and-announcements/-/boards) | Needs embedding or summary |
+| Change Register | Link Only | [Azure DevOps](https://dev.azure.com/) | Needs embedding or summary |
+| Training Records | Link Only | [MS Teams](https://teams.microsoft.com/) | Need training matrix |
+| Legal Requirements | Done | [/isms/registers/legal-requirements](/isms/registers/legal-requirements) | |
+| Processing Activities (GDPR Art.30) | Missing | - | Data processing register |
+
+## Supporting Documents
+
+| Item | Status | Location | Notes |
+|------|--------|----------|-------|
+| Statement of Applicability (SoA) | Partial | [/isms/annex-a](/isms/annex-a) | Need justifications |
+| Assurance Statement | Missing | - | Pre-certification declaration |
+| Roles and Responsibilities | Link Only | [Azure Wiki](https://dev.azure.com/knowl/ISMS%20security%20and%20HRM/_wiki/wikis/ISMS-security-and-HRM.wiki/1057/Competences) | Security Officer, DPO, etc. |
+| Competence Matrix | Link Only | [Azure Wiki](https://dev.azure.com/knowl/ISMS%20security%20and%20HRM/_wiki/wikis/ISMS-security-and-HRM.wiki/1057/Competences) | Skills per role |
+| Glossary | Missing | - | ISMS terminology |
+
+## External Evidence Sources
+
+| Source | Type | What it Contains |
+|--------|------|------------------|
+| [Azure DevOps Wiki](https://dev.azure.com/medrecord/MEDrecord%20ISMS/_wiki/) | Wiki | Policies, roles, competences |
+| [Azure DevOps Boards](https://dev.azure.com/) | Tickets | Change requests, improvements |
+| [GitLab Issues](https://gitlab.medvision360.org/) | Tickets | Incidents, security issues |
+| [GitHub](https://github.com/MEDrecord/) | Repos | Document version history |
+| [MS Teams](https://teams.microsoft.com/) | Files | Training records, meeting notes |
+| [SharePoint](https://medrecord.sharepoint.com/) | Documents | Certificates, contracts, audit reports |
+| [Confluence](https://medrecord.atlassian.net/wiki/spaces/ISMS) | Wiki | Legacy ISMS documentation |
+
+## Audit Artifacts (Fase 3)
+
+| Item | Status | Location | Notes |
+|------|--------|----------|-------|
+| ISO 27001 Certificate | Missing | SharePoint | Upload and link |
+| NEN 7510 Certificate | Missing | SharePoint | Upload and link |
+| ISO 13485 Certificate | Missing | SharePoint | Upload and link |
+| Internal Audit Reports | Missing | SharePoint | Annual internal audits |
+| External Audit Reports | Missing | SharePoint | Certification body reports |
+| Penetration Test Reports | Missing | SharePoint | Annual pentest results |
+| Management Review Minutes | Missing | SharePoint | Quarterly reviews |
+
+## GDPR/AVG (Fase 4)
+
+| Item | Status | Location | Notes |
+|------|--------|----------|-------|
+| Data Processing Agreement Template | Missing | - | DPA for customers |
+| DPIA Template | Missing | - | Privacy impact assessment |
+| Data Subject Request Procedure | Missing | - | Handle access/deletion requests |
+| Data Breach Notification Procedure | Missing | - | 72-hour AP notification |
+| Privacy Policy | Link Only | [Website](https://healthtalk.ai/privacy) | Public policy |
+| Cookie Policy | Link Only | [Website](https://healthtalk.ai/cookies) | GDPR/ePD compliance |
+
+---
+
+## Priority Actions
+
+### Immediate (Before Audit)
+
+1. **Migrate key policies from Azure Wiki** - Information Security Policy, Access Control Policy
+2. **Complete Risk Register** - Import remaining risks from Confluence
+3. **Document Asset Register** - List all IT assets with owners
+4. **Upload Certificates to SharePoint** - ISO 27001, NEN 7510
+
+### Short Term (Next Sprint)
+
+1. **Create Statement of Applicability** - Document all 114 Annex A controls
+2. **Document Roles** - Security Officer, DPO, Lead Developer responsibilities
+3. **Create Training Matrix** - Who needs what training
+
+### Medium Term (Next Quarter)
+
+1. **Implement GDPR section** - Processing register, DPIA process
+2. **Add Management Reviews** - Quarterly review documentation
+3. **Complete all missing policies**
+
+---
+
+## Progress Summary
+
+| Category | Done | Partial | Missing | Total |
+|----------|------|---------|---------|-------|
+| Policies | 0 | 2 | 8 | 10 |
+| Procedures | 5 | 0 | 3 | 8 |
+| Annex A Sections | 0 | 6 | 8 | 14 |
+| Registers | 2 | 1 | 4 | 7 |
+| Supporting Docs | 0 | 1 | 4 | 5 |
+| Audit Artifacts | 0 | 0 | 7 | 7 |
+| GDPR | 0 | 0 | 6 | 6 |
+| **Total** | **7** | **10** | **40** | **57** |
+
+**Completion: ~12%**
