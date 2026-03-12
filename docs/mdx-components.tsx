@@ -62,9 +62,10 @@ export default $`
 
     // TODO pass `'/api'` as first argument
     const pageMap = await getEnhancedPageMap()
-    const apiPageMap = pageMap.find(
+    const apiFolder = pageMap.find(
       (o): o is Folder => 'name' in o && o.name === 'api'
-    )!.children
+    )
+    const apiPageMap = apiFolder?.children ?? []
 
     return (
       <TSDoc
