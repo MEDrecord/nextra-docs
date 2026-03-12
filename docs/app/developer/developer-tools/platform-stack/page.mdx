@@ -1,0 +1,186 @@
+# Platform Stack
+
+The MEDrecord ecosystem is built on a modern, hybrid architecture combining cloud-native frontend deployment with a robust Java backend.
+
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         Frontend                             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │
+│  │  HealthTalk │  │   MedSafe   │  │   Coachi    │          │
+│  │  (Next.js)  │  │  (Next.js)  │  │  (Next.js)  │          │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘          │
+│         │                │                │                  │
+│         └────────────────┼────────────────┘                  │
+│                          │                                   │
+│                    Vercel Edge                               │
+└──────────────────────────┼───────────────────────────────────┘
+                           │
+                           │ HTTPS / HMAC Auth
+                           │
+┌──────────────────────────┼───────────────────────────────────┐
+│                          ▼                                   │
+│                 ┌─────────────────┐                         │
+│                 │     Gateway     │                         │
+│                 │  (Spring Boot)  │                         │
+│                 └────────┬────────┘                         │
+│                          │                                   │
+│    ┌─────────────────────┼─────────────────────┐            │
+│    │                     │                     │            │
+│    ▼                     ▼                     ▼            │
+│ ┌──────┐           ┌──────────┐          ┌─────────┐       │
+│ │ FHIR │           │ PostgreSQL│          │ OpenEHR │       │
+│ └──────┘           └──────────┘          └─────────┘       │
+│                                                              │
+│                     Java Backend                             │
+└──────────────────────────────────────────────────────────────┘
+```
+
+## Vercel (Frontend Hosting)
+
+All MEDrecord frontend applications are deployed on [Vercel](https://vercel.com).
+
+### Why Vercel?
+
+- **Edge Network** - Global CDN with automatic caching
+- **Zero-config deployments** - Git push triggers automatic builds
+- **Preview deployments** - Every PR gets a unique preview URL
+- **Serverless functions** - API routes scale automatically
+- **Analytics** - Built-in performance monitoring
+
+### Deployment Flow
+
+1. Push code to GitHub branch
+2. Vercel automatically builds and deploys
+3. Preview URL generated for review
+4. Merge to main triggers production deployment
+
+### Environment Variables
+
+Vercel manages environment variables per environment:
+- `GATEWAY_URL` - Backend API endpoint
+- `NEXT_PUBLIC_*` - Client-side variables
+- Secrets are encrypted and never exposed to client
+
+## v0 (AI Development)
+
+[v0](https://v0.dev) is Vercel's AI-powered development tool, integrated into our workflow.
+
+### Use Cases at MEDrecord
+
+| Use Case | Description |
+|----------|-------------|
+| **UI Components** | Generate React components with Tailwind CSS |
+| **Prototyping** | Quickly mock up new features for stakeholder review |
+| **Documentation** | This docs site is built and maintained with v0 |
+| **Debugging** | Analyze errors and suggest fixes |
+| **Code Review** | Get AI feedback on implementation approaches |
+
+### Best Practices
+
+See [AI Assistance](/developer/developer-tools/ai-assistance) for detailed prompting guidelines.
+
+**Key principles:**
+1. Always provide context (product, user, constraints)
+2. Reference existing patterns in the codebase
+3. Include MEDrecord-specific constraints (NEN-7510, Gateway pattern)
+4. Review and validate generated code before committing
+
+### v0 Project Rules
+
+Each repository contains a `CLAUDE.md` or `.cursorrules` file with:
+- Architecture constraints
+- Security requirements
+- Code style preferences
+- Forbidden patterns
+
+See [Project Rules](/developer/developer-tools/project-rules) for templates.
+
+## Java Backend (Gateway & Services)
+
+The backend is built with Spring Boot and provides the core business logic and data layer.
+
+### Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| Framework | Spring Boot 3.x |
+| Language | Java 21 |
+| Database | PostgreSQL |
+| Clinical Data | OpenEHR / FHIR |
+| Auth | OAuth 2.0 / HMAC |
+| Build | Maven |
+| Deployment | Kubernetes |
+
+### Gateway Architecture
+
+The Gateway is the single entry point for all frontend applications:
+
+```java
+// All requests go through the Gateway
+Frontend → Gateway → Internal Services → Database
+```
+
+**Key responsibilities:**
+- Authentication and authorization
+- Request routing to internal services
+- Rate limiting and throttling
+- Audit logging
+- HMAC signature verification
+
+### API Authentication
+
+All frontend-to-backend communication uses HMAC signatures:
+
+```typescript
+// Frontend: Sign request
+const signature = createHmacSignature(payload, timestamp, secretKey)
+
+// Backend: Verify signature
+@PreAuthorize("hasValidHmacSignature()")
+public ResponseEntity<?> handleRequest() { ... }
+```
+
+See [Gateway Documentation](/docs/products/gateway) for full API reference.
+
+### Development Workflow
+
+1. **Local development**: Run Gateway locally with Docker Compose
+2. **Feature branches**: Deploy to test environment
+3. **Code review**: PR with automated tests
+4. **Staging**: Integration testing
+5. **Production**: Blue-green deployment
+
+### Connecting Frontend to Backend
+
+Frontend applications **never** connect directly to databases or internal services.
+
+```typescript
+// CORRECT: Call Gateway API
+const response = await fetch(`${GATEWAY_URL}/api/patients`, {
+  headers: {
+    'X-Gateway-Signature': signature,
+    'X-Timestamp': timestamp
+  }
+})
+
+// WRONG: Direct database access
+// import { db } from '@/lib/database' // Never do this!
+```
+
+## Development Resources
+
+| Resource | URL |
+|----------|-----|
+| Vercel Dashboard | [vercel.com/medrecord](https://vercel.com/medrecord) |
+| v0 | [v0.dev](https://v0.dev) |
+| Gateway API Docs | [/docs/products/gateway](/docs/products/gateway) |
+| Internal Wiki | Confluence (ISMS space) |
+
+## Related Documentation
+
+- [AI Assistance](/developer/developer-tools/ai-assistance) - How to prompt v0 effectively
+- [Project Rules](/developer/developer-tools/project-rules) - Configure AI assistants
+- [Gateway](/docs/products/gateway) - Full API reference
+- [Patterns](/knowledge/patterns) - Code patterns from reviews
