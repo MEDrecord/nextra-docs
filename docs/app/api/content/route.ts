@@ -175,11 +175,75 @@ async function findMdxFile(normalizedPath: string): Promise<{ filePath: string; 
   return null
 }
 
+/**
+ * Recursively list all MDX files in a directory
+ */
+async function listMdxFiles(dir: string, basePath: string = ''): Promise<Array<{ path: string; title: string }>> {
+  const items: Array<{ path: string; title: string }> = []
+  
+  try {
+    const entries = await fs.readdir(dir, { withFileTypes: true })
+    
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name)
+      
+      if (entry.isDirectory()) {
+        // Skip api, auth, admin directories
+        if (['api', 'auth', 'admin', '_meta'].includes(entry.name)) continue
+        
+        // Check for page.mdx in this directory
+        const pageMdxPath = path.join(fullPath, 'page.mdx')
+        try {
+          const content = await fs.readFile(pageMdxPath, 'utf-8')
+          const title = extractTitle(content)
+          const urlPath = path.join(basePath, entry.name)
+          items.push({ path: '/' + urlPath, title })
+        } catch {
+          // No page.mdx, continue
+        }
+        
+        // Recurse into subdirectory
+        const subItems = await listMdxFiles(fullPath, path.join(basePath, entry.name))
+        items.push(...subItems)
+      }
+    }
+  } catch (e) {
+    console.error('[Content API] Error listing directory:', dir, e)
+  }
+  
+  return items
+}
+
 export async function GET(request: NextRequest) {
   const corsHeaders = getCorsHeaders(request)
   
+  const action = request.nextUrl.searchParams.get('action')
   const pathParam = request.nextUrl.searchParams.get('path')
+  const section = request.nextUrl.searchParams.get('section')
   
+  // Handle list action
+  if (action === 'list') {
+    try {
+      const appDir = getAppDir()
+      const searchDir = section ? path.join(appDir, section) : appDir
+      const basePath = section || ''
+      
+      const items = await listMdxFiles(searchDir, basePath)
+      
+      return NextResponse.json(
+        { success: true, items, section: section || 'all' },
+        { headers: corsHeaders }
+      )
+    } catch (error) {
+      console.error('[Content API] List error:', error)
+      return NextResponse.json(
+        { success: false, error: 'Failed to list content', items: [] },
+        { status: 500, headers: corsHeaders }
+      )
+    }
+  }
+  
+  // Handle single page fetch
   if (!pathParam) {
     return NextResponse.json(
       { success: false, error: 'Missing path parameter', path: null },
