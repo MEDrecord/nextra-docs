@@ -1,0 +1,154 @@
+# Backup & Restore Procedure
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/procedures/backup-restore/page.mdx"
+/>
+
+## Purpose
+
+This procedure describes how data is backed up, how backups are verified, and how to restore data in case of loss or corruption.
+
+## Scope
+
+Applies to all critical data including:
+- Production databases (patient data, user data)
+- Application configurations
+- Source code repositories
+- Infrastructure configurations
+- Encryption keys and certificates
+
+## Related Documents
+
+| Type | Document | Link |
+|------|----------|------|
+| Policy | Information Retention Policy | [View](/helpdesk/isms/information-retention-policy) |
+| Control | A.12.3.1 Information backup | [View](/isms/annex-a) |
+| Register | Assets Register | [View](/isms/registers) |
+
+## Backup Schedule
+
+| Data Type | Frequency | Retention | Location | Encryption |
+|-----------|-----------|-----------|----------|------------|
+| Production Database | Continuous (point-in-time) | 35 days | Azure SQL | AES-256 |
+| Production Database | Daily full | 90 days | Azure Backup | AES-256 |
+| Production Database | Weekly full | 1 year | Azure Backup (geo-redundant) | AES-256 |
+| File Storage | Daily incremental | 30 days | Azure Blob | AES-256 |
+| Source Code | Real-time (Git) | Indefinite | GitHub / GitLab | At rest |
+| Configurations | On change | 90 days | Azure DevOps | AES-256 |
+| Encryption Keys | On change | Indefinite | Azure Key Vault | HSM |
+
+## Backup Verification
+
+### Automated Verification (Daily)
+
+| Check | Action | Alert If |
+|-------|--------|----------|
+| Backup completion | Verify backup job succeeded | Failed |
+| Backup size | Compare to expected size | > 20% variance |
+| Backup integrity | Checksum verification | Mismatch |
+
+### Manual Verification (Monthly)
+
+| Step | Action | Responsible |
+|------|--------|-------------|
+| 1 | Select random backup from past 30 days | IT Admin |
+| 2 | Restore to isolated test environment | IT Admin |
+| 3 | Verify data integrity and completeness | IT Admin |
+| 4 | Document test results | IT Admin |
+| 5 | Delete test environment | IT Admin |
+
+### Annual Disaster Recovery Test
+
+| Step | Action | Responsible |
+|------|--------|-------------|
+| 1 | Plan full DR test with stakeholders | Security Officer |
+| 2 | Restore all systems to DR environment | IT Team |
+| 3 | Verify all applications functional | Development Team |
+| 4 | Measure Recovery Time (RTO) | IT Admin |
+| 5 | Document results and improvements | Security Officer |
+
+## Restore Procedure
+
+### Step 1: Assessment
+
+| Action | Responsible | System |
+|--------|-------------|--------|
+| Identify what needs to be restored | IT Admin | Investigation |
+| Determine cause of data loss | IT Admin | Logs |
+| Select appropriate backup point | IT Admin | Azure Portal |
+| Notify stakeholders of expected downtime | IT Admin | MS Teams |
+
+### Step 2: Restore
+
+| Data Type | Restore Method | Estimated Time |
+|-----------|----------------|----------------|
+| Database (point-in-time) | Azure SQL PITR | 15-30 minutes |
+| Database (full backup) | Azure Backup restore | 1-4 hours |
+| Files | Azure Blob restore | 30-60 minutes |
+| Source code | Git checkout | 5 minutes |
+| Configuration | Azure DevOps rollback | 15 minutes |
+
+### Step 3: Verification
+
+| Action | Responsible | System |
+|--------|-------------|--------|
+| Verify data integrity | IT Admin | Application |
+| Run application health checks | Developer | Monitoring |
+| Verify no data corruption | IT Admin | Data validation |
+| Confirm with stakeholders | IT Admin | MS Teams |
+
+### Step 4: Documentation
+
+| Action | Responsible | System |
+|--------|-------------|--------|
+| Document restore reason | IT Admin | Helpdesk |
+| Record restore point used | IT Admin | Helpdesk |
+| Log any data loss | IT Admin | ISMS Register |
+| Update incident record (if applicable) | IT Admin | Helpdesk |
+
+## Recovery Objectives
+
+| Objective | Target | Measured |
+|-----------|--------|----------|
+| Recovery Point Objective (RPO) | < 1 hour | Per incident |
+| Recovery Time Objective (RTO) | < 4 hours | Per incident |
+| Backup success rate | 99.9% | Monthly |
+| Restore test success rate | 100% | Monthly |
+
+## Roles and Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| IT Admin | Execute backups, monitor status, perform restores |
+| Security Officer | Define retention policies, oversee DR tests |
+| Development Team | Define data criticality, verify restores |
+| Management | Approve DR test schedule, receive reports |
+
+## Emergency Contacts
+
+| Situation | Contact | Method |
+|-----------|---------|--------|
+| Backup failure | On-call IT Admin | Phone |
+| Data corruption | IT Admin + Security Officer | MS Teams |
+| Full disaster | Management + IT Team | Emergency call tree |
+
+## Metrics
+
+| Metric | Target | Measured |
+|--------|--------|----------|
+| Backup job success rate | > 99.9% | Daily |
+| Monthly restore test completion | 100% | Monthly |
+| Annual DR test completion | 1/year | Annually |
+| Actual RPO (incidents) | < 1 hour | Per incident |
+| Actual RTO (incidents) | < 4 hours | Per incident |
+
+## Audit Evidence
+
+- Backup job logs in Azure Monitor
+- Monthly restore test reports
+- Annual DR test reports
+- Incident restore documentation

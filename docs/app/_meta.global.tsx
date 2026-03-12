@@ -19,10 +19,20 @@ const USER_GUIDE: MetaRecord = {
 const ISMS: MetaRecord = {
   index: 'Overview',
   'policies': 'Policies',
+  'procedures': 'Procedures',
   'annex-a': 'Annex A Controls',
   'registers': 'Registers',
   'risks': 'Risk Register',
   'audit': 'Audit & Evidence'
+}
+
+const ISMS_PROCEDURES: MetaRecord = {
+  index: 'Overview',
+  'access-management': 'Access Management',
+  'incident-response': 'Incident Response',
+  'change-management': 'Change Management',
+  'backup-restore': 'Backup & Restore',
+  'onboarding-offboarding': 'Onboarding & Offboarding'
 }
 
 const ISMS_ANNEX_A: MetaRecord = {
@@ -128,6 +138,10 @@ export default {
     items: {
       index: 'Overview',
       'policies': 'Policies',
+      'procedures': {
+        title: 'Procedures',
+        items: ISMS_PROCEDURES
+      },
       'annex-a': {
         title: 'Annex A Controls',
         items: ISMS_ANNEX_A
