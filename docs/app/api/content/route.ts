@@ -185,23 +185,50 @@ function normalizePath(inputPath: string): string {
 
 /**
  * Find the app directory across different environments
+ * Vercel serverless deploys the docs subfolder as the root
  */
 async function findAppDir(): Promise<string | null> {
   const cwd = process.cwd()
+  
+  // Log for debugging
+  console.log('[Content API] cwd:', cwd)
+  
   const possiblePaths = [
+    // Vercel deployment (docs folder is deployed as root)
     path.join(cwd, 'app'),
+    // Monorepo local development
     path.join(cwd, 'docs', 'app'),
+    // Vercel serverless function paths
     '/var/task/app',
-    '/var/task/docs/app',
+    '/var/task/.next/server/app',
+    // Relative to this file's location
+    path.resolve(__dirname, '..', '..'),
   ]
   
   for (const p of possiblePaths) {
     try {
       await fs.access(p)
+      console.log('[Content API] Found app dir:', p)
       return p
     } catch {
+      console.log('[Content API] Not found:', p)
       continue
     }
+  }
+  
+  // Last resort: try to list cwd contents
+  try {
+    const cwdContents = await fs.readdir(cwd)
+    console.log('[Content API] cwd contents:', cwdContents)
+    
+    // Check if 'app' folder exists in cwd
+    if (cwdContents.includes('app')) {
+      const appPath = path.join(cwd, 'app')
+      console.log('[Content API] Found app in cwd:', appPath)
+      return appPath
+    }
+  } catch (e) {
+    console.log('[Content API] Failed to read cwd:', e)
   }
   
   return null
@@ -282,12 +309,17 @@ export async function GET(request: NextRequest) {
     
   } catch (error) {
     console.error('[Content API] Error:', error)
+    console.error('[Content API] Stack:', error instanceof Error ? error.stack : 'No stack')
     
     return NextResponse.json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        path: normalizedPath
+        path: normalizedPath,
+        debug: process.env.NODE_ENV === 'development' ? {
+          cwd: process.cwd(),
+          errorStack: error instanceof Error ? error.stack : undefined
+        } : undefined
       },
       { status: 500, headers: corsHeaders }
     )
