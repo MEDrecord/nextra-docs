@@ -5,7 +5,12 @@ import { Layout } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import type React from 'react'
 import { AuthProvider } from '../lib/contexts/AuthContext'
+import { getUser } from '../lib/auth/server'
 import './globals.css'
+
+// Force dynamic rendering - this is an authenticated docs site
+// Server-side auth requires cookies() which needs dynamic rendering
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   description: 'HealthTalk Documentation - Help center and knowledge base.',
@@ -45,17 +50,17 @@ export const metadata: Metadata = {
 }
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
-  const pageMap = await getEnhancedPageMap()
-  
-  // Authentication is handled entirely client-side via AuthProvider
-  // This allows the layout to remain static for better performance and SEO
-  // The AuthContext fetches user data on mount using cookies or localStorage
+  // Fetch page map and user in parallel
+  const [pageMap, user] = await Promise.all([
+    getEnhancedPageMap(),
+    getUser().catch(() => null), // Graceful fallback if auth fails
+  ])
   
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
-        <AuthProvider>
+        <AuthProvider initialUser={user}>
           <Layout
             navbar={null}
             pageMap={pageMap}
