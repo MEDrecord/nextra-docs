@@ -136,7 +136,9 @@ export function RiskHeatmap({ risks }: RiskHeatmapProps) {
   risks.forEach(risk => {
     const l = LIKELIHOOD_MAP[risk.likelihood]
     const i = IMPACT_MAP[risk.impact]
-    riskMatrix[l][i].push(risk)
+    if (l !== undefined && i !== undefined && riskMatrix[l]?.[i]) {
+      riskMatrix[l][i].push(risk)
+    }
   })
 
   return (
