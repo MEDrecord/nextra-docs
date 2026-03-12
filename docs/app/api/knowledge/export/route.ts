@@ -50,7 +50,10 @@ function extractDocumentMeta(content: string): DocumentMeta | undefined {
   if (versionMatch?.[1]) meta.version = versionMatch[1]
   
   const statusMatch = propsStr.match(/status=["']([^"']+)["']/)
-  if (statusMatch?.[1]) meta.status = statusMatch[1] as DocumentMeta['status']
+  const statusValue = statusMatch?.[1]
+  if (statusValue === 'draft' || statusValue === 'review' || statusValue === 'approved') {
+    meta.status = statusValue
+  }
   
   const approvedByMatch = propsStr.match(/approvedBy=["']([^"']+)["']/)
   if (approvedByMatch?.[1]) meta.approvedBy = approvedByMatch[1]
