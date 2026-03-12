@@ -1,47 +1,119 @@
-# Compliance Overview
+# Compliance for Developers
 
-HealthTalk is designed to meet the stringent regulatory requirements of the healthcare industry.
+This guide helps developers build compliant features for the MEDrecord platform. For full compliance documentation, see the [ISMS section](/isms).
 
-## Certifications
+## Before You Code Checklist
 
-MEDrecord maintains the following certifications for HealthTalk:
+Before starting development on any feature, verify:
 
-| Standard | Status | Description |
-|----------|--------|-------------|
-| ISO 13485 | Certified | Medical device quality management |
-| ISO 62304 | Compliant | Medical device software lifecycle |
-| NEN 7510 | Certified | Healthcare information security (Netherlands) |
-| GDPR | Compliant | EU data protection regulation |
+- [ ] Feature requirements are documented and approved
+- [ ] Data classification is defined (PHI, PII, or general)
+- [ ] Security requirements are identified
+- [ ] Testing approach is planned
 
-## Compliance Framework
+## Security Checklist
 
-Our compliance program includes:
+Every code change must follow these security principles:
 
-- **Quality Management System (QMS)** - Documented processes and procedures
-- **Risk Management** - Systematic identification and mitigation of risks
-- **Design Controls** - Formal design and development processes
-- **Post-Market Surveillance** - Ongoing monitoring and feedback collection
-- **Audit Trail** - Complete traceability of all system activities
+### Data Handling
 
-## Documentation
+- [ ] No PHI/PII in console logs or error messages
+- [ ] All user input validated with zod schemas
+- [ ] SQL queries parameterized (no string concatenation)
+- [ ] Sensitive data encrypted at rest and in transit
 
-Compliance documentation available:
+### Authentication & Authorization
 
-- [ISO 13485](/docs/compliance/iso-13485) - Quality management documentation
-- [ISO 62304](/docs/compliance/iso-62304) - Software lifecycle documentation
-- [NEN 7510](/docs/compliance/nen-7510) - Information security compliance
-- [GDPR](/docs/compliance/gdpr) - Data protection documentation
-- [Audit Trail](/docs/compliance/audit-trail) - Activity logging and traceability
+- [ ] All API routes verify `auth.id` from Gateway
+- [ ] Role-based access control enforced
+- [ ] Session tokens handled securely (HttpOnly cookies)
+- [ ] No credentials in client-side code
 
-## Regulatory Contacts
+### API Security
 
-For compliance inquiries: compliance@medrecord.nl
+- [ ] Rate limiting configured for endpoints
+- [ ] CORS headers properly configured
+- [ ] Input size limits enforced
+- [ ] Error responses don't leak internal details
 
-## Audit Support
+## Code Patterns
 
-MEDrecord provides audit support including:
+### Gateway Authentication (Required)
 
-- Access to compliance documentation
-- System evidence export
-- Traceability matrices
-- Technical questionnaire responses
+```typescript
+// Server-side only - verify every request
+import { getUser } from '@/lib/auth/server'
+
+export async function GET(request: Request) {
+  const user = await getUser()
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  // Proceed with authenticated user
+}
+```
+
+### Input Validation (Required)
+
+```typescript
+import { z } from 'zod'
+
+const schema = z.object({
+  patientId: z.string().uuid(),
+  message: z.string().min(1).max(1000),
+})
+
+const result = schema.safeParse(input)
+if (!result.success) {
+  return Response.json({ error: 'Invalid input' }, { status: 400 })
+}
+```
+
+### Audit Logging
+
+```typescript
+// Log significant actions for compliance
+await auditLog({
+  action: 'patient.view',
+  userId: user.id,
+  resourceId: patientId,
+  timestamp: new Date(),
+})
+```
+
+## Platform Certifications
+
+The MEDrecord platform maintains the following certifications:
+
+| Standard | Focus | Developer Impact |
+|----------|-------|------------------|
+| NEN 7510 | Healthcare security | Access control, encryption, logging |
+| ISO 13485 | Quality management | Documentation, testing, traceability |
+| ISO 62304 | Software lifecycle | Design controls, verification |
+| GDPR | Data protection | Consent, data minimization, retention |
+
+For detailed certification requirements, see [ISMS Policies](/isms/policies).
+
+## Pre-PR Checklist
+
+Before creating a pull request:
+
+- [ ] Code follows [architecture patterns](/developer/architecture/overview)
+- [ ] All backend operations are server-side only
+- [ ] Input validation implemented
+- [ ] Error handling doesn't expose sensitive info
+- [ ] No hardcoded credentials or secrets
+- [ ] Unit tests cover security-critical paths
+- [ ] Accessibility requirements met (WCAG 2.1 AA)
+
+## Resources
+
+| Topic | Developer Docs | Full Compliance |
+|-------|----------------|-----------------|
+| Security | [Security Architecture](/developer/architecture/security) | [ISMS Policies](/isms/policies) |
+| Data Protection | [GDPR for Developers](/developer/compliance/gdpr) | [ISMS Registers](/isms/registers) |
+| Healthcare Security | [NEN 7510 Overview](/developer/compliance/nen-7510) | [ISMS Annex A](/isms/annex-a) |
+
+## Questions?
+
+For compliance questions: compliance@medrecord.nl
