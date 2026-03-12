@@ -22,9 +22,276 @@ ConsortiaAI is a product within the MEDrecord ecosystem, sharing the same infras
 - **Typography**: Consistent with MEDrecord design system
 - **Voice**: Professional, supportive, research-focused
 
+## Grant Engineering Philosophy
+
+ConsortiaAI adopts a **Cognitive Offloading** approach inspired by the LOGIQ AI methodology. This is not "AI chatting" but "AI grant engineering":
+
+### Core Principles
+
+| Principle | Description |
+|-----------|-------------|
+| **Human-in-the-loop** | AI executes, human verifies and approves before proceeding |
+| **Phase-gated workflow** | 4 phases with mandatory quality gates between each |
+| **Locked artifacts** | Critical decisions lock after approval - everything downstream builds on them |
+| **Structured outputs** | Every step produces specific .md or .xlsx knowledge artifacts |
+| **Consistency tracking** | SCRATCHPAD.md serves as "shared brain" for cross-checks |
+
+### The Key Distinction
+
+```
+Strategy + Judgment = HUMAN
+Everything else = .md files
+```
+
+AI extends capacity by handling analysis, calculation, drafting, and verification. Humans retain judgment for:
+
+- Domain knowledge application
+- Personal experience integration
+- Network leverage (partners, experts)
+- Business and career alignment
+- Final decision making and argumentation
+
+## Phase-Gated Workflow
+
+ConsortiaAI uses a 4-phase model with mandatory quality gates:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    ConsortiaAI Proposal Engine                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  Phase 1              Phase 2              Phase 3        Phase 4   │
+│  KNOWLEDGE BASE  →   WRITING INFRA    →   WRITING    →   ASSEMBLY  │
+│  (8 decisions)       (structures)         (sections)     (submit)   │
+│                                                                     │
+│  ┌─────┐            ┌─────┐              ┌─────┐        ┌─────┐    │
+│  │GATE │            │GATE │              │GATE │        │GATE │    │
+│  │P11  │            │     │              │     │        │FINAL│    │
+│  └─────┘            └─────┘              └─────┘        └─────┘    │
+│                                                                     │
+│  Human approves each step before AI proceeds to next                │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Phase 1: Knowledge Base
+
+Build the foundation through 8 structured decisions:
+
+| Step | Command | Output | Description |
+|------|---------|--------|-------------|
+| P1 | `run P1` | `01-call-context.md` | Contextual EU call study |
+| P2 | `run P2` | `02-compliance-checklist.md` | Admissibility and eligibility |
+| P3 | `run P3` | `03-evaluation-criteria.md` | Extract scoring criteria and weights |
+| P4 | `run P4` | `04-technical-requirements.md` | Page limits, character limits, formats |
+| P5 | `run P5` | `05-partnership-requirements.md` | Partner info needs, PIF template |
+| P6 | `run P6` | `06-logic-map.md` | **LOCKS after approval** |
+| P7 | `run P7` | `07-timeline-milestones.md` | Built on locked P6 |
+| P8 | `run P8` | `08-writing-strategy-matrix.xlsx` | Bridge to Phase 2 |
+| P9 | `run P9` | `09-qa-findings.md` | Quality checkpoint |
+| P10 | `run P10` | `10-patterns.md` | Funded proposal patterns (optional) |
+| P11 | `run P11` | `11-coherence-gate.md` | **MANDATORY PASS** |
+
+### Phase 2: Writing Infrastructure
+
+| Step | Output | Description |
+|------|--------|-------------|
+| P12 | `12-evidence-library.md` | Supporting evidence and citations |
+| P13 | `13-partner-profiles.md` | Detailed partner capabilities |
+| P14a | `14a-work-allocation.md` | Work package assignments |
+| P14b | `14b-budget-architecture.md` | Budget structure per partner |
+
+### Phase 3: Writing
+
+Section drafts based on locked infrastructure from Phase 1-2.
+
+### Phase 4: Assembly and Submit
+
+Final assembly, formatting, compliance check, and submission.
+
+## Lock Points and Quality Gates
+
+### Lock Points
+
+Critical outputs lock after human approval. Everything downstream builds on locked artifacts.
+
+| Artifact | When It Locks | What Depends On It |
+|----------|---------------|-------------------|
+| `06-logic-map.md` | After P6 approval | P7-P11, all Phase 2-4 work |
+| `11-coherence-gate.md` | After passing | Phase 2 can begin |
+
+### Coherence Gate (P11)
+
+The coherence gate cross-checks ALL P1-P10 outputs for contradictions:
+
+| Check | Description |
+|-------|-------------|
+| **Eligibility vs Scope** | Does proposal match call requirements? |
+| **Timeline vs Budget** | Are milestones properly resourced? |
+| **Partners vs Work Packages** | Do capabilities match assignments? |
+| **Evaluation vs Content** | Does logic map address all criteria? |
+
+**Verdict**: PASS / CONDITIONAL / FAIL
+
+Must **PASS** before proceeding to Phase 2.
+
+## Project Knowledge Structure
+
+Each proposal maintains a structured knowledge base:
+
+```
+project-knowledge/
+├── custom-instructions.md        # Project-specific AI instructions
+├── SCRATCHPAD.md                 # Consistency notes (growing)
+├── STATUS.md                     # Progress tracker
+│
+├── source-docs/                  # Uploaded EU documents
+│   ├── programme-guide.pdf
+│   ├── call-document.pdf
+│   ├── application-form-template.docx
+│   ├── budget-template.xlsx
+│   └── info-slides-faq.pdf
+│
+├── partner-docs/                 # Partner information
+│   ├── PIFs/                     # One per partner
+│   └── additional-forms/
+│
+├── phase1-outputs/               # Knowledge base
+│   ├── 01-call-context.md
+│   ├── 02-compliance-checklist.md
+│   ├── 03-evaluation-criteria.md
+│   ├── 04-technical-requirements.md
+│   ├── 05-partnership-requirements.md
+│   ├── 06-logic-map.md           # LOCKS
+│   ├── 07-timeline-milestones.md
+│   ├── 08-writing-strategy-matrix.xlsx
+│   ├── 09-qa-findings.md
+│   ├── 10-patterns.md
+│   └── 11-coherence-gate.md      # MUST PASS
+│
+├── phase2-outputs/               # Writing infrastructure
+│   ├── 12-evidence-library.md
+│   ├── 13-partner-profiles.md
+│   ├── 14a-work-allocation.md
+│   └── 14b-budget-architecture.md
+│
+├── phase3-outputs/               # Section drafts
+│   └── sections/
+│
+├── phase4-outputs/               # Final assembly
+│   └── submission/
+│
+└── annexes/                      # Supporting documents
+```
+
+## Specialized Agents
+
+ConsortiaAI uses specialized agents per methodology:
+
+```
+.consortia/agents/
+├── compliance-officer.md     # Admissibility, eligibility rules
+├── evaluation-strategist.md  # Scoring criteria optimization
+├── budget-architect.md       # Cost structures, PM rates
+├── evidence-researcher.md    # Supporting data, citations
+├── section-writer.md         # Part B content generation
+└── qa-auditor.md             # Cross-check, coherence
+```
+
+### Agent Capabilities
+
+| Agent | Role | When Used |
+|-------|------|-----------|
+| **Compliance Officer** | Checks admissibility, flags violations | P2, Phase 4 |
+| **Evaluation Strategist** | Optimizes for scoring criteria | P3, P6 |
+| **Budget Architect** | Builds budget logic, PM rates | P14b |
+| **Evidence Researcher** | Finds supporting data | P12 |
+| **Section Writer** | Drafts proposal sections | Phase 3 |
+| **QA Auditor** | Cross-checks consistency | P9, P11 |
+
+## Dashboard
+
+The ConsortiaAI dashboard provides real-time visibility:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  CONSORTIAAI                                    47 : 15 : 30        │
+│  Horizon-HLTH-2025 - Digital Health - AI       DAYS  HRS   MIN     │
+│  ████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░  5/27 tasks          │
+├─────────────────────────────────────────────────────────────────────┤
+│  KEY MILESTONES                                                     │
+│  14 Mar Partner forms | 21 Mar Phase 1 | 25 Mar First draft | ...  │
+├─────────────────────────────────────────────────────────────────────┤
+│  Phase 1          Phase 2          Phase 3          Phase 4        │
+│  Knowledge Base   Writing Infra    Writing          Final Assembly │
+│  ████ 5/8         ░░░░ 0/5         ░░░░ 0/8         ░░░░ 0/5       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                          │  REQUIRED INPUTS         │
+│  Phase 1: Knowledge Base                 │  ✓ Programme Guide       │
+│                                          │  ✓ EU Call document      │
+│  1. Call context study      [Complete]   │  ✓ Application template  │
+│  2. Compliance study        [Complete]   │  □ Own PIF               │
+│  3. Evaluation criteria     [Complete]   │  □ Regional priorities   │
+│  4. Technical study         [Complete]   │                          │
+│  5. Partnership requirements[In Progress]│  QUICK STATS             │
+│  6. Logic map (LOCKS)       [Pending]    │  1/4 Partner forms       │
+│  7. Timeline & milestones   [Pending]    │  €400K Total budget      │
+│  8. Coherence gate          [Pending]    │  24 mo Duration          │
+│                                          │  5 Work packages         │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Dashboard Components
+
+| Component | Description |
+|-----------|-------------|
+| **Countdown Timer** | Days/hours/minutes to submission deadline |
+| **Progress Bar** | Overall task completion |
+| **Key Milestones** | Critical dates timeline |
+| **Phase Tracker** | Visual 4-phase progress |
+| **Task Checklist** | Per-phase tasks with status |
+| **Required Inputs** | Document upload status |
+| **Quick Stats** | Partner forms, budget, duration, work packages |
+
+## Journey Network
+
+Visual graph of all proposal dependencies:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  JOURNEY NETWORK                                    Search nodes... │
+│  56 nodes - 122 connections - 4 phases - submission                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│     ○ Phase      ● Document    ● Decision    ● Tool                │
+│     ○ Person     ● Section     ● Partner     ● Milestone           │
+│     ○ Audit/Fix                                                    │
+│                                                                     │
+│                        [Interactive Node Graph]                     │
+│                                                                     │
+│     Phase 1 ──→ Phase 2 ──→ Phase 3 ──→ Phase 4                    │
+│     Knowledge    Writing      Writing      Assembly                 │
+│     Base         Infra                     + Submit                 │
+│                                                                     │
+├─────────────────────────────────────────────────────────────────────┤
+│  14 Sections  |  7 Decisions  |  10 Documents  |  8 Tools          │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+Node types with color coding:
+- **Blue**: Phases
+- **Orange**: Documents
+- **Red**: Decisions
+- **Purple**: Tools
+- **Teal**: Persons
+- **Pink**: Sections
+- **Yellow**: Partners
+- **Green**: Milestones
+- **Cyan**: Audit/Fix items
+
 ## Multi-Tenancy
 
-ConsortiaAI is multi-tenant, supporting multiple organizations with isolated data and configurations.
+ConsortiaAI is multi-tenant, supporting multiple organizations with isolated data.
 
 ### Tenant Structure
 
@@ -44,19 +311,7 @@ ConsortiaAI is multi-tenant, supporting multiple organizations with isolated dat
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Tenant Isolation
-
-| Aspect | Isolation Level |
-|--------|-----------------|
-| **Data** | Fully isolated - no cross-tenant data access |
-| **Users** | Per-tenant user management with roles |
-| **Projects** | Tenant-scoped, shareable via consortium invites |
-| **Settings** | Per-tenant configuration |
-| **Integrations** | Tenant-specific API keys (Cal.com, Stripe) |
-
 ### Gateway Integration
-
-ConsortiaAI uses Gateway for multi-tenant routing:
 
 ```
 User → Gateway → ConsortiaAI
@@ -67,62 +322,14 @@ User → Gateway → ConsortiaAI
           └── Returns user with tenant role
 ```
 
-**Headers from Gateway:**
-
-| Header | Description |
-|--------|-------------|
-| `X-User-Id` | Authenticated user identifier |
-| `X-Tenant-Id` | Active tenant/organization |
-| `X-Tenant-Role` | User role within tenant |
-
 ### Tenant Roles
 
-| Role | Description | Permissions |
-|------|-------------|-------------|
-| **Owner** | Tenant administrator | Full access, manage users, billing |
-| **Coordinator** | Project coordinator | Create projects, manage partners, full project access |
-| **Partner** | External consortium partner | Invited project access only |
-| **Viewer** | Read-only access | View projects, no edit rights |
-
-### Cross-Tenant Collaboration
-
-Research consortia often span multiple organizations. ConsortiaAI handles this via:
-
-1. **Consortium Invites** - Invite partners from other tenants to specific projects
-2. **Shared Workspaces** - Project-level access for cross-tenant collaboration
-3. **Federated Identity** - Partners authenticate via their own tenant
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    Project: Health-AI-2025                   │
-├──────────────────────────────────────────────────────────────┤
-│  Coordinator (Tenant A)  ←→  Partner (Tenant B)              │
-│  Coordinator (Tenant A)  ←→  Partner (Tenant C)              │
-│  Coordinator (Tenant A)  ←→  External Partner (Email invite) │
-└──────────────────────────────────────────────────────────────┘
-```
-
-## Overview
-
-ConsortiaAI helps research coordinators manage complex multi-partner projects efficiently. The platform uses AI agents to automate repetitive tasks while keeping humans in control of strategic decisions.
-
-### Target Users
-
-- Research coordinators at University Medical Centers
-- Research Support Office staff
-- Project managers for Horizon Europe, Eurostars, ZonMw, NWO projects
-- Innovation managers at healthcare organizations
-
-### Key Capabilities
-
-- **Funding Intelligence** - AI-powered call monitoring and eligibility matching
-- **Consortium Builder** - Partner discovery, outreach automation, LOI tracking
-- **Proposal Workspace** - Collaborative editing with compliance checks
-- **Contracts and Agreements** - Templates for CA, DPA, IP schedules with e-signatures
-- **Planning and Scheduling** - Cal.com integration for partner meetings and deadlines
-- **Project Execution** - Work packages, milestones, deliverables tracking
-- **Financials and Payments** - Budget tracking, success fees, invoicing via Stripe
-- **Reporting Suite** - Periodic reports, financial reporting, KPI dashboards
+| Role | Permissions |
+|------|-------------|
+| **Owner** | Full access, manage users, billing |
+| **Coordinator** | Create projects, manage partners, full project access |
+| **Partner** | Invited project access only |
+| **Viewer** | Read-only access |
 
 ## Layout
 
@@ -132,273 +339,119 @@ ConsortiaAI uses the standard MEDrecord three-panel layout:
 ┌──────────────┬──────────────────┬─────────────────────────────────┐
 │   Sidebar    │   Agent Chat     │          Content                │
 │              │                  │                                 │
-│  - Funding   │  AI assistant    │   [Main workspace]              │
-│  - Partners  │  for current     │   Tables, forms, editors        │
-│  - Proposals │  module context  │                                 │
-│  - Contracts │                  │                                 │
-│  - Planning  │  + suggestions   │                                 │
-│  - Execution │  + actions       │                                 │
-│  - Financials│                  │                                 │
+│  - Projects  │  Context-aware   │   Dashboard / Phase View        │
+│  - Funding   │  AI assistant    │   Task details, documents       │
+│  - Partners  │                  │   Journey Network               │
+│  - Proposals │  "Run P3"        │                                 │
+│  - Contracts │  "What's next?"  │                                 │
+│  - Planning  │                  │                                 │
+│  - Execution │                  │                                 │
 │  - Reports   │                  │                                 │
-│              │                  │                                 │
 └──────────────┴──────────────────┴─────────────────────────────────┘
 ```
 
-| Panel | Purpose |
-|-------|---------|
-| **Sidebar** | Module navigation and project selection |
-| **Agent** | Context-aware AI chat for the active module |
-| **Content** | Main workspace with tables, forms, and editors |
+## Document Services
 
-## Modules
+ConsortiaAI agents can fully manage documents in Google Workspace and Microsoft 365.
 
-| Module | Agent Context | Content Panel |
-|--------|---------------|---------------|
-| **Funding** | Grant discovery, eligibility checks | Call browser, deadline tracker |
-| **Partners** | Partner matching, outreach drafts | Partner database, LOI tracker |
-| **Proposals** | Section drafting, compliance | Collaborative editor, checklist |
-| **Contracts** | Legal review, clause suggestions | Templates, negotiation, e-signatures |
-| **Planning** | Meeting scheduling, availability | Cal.com booking, milestone calendar |
-| **Execution** | Task coordination, reminders | Work packages, milestone tracker |
-| **Financials** | Invoice generation, fee tracking | Budget, payments, financial reports |
-| **Reports** | Report generation, data aggregation | Periodic reports, KPIs |
+### Agent Document Operations
 
-## Planning and Scheduling (Cal.com)
+| Operation | Google Workspace | Microsoft 365 |
+|-----------|------------------|---------------|
+| **Create** | Drive API `files.create` | SharePoint `POST /drive/items` |
+| **Read** | Drive API `files.get` | Graph API `GET /drive/items/{id}` |
+| **Update** | Docs API `batchUpdate` | Graph API `PATCH` |
+| **Delete** | Drive API `files.delete` | Graph API `DELETE` |
+| **List** | Drive API `files.list` | Graph API `GET /drive/children` |
 
-ConsortiaAI integrates with Cal.com for consortium scheduling and coordination:
+## Custom E-Signature (ConsortiaSign)
+
+Custom-built e-signature system with eIDAS compliance.
 
 ### Features
 
+| Feature | Implementation |
+|---------|----------------|
+| **Document Prep** | PDF.js rendering, signature field placement |
+| **Signing Flow** | Email invites with secure magic links |
+| **Authentication** | Gateway auth internal, magic link external |
+| **Audit Trail** | Timestamp, IP, user agent, document hash |
+| **Legal Compliance** | Advanced Electronic Signature (AdES) |
+| **QES Integration** | Signicat, GlobalSign for Qualified Signatures |
+
+## Communication Tracking
+
+Track consortium communications for audit trail:
+
+### WhatsApp Integration
+
+```
+WhatsApp Business API → Webhook → Gateway → ConsortiaAI
+                                      │
+                                      ├── Store messages per project
+                                      ├── Link to partners
+                                      └── AI action extraction
+```
+
+### Features
+
+- Message sync via webhooks
+- Contact-to-partner linking
+- Full-text search
+- AI-powered summaries
+- Action item extraction
+- GDPR-compliant consent management
+
+## Planning and Scheduling (Cal.com)
+
+Cal.com integration for consortium coordination:
+
 | Feature | Description |
 |---------|-------------|
-| **Partner Meetings** | Round-robin booking with multiple coordinators |
-| **Kick-off Planning** | Team scheduling with availability overlap detection |
-| **Review Deadlines** | Recurring event types for periodic reviews |
-| **Consortium Calls** | Multi-timezone scheduling for international partners |
-| **Expert Consultations** | Event types per consultation category |
-
-### Integration
-
-```
-ConsortiaAI → Cal.com API
-     │
-     ├── Create event types per project phase
-     ├── Embed booking widget in Partner module
-     ├── Sync with milestone calendar
-     └── Automated meeting prep (agenda generation via Agent)
-```
-
-### Scheduling Agent
-
-The Scheduling Agent automates meeting coordination:
-
-| User Input | Agent Action |
-|------------|--------------|
-| "Schedule kick-off with all partners" | Finds availability, creates Cal.com event |
-| "When can we meet next week?" | Checks partner calendars, suggests slots |
-| "Remind everyone about Friday review" | Sends calendar reminders |
-
-## Contracts and Agreements
-
-Full contract lifecycle management for research consortia:
-
-### Contract Types
-
-| Type | Description |
-|------|-------------|
-| **Consortium Agreement (CA)** | Main agreement between all partners |
-| **Data Processing Agreement (DPA)** | GDPR-compliant data handling terms |
-| **IP/Background Schedule** | Intellectual property rights allocation |
-| **Non-Disclosure Agreement (NDA)** | Confidentiality terms for pre-proposal |
-| **Letter of Intent (LOI)** | Partner commitment before full agreement |
-| **Subcontracting Agreement** | Terms for external subcontractors |
-| **Grant Agreement** | Agreement with funding body |
-
-### Contract Workflow
-
-| Stage | Features |
-|-------|----------|
-| **Templates** | Pre-approved templates per contract type |
-| **Drafting** | AI-assisted clause suggestions, version tracking |
-| **Negotiation** | Redline tracking, comment threads, approval workflows |
-| **Signatures** | E-signature integration (DocuSign, Adobe Sign) |
-| **Storage** | Secure document vault with expiry alerts |
-| **Compliance** | Auto-check against funding scheme rules |
-
-### Contract Agent
-
-| User Input | Agent Action |
-|------------|--------------|
-| "Draft a DPA for partner X" | Generates DPA from template with partner details |
-| "Review IP clause in section 5" | Analyzes clause, suggests improvements |
-| "What are the termination terms?" | Extracts and summarizes relevant clauses |
+| **Partner Meetings** | Round-robin booking |
+| **Availability** | Multi-timezone scheduling |
+| **Milestone Sync** | Calendar integration |
+| **Automated Prep** | AI-generated meeting agendas |
 
 ## Financials and Payments (Stripe)
 
-Track budgets, partner contributions, and success-based payments:
-
-### Payment Types
-
-| Type | Description | Trigger |
-|------|-------------|---------|
-| **Partner Contributions** | Cash/in-kind tracking per partner | Budget allocation |
-| **Success Fees** | Milestone-based payments | Milestone completion |
-| **Consultancy Fees** | Expert consultation payments | Cal.com booking |
-| **License Royalties** | Post-project IP commercialization | Recurring |
-| **Grant Disbursements** | Received funding tranches | Grant schedule |
-
-### Stripe Integration
-
-```
-ConsortiaAI → Stripe API
-     │
-     ├── Milestone-triggered invoices
-     ├── Success fee collection
-     ├── Multi-partner split payments
-     ├── Subscription billing (if applicable)
-     └── Financial reporting dashboard
-```
-
-### Finance Agent
-
-| User Input | Agent Action |
-|------------|--------------|
-| "Generate invoice for WP2 completion" | Creates Stripe invoice with milestone details |
-| "What's the budget status for Q3?" | Aggregates spending, shows remaining budget |
-| "Track success fee for deliverable D3.1" | Sets up milestone-triggered payment |
-
-## Current Development Status
-
-ConsortiaAI is in early development. The first agent being implemented is the **Ticketing Agent** to collect user feedback and feature requests.
-
-### Phase 1: Feedback Collection (Current)
-
-| Component | Status | Description |
-|-----------|--------|-------------|
-| **Ticketing Agent** | In Development | Collect feedback, feature requests, and bug reports |
-| **Basic Layout** | Planned | Sidebar + Agent + Content structure |
-| **User Onboarding** | Planned | Early adopter registration |
-
-### Phase 2: Core Modules
-
-| Component | Status | Description |
-|-----------|--------|-------------|
-| Funding Module | Planned | Call monitoring and matching |
-| Partner Module | Planned | Partner database and outreach |
-| Planning Module | Planned | Cal.com integration |
-| Proposal Module | Planned | Collaborative editing |
-
-### Phase 3: Agreements and Execution
-
-| Component | Status | Description |
-|-----------|--------|-------------|
-| Contracts Module | Planned | Templates, negotiation, e-signatures |
-| Execution Module | Planned | Milestone and deliverable tracking |
-| Financials Module | Planned | Stripe integration, invoicing |
-
-### Phase 4: Advanced Features
-
-| Component | Status | Description |
-|-----------|--------|-------------|
-| Reporting Suite | Planned | Periodic reports, KPIs |
-| Advanced Agents | Planned | Grant Scout, Partner Matcher |
-| Analytics | Planned | Project health dashboards |
-
-## Ticketing Agent
-
-The Ticketing Agent is the first AI agent for ConsortiaAI, designed to:
-
-- Collect user feedback on platform features
-- Log feature requests with priority and context
-- Report bugs and issues
-- Route tickets to the development team
-
-### How It Works
-
-```
-User → Agent Chat → Ticketing Agent → Helpdesk Integration
-           │                              │
-           ▼                              ▼
-    "I need a way to         Ticket created with:
-     track partner LOIs"     - Category: Feature Request
-                             - Module: Partners
-                             - Priority: Medium
-                             - Description: LOI tracking
-```
-
-### Example Interactions
-
-| User Input | Agent Response |
-|------------|----------------|
-| "I want to request a feature" | "What feature would you like? I'll create a ticket for the team." |
-| "The deadline filter is not working" | "I'll report this bug. Can you describe what happens?" |
-| "How do I track consortium agreements?" | "That's coming in Phase 3. Want me to log this as a priority request?" |
-
-## Agent Roadmap
-
-| Agent | Module | Purpose | Phase |
-|-------|--------|---------|-------|
-| **Ticketing Agent** | All | Feedback and support | 1 |
-| **Scheduling Agent** | Planning | Cal.com meetings, reminders | 2 |
-| **Grant Scout** | Funding | Monitor calls, match criteria | 2 |
-| **Partner Matcher** | Partners | Find complementary expertise | 2 |
-| **Proposal Drafter** | Proposals | Draft sections, check compliance | 2 |
-| **Contract Agent** | Contracts | Review terms, suggest clauses | 3 |
-| **Finance Agent** | Financials | Invoices, payment tracking | 3 |
-| **Coordinator** | Execution | Task assignment, reminders | 3 |
-| **Reporter** | Reports | Generate periodic reports | 4 |
-
-## Integrations
-
-### Cal.com
-
-| Feature | Use Case |
-|---------|----------|
-| Event Types | Per project phase (kick-off, review, close-out) |
-| Round Robin | Distribute meetings across coordinators |
-| Availability | Multi-timezone partner scheduling |
-| Webhooks | Sync confirmations to ConsortiaAI |
-
-### Stripe
-
-| Feature | Use Case |
-|---------|----------|
-| Invoices | Milestone-based billing |
-| Payment Intents | Success fee collection |
-| Subscriptions | Recurring platform fees |
-| Webhooks | Payment status updates |
-
-### E-Signature (DocuSign/Adobe Sign)
-
-| Feature | Use Case |
-|---------|----------|
-| Envelope Creation | Send contracts for signing |
-| Signing Workflows | Multi-party approval sequences |
-| Webhooks | Signature completion notifications |
-
-### Document Services
-
-| Platform | Features |
-|----------|----------|
-| **Google Workspace** | Docs, Drive, Calendar integration |
-| **Microsoft 365** | SharePoint, OneDrive, Teams integration |
+| Type | Description |
+|------|-------------|
+| **Partner Contributions** | Cash/in-kind tracking |
+| **Success Fees** | Milestone-triggered payments |
+| **Consultancy Fees** | Expert consultation payments |
+| **Grant Disbursements** | Funding tranche tracking |
 
 ## Architecture
 
-ConsortiaAI is built on the MEDrecord platform stack:
-
 ```
-User → ConsortiaAI UI → Gateway → Supabase
-              │              │
-              ▼              ▼
-        Agent Column    AI Providers
-              │         (OpenAI/Anthropic)
-              ▼
-        Integrations
-        ├── Cal.com (Scheduling)
-        ├── Stripe (Payments)
-        ├── DocuSign (E-Signatures)
-        └── Google/Microsoft (Documents)
+┌─────────────────────────────────────────────────────────────────┐
+│                        ConsortiaAI                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
+│  │   Phase     │  │  Document   │  │   Journey   │             │
+│  │   Engine    │  │  Services   │  │   Network   │             │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘             │
+│         │                │                │                     │
+│         ▼                ▼                ▼                     │
+│  ┌─────────────────────────────────────────────────────┐       │
+│  │              Specialized Agents                     │       │
+│  │  compliance | evaluation | budget | writer | qa     │       │
+│  └─────────────────────────────────────────────────────┘       │
+│                           │                                     │
+│                           ▼                                     │
+│  ┌─────────────────────────────────────────────────────┐       │
+│  │                      Gateway                        │       │
+│  │         (Auth, Multi-tenancy, RBAC)                │       │
+│  └─────────────────────────────────────────────────────┘       │
+│                           │                                     │
+│                           ▼                                     │
+│  ┌─────────────────────────────────────────────────────┐       │
+│  │                     Supabase                        │       │
+│  │              (Data, Files, Realtime)               │       │
+│  └─────────────────────────────────────────────────────┘       │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Technology Stack
@@ -408,39 +461,75 @@ User → ConsortiaAI UI → Gateway → Supabase
 | Frontend | Next.js 16, React, Tailwind CSS |
 | Backend | Gateway API, Supabase |
 | AI | AI SDK, OpenAI, Anthropic |
+| Phase Engine | Custom state machine with locks |
+| Documents | Google Workspace API, Microsoft Graph |
+| E-Signature | ConsortiaSign (AdES), TSP (QES) |
 | Scheduling | Cal.com API |
 | Payments | Stripe API |
-| Documents | Google Workspace API, Microsoft Graph |
-| Auth | Gateway HMAC, RBAC |
+| Communication | WhatsApp Business API |
 
 ## Security and Compliance
 
-### Authentication and Authorization
+### Authentication
 
 | Feature | Implementation |
 |---------|----------------|
-| **Gateway Authentication** | Cookie-based auth via Azure B2C |
-| **Multi-Tenant Isolation** | Tenant context via Gateway headers |
-| **Role-Based Access** | Owner, Coordinator, Partner, Viewer per tenant |
-| **Project-Level Permissions** | Fine-grained access per project |
+| **Gateway Auth** | Cookie-based via Azure B2C |
+| **Multi-Tenant** | Tenant context via headers |
+| **RBAC** | Owner, Coordinator, Partner, Viewer |
 
 ### Data Security
 
 | Feature | Implementation |
 |---------|----------------|
-| **Encryption in Transit** | TLS 1.3 |
-| **Encryption at Rest** | AES-256 |
-| **Audit Trail** | Full versioning for contracts and submissions |
+| **Encryption** | TLS 1.3 in transit, AES-256 at rest |
+| **Audit Trail** | Full versioning for all artifacts |
 | **Data Isolation** | Row-level security per tenant |
 
 ### Compliance
 
 | Standard | Scope |
 |----------|-------|
-| **GDPR** | Data handling compliant with EU regulations |
-| **NEN 7510** | Healthcare information security (inherited from MEDrecord) |
-| **Grant Rules** | Compliance per funding scheme (Horizon, Eurostars, ZonMw, NWO) |
-| **PCI DSS** | Stripe handles payment data securely |
+| **GDPR** | Data handling, consent, deletion |
+| **eIDAS** | Electronic signatures |
+| **NEN 7510** | Healthcare security (MEDrecord) |
+| **Grant Rules** | Horizon, Eurostars, ZonMw, NWO |
+
+## Development Status
+
+### Phase 1: Feedback Collection (Current)
+
+| Component | Status |
+|-----------|--------|
+| Ticketing Agent | In Development |
+| Basic Layout | Planned |
+| User Onboarding | Planned |
+
+### Phase 2: Phase Engine
+
+| Component | Status |
+|-----------|--------|
+| Phase-gated workflow | Planned |
+| Lock mechanism | Planned |
+| Quality gates | Planned |
+| Dashboard | Planned |
+| Journey Network | Planned |
+
+### Phase 3: Core Modules
+
+| Component | Status |
+|-----------|--------|
+| Specialized agents | Planned |
+| Document services | Planned |
+| Cal.com integration | Planned |
+
+### Phase 4: Advanced
+
+| Component | Status |
+|-----------|--------|
+| ConsortiaSign | Planned |
+| WhatsApp sync | Planned |
+| Stripe integration | Planned |
 
 ## Resources
 
@@ -453,8 +542,8 @@ User → ConsortiaAI UI → Gateway → Supabase
 
 ## Getting Started
 
-ConsortiaAI is currently in development. To participate in early testing:
+ConsortiaAI is in development. To participate:
 
 1. **Request Access** - Contact the product team
-2. **Provide Feedback** - Use the Ticketing Agent to share your needs
-3. **Shape the Product** - Your input drives the development roadmap
+2. **Provide Feedback** - Use the Ticketing Agent
+3. **Shape the Product** - Your input drives the roadmap

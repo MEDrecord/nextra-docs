@@ -1,3 +1,4 @@
+// Layout for HealthTalk Documentation
 import { getEnhancedPageMap } from '@components/get-page-map'
 import type { Metadata } from 'next'
 import { Layout } from 'nextra-theme-docs'
