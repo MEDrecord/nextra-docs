@@ -93,7 +93,6 @@ const DEVELOPER_TOOLS: MetaRecord = {
 }
 
 const PRODUCTS: MetaRecord = {
-  overview: 'Overview',
   'healthtalk': 'HealthTalk',
   'helpdesk': 'Helpdesk',
   'project-management': 'Project Management',
@@ -145,12 +144,10 @@ export default {
     type: 'page',
     title: 'Products',
     items: {
-      'healthtalk': 'HealthTalk',
-      'helpdesk': 'Helpdesk',
-      'project-management': 'Project Management',
-      'gateway': 'Gateway',
-      'agents': 'AI Agents',
-      'ehr-platform': 'EHR Platform'
+      'products': {
+        title: 'Products',
+        items: PRODUCTS
+      }
     }
   },
   isms: {
