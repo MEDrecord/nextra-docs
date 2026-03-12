@@ -157,8 +157,18 @@ export default {
         display: 'hidden'
       },
       'products': {
-        title: '',
-        items: PRODUCTS
+        title: 'Products',
+        items: {
+          overview: {
+            display: 'hidden'
+          },
+          'healthtalk': 'HealthTalk',
+          'helpdesk': 'Helpdesk',
+          'project-management': 'Project Management',
+          'gateway': 'Gateway',
+          'agents': 'AI Agents',
+          'ehr-platform': 'EHR Platform'
+        }
       }
     }
   },
