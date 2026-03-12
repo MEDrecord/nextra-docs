@@ -2,6 +2,106 @@
 
 ConsortiaAI is an AI-powered research grant and consortium management platform for coordinators of European and national R&D projects. It supports the full lifecycle from funding discovery and partner matching to proposal development, consortium agreements, milestone tracking, deliverables, compliance, and reporting.
 
+## Part of MEDrecord
+
+ConsortiaAI is a product within the MEDrecord ecosystem, sharing the same infrastructure, authentication, and design language as HealthTalk, Helpdesk, and other MEDrecord products.
+
+| Aspect | Description |
+|--------|-------------|
+| **Brand** | ConsortiaAI by MEDrecord |
+| **Domain** | consortia-ai.healthtalk.ai |
+| **Authentication** | Gateway (Azure B2C) - shared with all MEDrecord apps |
+| **Design System** | MEDrecord UI (Sidebar + Agent + Content layout) |
+| **Data Platform** | Supabase via Gateway |
+| **AI Framework** | MEDrecord AI Agents |
+
+### Brand Identity
+
+- **Logo**: ConsortiaAI wordmark with MEDrecord endorsement
+- **Colors**: MEDrecord primary palette with research-focused accent
+- **Typography**: Consistent with MEDrecord design system
+- **Voice**: Professional, supportive, research-focused
+
+## Multi-Tenancy
+
+ConsortiaAI is multi-tenant, supporting multiple organizations with isolated data and configurations.
+
+### Tenant Structure
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     ConsortiaAI Platform                    │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │  Tenant A   │  │  Tenant B   │  │  Tenant C   │         │
+│  │  (UMC X)    │  │  (Institute)│  │  (Company)  │         │
+│  ├─────────────┤  ├─────────────┤  ├─────────────┤         │
+│  │ Projects    │  │ Projects    │  │ Projects    │         │
+│  │ Partners    │  │ Partners    │  │ Partners    │         │
+│  │ Users       │  │ Users       │  │ Users       │         │
+│  │ Settings    │  │ Settings    │  │ Settings    │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Tenant Isolation
+
+| Aspect | Isolation Level |
+|--------|-----------------|
+| **Data** | Fully isolated - no cross-tenant data access |
+| **Users** | Per-tenant user management with roles |
+| **Projects** | Tenant-scoped, shareable via consortium invites |
+| **Settings** | Per-tenant configuration |
+| **Integrations** | Tenant-specific API keys (Cal.com, Stripe) |
+
+### Gateway Integration
+
+ConsortiaAI uses Gateway for multi-tenant routing:
+
+```
+User → Gateway → ConsortiaAI
+          │
+          ├── Validates auth.sid cookie
+          ├── Extracts tenant context (X-Tenant-Id)
+          ├── Validates tenant membership
+          └── Returns user with tenant role
+```
+
+**Headers from Gateway:**
+
+| Header | Description |
+|--------|-------------|
+| `X-User-Id` | Authenticated user identifier |
+| `X-Tenant-Id` | Active tenant/organization |
+| `X-Tenant-Role` | User role within tenant |
+
+### Tenant Roles
+
+| Role | Description | Permissions |
+|------|-------------|-------------|
+| **Owner** | Tenant administrator | Full access, manage users, billing |
+| **Coordinator** | Project coordinator | Create projects, manage partners, full project access |
+| **Partner** | External consortium partner | Invited project access only |
+| **Viewer** | Read-only access | View projects, no edit rights |
+
+### Cross-Tenant Collaboration
+
+Research consortia often span multiple organizations. ConsortiaAI handles this via:
+
+1. **Consortium Invites** - Invite partners from other tenants to specific projects
+2. **Shared Workspaces** - Project-level access for cross-tenant collaboration
+3. **Federated Identity** - Partners authenticate via their own tenant
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                    Project: Health-AI-2025                   │
+├──────────────────────────────────────────────────────────────┤
+│  Coordinator (Tenant A)  ←→  Partner (Tenant B)              │
+│  Coordinator (Tenant A)  ←→  Partner (Tenant C)              │
+│  Coordinator (Tenant A)  ←→  External Partner (Email invite) │
+└──────────────────────────────────────────────────────────────┘
+```
+
 ## Overview
 
 ConsortiaAI helps research coordinators manage complex multi-partner projects efficiently. The platform uses AI agents to automate repetitive tasks while keeping humans in control of strategic decisions.
@@ -18,8 +118,10 @@ ConsortiaAI helps research coordinators manage complex multi-partner projects ef
 - **Funding Intelligence** - AI-powered call monitoring and eligibility matching
 - **Consortium Builder** - Partner discovery, outreach automation, LOI tracking
 - **Proposal Workspace** - Collaborative editing with compliance checks
-- **Agreement Management** - Templates for CA, DPA, IP schedules with approval workflows
+- **Contracts and Agreements** - Templates for CA, DPA, IP schedules with e-signatures
+- **Planning and Scheduling** - Cal.com integration for partner meetings and deadlines
 - **Project Execution** - Work packages, milestones, deliverables tracking
+- **Financials and Payments** - Budget tracking, success fees, invoicing via Stripe
 - **Reporting Suite** - Periodic reports, financial reporting, KPI dashboards
 
 ## Layout
@@ -33,9 +135,11 @@ ConsortiaAI uses the standard MEDrecord three-panel layout:
 │  - Funding   │  AI assistant    │   [Main workspace]              │
 │  - Partners  │  for current     │   Tables, forms, editors        │
 │  - Proposals │  module context  │                                 │
-│  - Agreements│                  │                                 │
-│  - Execution │  + suggestions   │                                 │
-│  - Reports   │  + actions       │                                 │
+│  - Contracts │                  │                                 │
+│  - Planning  │  + suggestions   │                                 │
+│  - Execution │  + actions       │                                 │
+│  - Financials│                  │                                 │
+│  - Reports   │                  │                                 │
 │              │                  │                                 │
 └──────────────┴──────────────────┴─────────────────────────────────┘
 ```
@@ -53,9 +157,115 @@ ConsortiaAI uses the standard MEDrecord three-panel layout:
 | **Funding** | Grant discovery, eligibility checks | Call browser, deadline tracker |
 | **Partners** | Partner matching, outreach drafts | Partner database, LOI tracker |
 | **Proposals** | Section drafting, compliance | Collaborative editor, checklist |
-| **Agreements** | Legal review, clause suggestions | CA/DPA templates, approval workflow |
+| **Contracts** | Legal review, clause suggestions | Templates, negotiation, e-signatures |
+| **Planning** | Meeting scheduling, availability | Cal.com booking, milestone calendar |
 | **Execution** | Task coordination, reminders | Work packages, milestone tracker |
+| **Financials** | Invoice generation, fee tracking | Budget, payments, financial reports |
 | **Reports** | Report generation, data aggregation | Periodic reports, KPIs |
+
+## Planning and Scheduling (Cal.com)
+
+ConsortiaAI integrates with Cal.com for consortium scheduling and coordination:
+
+### Features
+
+| Feature | Description |
+|---------|-------------|
+| **Partner Meetings** | Round-robin booking with multiple coordinators |
+| **Kick-off Planning** | Team scheduling with availability overlap detection |
+| **Review Deadlines** | Recurring event types for periodic reviews |
+| **Consortium Calls** | Multi-timezone scheduling for international partners |
+| **Expert Consultations** | Event types per consultation category |
+
+### Integration
+
+```
+ConsortiaAI → Cal.com API
+     │
+     ├── Create event types per project phase
+     ├── Embed booking widget in Partner module
+     ├── Sync with milestone calendar
+     └── Automated meeting prep (agenda generation via Agent)
+```
+
+### Scheduling Agent
+
+The Scheduling Agent automates meeting coordination:
+
+| User Input | Agent Action |
+|------------|--------------|
+| "Schedule kick-off with all partners" | Finds availability, creates Cal.com event |
+| "When can we meet next week?" | Checks partner calendars, suggests slots |
+| "Remind everyone about Friday review" | Sends calendar reminders |
+
+## Contracts and Agreements
+
+Full contract lifecycle management for research consortia:
+
+### Contract Types
+
+| Type | Description |
+|------|-------------|
+| **Consortium Agreement (CA)** | Main agreement between all partners |
+| **Data Processing Agreement (DPA)** | GDPR-compliant data handling terms |
+| **IP/Background Schedule** | Intellectual property rights allocation |
+| **Non-Disclosure Agreement (NDA)** | Confidentiality terms for pre-proposal |
+| **Letter of Intent (LOI)** | Partner commitment before full agreement |
+| **Subcontracting Agreement** | Terms for external subcontractors |
+| **Grant Agreement** | Agreement with funding body |
+
+### Contract Workflow
+
+| Stage | Features |
+|-------|----------|
+| **Templates** | Pre-approved templates per contract type |
+| **Drafting** | AI-assisted clause suggestions, version tracking |
+| **Negotiation** | Redline tracking, comment threads, approval workflows |
+| **Signatures** | E-signature integration (DocuSign, Adobe Sign) |
+| **Storage** | Secure document vault with expiry alerts |
+| **Compliance** | Auto-check against funding scheme rules |
+
+### Contract Agent
+
+| User Input | Agent Action |
+|------------|--------------|
+| "Draft a DPA for partner X" | Generates DPA from template with partner details |
+| "Review IP clause in section 5" | Analyzes clause, suggests improvements |
+| "What are the termination terms?" | Extracts and summarizes relevant clauses |
+
+## Financials and Payments (Stripe)
+
+Track budgets, partner contributions, and success-based payments:
+
+### Payment Types
+
+| Type | Description | Trigger |
+|------|-------------|---------|
+| **Partner Contributions** | Cash/in-kind tracking per partner | Budget allocation |
+| **Success Fees** | Milestone-based payments | Milestone completion |
+| **Consultancy Fees** | Expert consultation payments | Cal.com booking |
+| **License Royalties** | Post-project IP commercialization | Recurring |
+| **Grant Disbursements** | Received funding tranches | Grant schedule |
+
+### Stripe Integration
+
+```
+ConsortiaAI → Stripe API
+     │
+     ├── Milestone-triggered invoices
+     ├── Success fee collection
+     ├── Multi-partner split payments
+     ├── Subscription billing (if applicable)
+     └── Financial reporting dashboard
+```
+
+### Finance Agent
+
+| User Input | Agent Action |
+|------------|--------------|
+| "Generate invoice for WP2 completion" | Creates Stripe invoice with milestone details |
+| "What's the budget status for Q3?" | Aggregates spending, shows remaining budget |
+| "Track success fee for deliverable D3.1" | Sets up milestone-triggered payment |
 
 ## Current Development Status
 
@@ -69,14 +279,30 @@ ConsortiaAI is in early development. The first agent being implemented is the **
 | **Basic Layout** | Planned | Sidebar + Agent + Content structure |
 | **User Onboarding** | Planned | Early adopter registration |
 
-### Phase 2: MVP
+### Phase 2: Core Modules
 
 | Component | Status | Description |
 |-----------|--------|-------------|
 | Funding Module | Planned | Call monitoring and matching |
 | Partner Module | Planned | Partner database and outreach |
+| Planning Module | Planned | Cal.com integration |
 | Proposal Module | Planned | Collaborative editing |
+
+### Phase 3: Agreements and Execution
+
+| Component | Status | Description |
+|-----------|--------|-------------|
+| Contracts Module | Planned | Templates, negotiation, e-signatures |
 | Execution Module | Planned | Milestone and deliverable tracking |
+| Financials Module | Planned | Stripe integration, invoicing |
+
+### Phase 4: Advanced Features
+
+| Component | Status | Description |
+|-----------|--------|-------------|
+| Reporting Suite | Planned | Periodic reports, KPIs |
+| Advanced Agents | Planned | Grant Scout, Partner Matcher |
+| Analytics | Planned | Project health dashboards |
 
 ## Ticketing Agent
 
@@ -106,35 +332,56 @@ User → Agent Chat → Ticketing Agent → Helpdesk Integration
 |------------|----------------|
 | "I want to request a feature" | "What feature would you like? I'll create a ticket for the team." |
 | "The deadline filter is not working" | "I'll report this bug. Can you describe what happens?" |
-| "How do I track consortium agreements?" | "That's coming in Phase 2. Want me to log this as a priority request?" |
+| "How do I track consortium agreements?" | "That's coming in Phase 3. Want me to log this as a priority request?" |
 
-## Future Agent Roadmap
+## Agent Roadmap
 
 | Agent | Module | Purpose | Phase |
 |-------|--------|---------|-------|
 | **Ticketing Agent** | All | Feedback and support | 1 |
+| **Scheduling Agent** | Planning | Cal.com meetings, reminders | 2 |
 | **Grant Scout** | Funding | Monitor calls, match criteria | 2 |
 | **Partner Matcher** | Partners | Find complementary expertise | 2 |
 | **Proposal Drafter** | Proposals | Draft sections, check compliance | 2 |
-| **Legal Reviewer** | Agreements | Review terms, suggest clauses | 3 |
+| **Contract Agent** | Contracts | Review terms, suggest clauses | 3 |
+| **Finance Agent** | Financials | Invoices, payment tracking | 3 |
 | **Coordinator** | Execution | Task assignment, reminders | 3 |
-| **Reporter** | Reports | Generate periodic reports | 3 |
+| **Reporter** | Reports | Generate periodic reports | 4 |
 
-## Document Integration
+## Integrations
 
-ConsortiaAI integrates with enterprise document platforms:
+### Cal.com
 
-### Google Workspace
+| Feature | Use Case |
+|---------|----------|
+| Event Types | Per project phase (kick-off, review, close-out) |
+| Round Robin | Distribute meetings across coordinators |
+| Availability | Multi-timezone partner scheduling |
+| Webhooks | Sync confirmations to ConsortiaAI |
 
-- Google Docs for collaborative proposal editing
-- Google Drive for project file storage
-- Google Calendar for milestone and deadline tracking
+### Stripe
 
-### Microsoft 365
+| Feature | Use Case |
+|---------|----------|
+| Invoices | Milestone-based billing |
+| Payment Intents | Success fee collection |
+| Subscriptions | Recurring platform fees |
+| Webhooks | Payment status updates |
 
-- SharePoint for document libraries and versioning
-- OneDrive for file sync across partners
-- Teams for consortium communication channels
+### E-Signature (DocuSign/Adobe Sign)
+
+| Feature | Use Case |
+|---------|----------|
+| Envelope Creation | Send contracts for signing |
+| Signing Workflows | Multi-party approval sequences |
+| Webhooks | Signature completion notifications |
+
+### Document Services
+
+| Platform | Features |
+|----------|----------|
+| **Google Workspace** | Docs, Drive, Calendar integration |
+| **Microsoft 365** | SharePoint, OneDrive, Teams integration |
 
 ## Architecture
 
@@ -145,11 +392,13 @@ User → ConsortiaAI UI → Gateway → Supabase
               │              │
               ▼              ▼
         Agent Column    AI Providers
-        (Ticketing)     (OpenAI/Anthropic)
-              │
+              │         (OpenAI/Anthropic)
               ▼
-        Document Services
-        (Google/Microsoft APIs)
+        Integrations
+        ├── Cal.com (Scheduling)
+        ├── Stripe (Payments)
+        ├── DocuSign (E-Signatures)
+        └── Google/Microsoft (Documents)
 ```
 
 ### Technology Stack
@@ -159,16 +408,39 @@ User → ConsortiaAI UI → Gateway → Supabase
 | Frontend | Next.js 16, React, Tailwind CSS |
 | Backend | Gateway API, Supabase |
 | AI | AI SDK, OpenAI, Anthropic |
+| Scheduling | Cal.com API |
+| Payments | Stripe API |
 | Documents | Google Workspace API, Microsoft Graph |
 | Auth | Gateway HMAC, RBAC |
 
 ## Security and Compliance
 
-- **Gateway Authentication** - All requests signed with HMAC
-- **Role-Based Access** - Coordinator, Partner, Viewer roles per project
-- **Audit Trail** - Full versioning for grant submissions and agreements
-- **GDPR Compliance** - Data handling compliant with EU regulations
-- **Grant Compliance** - Rules per funding scheme (Horizon, Eurostars, ZonMw, NWO)
+### Authentication and Authorization
+
+| Feature | Implementation |
+|---------|----------------|
+| **Gateway Authentication** | Cookie-based auth via Azure B2C |
+| **Multi-Tenant Isolation** | Tenant context via Gateway headers |
+| **Role-Based Access** | Owner, Coordinator, Partner, Viewer per tenant |
+| **Project-Level Permissions** | Fine-grained access per project |
+
+### Data Security
+
+| Feature | Implementation |
+|---------|----------------|
+| **Encryption in Transit** | TLS 1.3 |
+| **Encryption at Rest** | AES-256 |
+| **Audit Trail** | Full versioning for contracts and submissions |
+| **Data Isolation** | Row-level security per tenant |
+
+### Compliance
+
+| Standard | Scope |
+|----------|-------|
+| **GDPR** | Data handling compliant with EU regulations |
+| **NEN 7510** | Healthcare information security (inherited from MEDrecord) |
+| **Grant Rules** | Compliance per funding scheme (Horizon, Eurostars, ZonMw, NWO) |
+| **PCI DSS** | Stripe handles payment data securely |
 
 ## Resources
 
