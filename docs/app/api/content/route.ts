@@ -21,24 +21,46 @@ import path from 'path'
  * }
  */
 
-// Allowed origins for CORS (with credentials support)
-const ALLOWED_ORIGINS = [
-  'https://helpdesk.healthtalk.ai',
-  'https://helpdesk-tst.healthtalk.ai',
-  'http://localhost:3000',
-  'http://localhost:3001',
-]
+/**
+ * CORS Configuration
+ * 
+ * Allows:
+ * - All *.healthtalk.ai subdomains (production, staging, test environments)
+ * - localhost for development
+ * 
+ * Uses dynamic origin validation instead of hardcoded list for flexibility.
+ */
+const HEALTHTALK_DOMAIN_PATTERN = /^https:\/\/([a-z0-9-]+\.)*healthtalk\.ai$/
+const LOCALHOST_PATTERN = /^http:\/\/localhost(:\d+)?$/
+
+/**
+ * Validate if an origin is allowed
+ * - Any *.healthtalk.ai subdomain over HTTPS
+ * - localhost with any port for development
+ */
+function isAllowedOrigin(origin: string): boolean {
+  if (!origin) return false
+  return HEALTHTALK_DOMAIN_PATTERN.test(origin) || LOCALHOST_PATTERN.test(origin)
+}
 
 function getCorsHeaders(request: NextRequest): Record<string, string> {
   const origin = request.headers.get('origin') || ''
-  const isAllowed = ALLOWED_ORIGINS.includes(origin)
+  const isAllowed = isAllowedOrigin(origin)
+  
+  // Security: Only reflect the origin if it's allowed
+  // For non-allowed origins, return empty Access-Control-Allow-Origin
+  // which will cause the browser to block the request
+  const allowOrigin = isAllowed ? origin : ''
   
   return {
-    'Access-Control-Allow-Origin': isAllowed ? origin : ALLOWED_ORIGINS[0],
+    // Reflect allowed origin (required for credentials mode)
+    ...(allowOrigin && { 'Access-Control-Allow-Origin': allowOrigin }),
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Session-Id',
     'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Max-Age': '86400', // Cache preflight for 24 hours
     'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+    'Vary': 'Origin', // Important: Tell caches to vary by Origin header
   }
 }
 
