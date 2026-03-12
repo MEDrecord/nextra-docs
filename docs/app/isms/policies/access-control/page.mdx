@@ -1,0 +1,215 @@
+# Access Control Policy
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/policies/access-control/page.mdx"
+/>
+
+## Purpose
+
+This policy establishes requirements for controlling access to MEDrecord information systems and data to ensure only authorized personnel can access resources appropriate to their role.
+
+## Scope
+
+This policy applies to all access to MEDrecord systems, applications, data, and network resources by employees, contractors, and third parties.
+
+## Policy Statement
+
+### Access Control Principles
+
+1. **Least Privilege** - Users receive minimum access required for their role
+2. **Need-to-Know** - Access granted only when business need is demonstrated
+3. **Separation of Duties** - Critical functions require multiple approvals
+4. **Defense in Depth** - Multiple layers of access controls
+
+### User Access Management
+
+#### Account Provisioning
+
+| Step | Responsibility | Timeline |
+|------|----------------|----------|
+| Request submission | Manager | Before start date |
+| Role assignment | IT + Manager | 24-48 hours |
+| Account creation | IT | 24-48 hours |
+| Access verification | User + Manager | First day |
+
+#### Access Request Process
+
+1. Manager submits access request via Helpdesk
+2. System owner approves request
+3. IT provisions access
+4. User receives credentials securely
+5. Access is logged and documented
+
+See [Access Management Procedure](/isms/procedures/access-management) for detailed steps.
+
+#### Access Reviews
+
+| Review Type | Frequency | Responsible |
+|-------------|-----------|-------------|
+| User access | Quarterly | Manager |
+| Privileged access | Monthly | Security Officer |
+| Service accounts | Quarterly | IT Team |
+| Dormant accounts | Monthly | IT Team (automated) |
+
+### Authentication Requirements
+
+#### Password Requirements
+
+See [Password Policy](/isms/policies/password) for detailed requirements.
+
+| System Type | Minimum Requirements |
+|-------------|---------------------|
+| Standard user | 12 chars, complexity, MFA |
+| Privileged user | 16 chars, complexity, MFA |
+| Service account | 24 chars, managed |
+
+#### Multi-Factor Authentication (MFA)
+
+MFA is required for:
+- All cloud services
+- VPN access
+- Administrative consoles
+- Access to patient/healthcare data
+- Remote access
+- All privileged accounts
+
+#### Session Management
+
+| Setting | Standard |
+|---------|----------|
+| Idle timeout | 15 minutes (sensitive systems: 5 minutes) |
+| Session duration | 8 hours maximum |
+| Concurrent sessions | Limited based on role |
+| Session logging | All sessions logged |
+
+### Privileged Access Management
+
+Privileged accounts require:
+- Documented justification
+- Management approval
+- Security Officer approval
+- Enhanced monitoring
+- Regular review (monthly)
+- Just-in-time access where possible
+
+#### Privileged Account Types
+
+| Type | Description | Controls |
+|------|-------------|----------|
+| System Admin | Full system access | PAM, session recording |
+| Database Admin | Database access | PAM, query logging |
+| Security Admin | Security controls | Dual approval |
+| Application Admin | Application management | Role-based |
+
+### Network Access Control
+
+#### Network Segmentation
+
+| Zone | Access Level | Purpose |
+|------|--------------|---------|
+| DMZ | Restricted | Public-facing services |
+| Internal | Standard | Employee workstations |
+| Production | Privileged | Live systems |
+| Development | Developer | Testing environments |
+| Management | Admin | Infrastructure management |
+
+#### Remote Access
+
+- VPN required for all remote access to internal resources
+- Split tunneling disabled
+- Device compliance checked before connection
+- Access logged and monitored
+
+See [Remote Working Policy](/isms/policies/remote-working) for details.
+
+### Application Access Control
+
+#### Role-Based Access Control (RBAC)
+
+Applications must implement:
+- Predefined roles with documented permissions
+- Role assignment based on job function
+- Regular role reviews
+- Audit logging of access
+
+#### API Access
+
+- API keys with limited scope
+- OAuth 2.0 for user authentication
+- Rate limiting enabled
+- Access tokens with expiration
+
+### Third-Party Access
+
+Third-party access requires:
+- Business justification
+- NDA in place
+- Time-limited access
+- Specific scope defined
+- Sponsor within MEDrecord
+- Audit trail
+
+### Access Termination
+
+#### Voluntary Termination
+
+- Access disabled on last working day
+- Accounts archived after 30 days
+- Shared credentials rotated
+- Physical access revoked
+
+#### Involuntary Termination
+
+- Access disabled immediately upon notification
+- All credentials revoked
+- Active sessions terminated
+- Physical access revoked
+- IT notified within 1 hour
+
+See [Onboarding & Offboarding Procedure](/isms/procedures/onboarding-offboarding) for details.
+
+## Technical Controls
+
+| Control | Implementation |
+|---------|----------------|
+| Identity Provider | Azure AD / Entra ID |
+| Password Management | Azure AD Password Protection |
+| MFA | Microsoft Authenticator |
+| PAM | Azure PIM |
+| SSO | SAML/OIDC federation |
+| Access Logging | Azure AD logs, SIEM |
+
+## Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| Employees | Protect credentials, report issues |
+| Managers | Approve access requests, conduct reviews |
+| System Owners | Define access requirements, approve changes |
+| IT Team | Implement controls, provision access |
+| Security Officer | Define policy, monitor compliance |
+
+## Compliance
+
+- Access logs retained for 2 years
+- Quarterly access review reports
+- Annual policy review
+- Non-compliance reported to management
+
+## Related Documents
+
+- [Password Policy](/isms/policies/password)
+- [Remote Working Policy](/isms/policies/remote-working)
+- [Access Management Procedure](/isms/procedures/access-management)
+- [Onboarding & Offboarding Procedure](/isms/procedures/onboarding-offboarding)
+- [A.9 Access Control](/isms/annex-a)
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2024-03-01 | Jan-Marc Verlinden | Initial version |

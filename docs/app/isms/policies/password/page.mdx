@@ -1,0 +1,107 @@
+# Password Policy
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/policies/password/page.mdx"
+/>
+
+## Purpose
+
+This policy establishes the requirements for creating and managing passwords to protect MEDrecord information systems and data from unauthorized access.
+
+## Scope
+
+This policy applies to all employees, contractors, and third parties who have access to MEDrecord information systems.
+
+## Policy Statement
+
+### Password Requirements
+
+All passwords must meet the following minimum requirements:
+
+| Requirement | Standard |
+|-------------|----------|
+| Minimum Length | 12 characters |
+| Complexity | Must include uppercase, lowercase, numbers, and special characters |
+| Maximum Age | 90 days (or as enforced by system) |
+| History | Cannot reuse last 12 passwords |
+| Lockout | Account locked after 5 failed attempts |
+
+### Password Creation Guidelines
+
+**Do:**
+- Use passphrases (e.g., "Coffee-Mountain-Blue-42!")
+- Use a password manager (recommended: company-approved tools)
+- Create unique passwords for each system
+- Enable Multi-Factor Authentication (MFA) where available
+
+**Do Not:**
+- Use personal information (names, birthdays, addresses)
+- Use dictionary words or common phrases
+- Share passwords with anyone
+- Write passwords down in visible locations
+- Use the same password across multiple systems
+- Send passwords via email or chat
+
+### Multi-Factor Authentication (MFA)
+
+MFA is required for:
+- All cloud services (Azure, AWS, Google Cloud)
+- VPN access
+- Administrative accounts
+- Email access from new devices
+- Access to patient/healthcare data
+
+### Password Storage
+
+- Passwords must never be stored in plain text
+- System passwords must be encrypted using approved algorithms
+- Password managers are encouraged for personal password management
+- Shared credentials must be stored in approved secret management tools
+
+### Service Accounts
+
+- Service account passwords must be at least 24 characters
+- Must be rotated annually or upon personnel change
+- Must be stored in approved secret management systems
+- Must not be used for interactive login
+
+## Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| All Employees | Follow password requirements, report compromised passwords |
+| IT Team | Enforce password policies, manage password infrastructure |
+| Security Officer | Review policy compliance, conduct password audits |
+| Management | Ensure team compliance with policy |
+
+## Compliance
+
+- Password policy compliance is monitored through automated tools
+- Non-compliance may result in account suspension
+- Repeated violations may lead to disciplinary action
+- Annual password audits are conducted
+
+## Incident Reporting
+
+If you suspect your password has been compromised:
+1. Change your password immediately
+2. Report the incident to the Security Officer
+3. Review recent account activity
+4. Enable additional security measures if available
+
+## Related Documents
+
+- [Access Control Policy](/isms/policies/access-control)
+- [Acceptable Use Policy](/isms/policies/acceptable-use)
+- [A.9.4.2 Secure Log-on Procedures](/isms/annex-a/a-9-4-2-secure-logon)
+- [Incident Response Procedure](/isms/procedures/incident-response)
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2024-03-01 | Jan-Marc Verlinden | Initial version |

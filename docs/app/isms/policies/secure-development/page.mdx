@@ -1,0 +1,226 @@
+# Secure Development Policy
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/policies/secure-development/page.mdx"
+/>
+
+## Purpose
+
+This policy establishes security requirements for software development at MEDrecord to ensure applications are designed, developed, and maintained with security built-in from the start.
+
+## Scope
+
+This policy applies to all software development activities, including:
+- Internal applications
+- Customer-facing products
+- APIs and integrations
+- Infrastructure as Code
+- Scripts and automation
+
+## Policy Statement
+
+### Secure Development Lifecycle (SDLC)
+
+Security must be integrated at every phase:
+
+| Phase | Security Activities |
+|-------|---------------------|
+| Requirements | Security requirements, threat modeling |
+| Design | Security architecture review, DPIA if needed |
+| Development | Secure coding, SAST scanning |
+| Testing | Security testing, penetration testing |
+| Deployment | Security configuration, hardening |
+| Operations | Monitoring, vulnerability management |
+| Decommission | Secure data disposal |
+
+### Secure Coding Standards
+
+#### General Requirements
+
+- Follow OWASP guidelines for web applications
+- Use approved libraries and frameworks
+- Keep dependencies up to date
+- Validate all input
+- Encode all output
+- Use parameterized queries (no SQL injection)
+- Implement proper error handling (no stack traces to users)
+
+#### Authentication and Session Management
+
+- Use proven authentication frameworks
+- Implement MFA for sensitive operations
+- Secure session tokens (HttpOnly, Secure, SameSite)
+- Session timeout after inactivity
+- Invalidate sessions on logout
+
+#### Authorization
+
+- Implement role-based access control (RBAC)
+- Check authorization on every request
+- Deny by default
+- Log authorization failures
+
+#### Data Protection
+
+- Encrypt sensitive data at rest (AES-256)
+- Encrypt data in transit (TLS 1.2+)
+- Hash passwords with bcrypt/Argon2
+- Minimize data collection
+- Mask sensitive data in logs
+
+#### API Security
+
+- Authenticate all API requests
+- Rate limiting to prevent abuse
+- Input validation on all endpoints
+- Use API versioning
+- Document security requirements
+
+### Code Review Requirements
+
+All code changes must be reviewed for:
+- Security vulnerabilities
+- Adherence to coding standards
+- Proper authentication/authorization
+- Input validation
+- Logging and audit trails
+
+#### Review Process
+
+1. Developer creates pull request
+2. Automated security scans run (SAST)
+3. Peer review for functionality
+4. Security review for sensitive changes
+5. Approval from code owner
+6. Merge only after all checks pass
+
+### Security Testing
+
+#### Automated Testing
+
+| Test Type | When | Tool |
+|-----------|------|------|
+| SAST (Static Analysis) | Every commit | SonarQube, Semgrep |
+| Dependency Scanning | Daily | Dependabot, Snyk |
+| Container Scanning | On build | Trivy |
+| DAST (Dynamic Testing) | Pre-release | OWASP ZAP |
+| Secret Scanning | Every commit | GitLeaks |
+
+#### Manual Testing
+
+| Test Type | Frequency | Performed By |
+|-----------|-----------|--------------|
+| Penetration Testing | Annually + major releases | External vendor |
+| Security Code Review | High-risk changes | Security team |
+| Threat Modeling | New features | Development + Security |
+
+### Dependency Management
+
+- Use only approved package registries
+- Lock dependency versions
+- Monitor for vulnerabilities (CVEs)
+- Update critical vulnerabilities within:
+  - Critical: 24 hours
+  - High: 7 days
+  - Medium: 30 days
+  - Low: Next release
+
+### Environment Security
+
+#### Development Environment
+
+- Use separate credentials from production
+- No production data in development
+- Sanitize test data
+- Secure workstations
+
+#### Build Pipeline (CI/CD)
+
+- Secure build servers
+- Secrets managed via vault (not in code)
+- Signed commits required
+- Audit trail of deployments
+- Separation of duties (dev cannot deploy to prod)
+
+#### Production Environment
+
+- Hardened configurations
+- Minimal attack surface
+- Regular patching
+- Monitoring and alerting
+- See [Change Management Procedure](/isms/procedures/change-management)
+
+### Secret Management
+
+**Never store secrets in:**
+- Source code
+- Configuration files
+- Environment variables in code
+- Chat messages or emails
+
+**Approved secret storage:**
+- Azure Key Vault
+- GitHub Secrets (CI/CD only)
+- HashiCorp Vault
+
+### Vulnerability Management
+
+When vulnerabilities are discovered:
+
+1. Assess severity and impact
+2. Create tracking ticket
+3. Develop and test fix
+4. Deploy according to severity timeline
+5. Verify fix effectiveness
+6. Document in vulnerability register
+
+### Third-Party Components
+
+Before using third-party code:
+- Verify license compatibility
+- Check for known vulnerabilities
+- Assess maintenance status
+- Review security practices
+- Document in dependency inventory
+
+### Security Training
+
+Developers must:
+- Complete secure coding training annually
+- Stay current on OWASP Top 10
+- Attend security awareness sessions
+- Report security concerns
+
+## Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| Developers | Follow secure coding practices, fix vulnerabilities |
+| Tech Leads | Ensure team compliance, approve security changes |
+| Security Team | Define standards, review high-risk changes |
+| DevOps | Secure pipeline, manage secrets |
+| Management | Provide resources, prioritize security |
+
+## Compliance
+
+- Security testing results tracked
+- Vulnerability metrics reported monthly
+- Annual security assessment
+- ISO 27001, NEN 7510 compliance
+
+## Related Documents
+
+- [Cryptography Policy](/isms/policies/cryptography)
+- [Change Management Procedure](/isms/procedures/change-management)
+- [Incident Response Procedure](/isms/procedures/incident-response)
+- [A.14 System Acquisition, Development and Maintenance](/isms/annex-a)
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2024-03-01 | Jan-Marc Verlinden | Initial version |

@@ -1,0 +1,235 @@
+# Cryptography Policy
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/policies/cryptography/page.mdx"
+/>
+
+## Purpose
+
+This policy establishes requirements for the use of cryptographic controls to protect the confidentiality, integrity, and authenticity of MEDrecord information.
+
+## Scope
+
+This policy applies to all use of cryptography within MEDrecord, including:
+- Data encryption at rest and in transit
+- Digital signatures
+- Key management
+- Certificate management
+- Hashing and password storage
+
+## Policy Statement
+
+### Approved Cryptographic Standards
+
+#### Symmetric Encryption
+
+| Use Case | Algorithm | Key Size |
+|----------|-----------|----------|
+| Data at rest | AES-GCM | 256-bit |
+| Data in transit | AES-GCM | 128-bit minimum, 256-bit preferred |
+| File encryption | AES-256-GCM | 256-bit |
+
+**Prohibited:** DES, 3DES, RC4, Blowfish, ECB mode
+
+#### Asymmetric Encryption
+
+| Use Case | Algorithm | Key Size |
+|----------|-----------|----------|
+| TLS certificates | RSA | 2048-bit minimum, 4096-bit preferred |
+| TLS certificates | ECDSA | P-256 minimum, P-384 preferred |
+| Code signing | RSA | 4096-bit |
+| SSH keys | Ed25519 | Preferred |
+| SSH keys | RSA | 4096-bit |
+
+**Prohibited:** RSA < 2048-bit, DSA, ECDSA P-192
+
+#### Hashing
+
+| Use Case | Algorithm |
+|----------|-----------|
+| Password storage | Argon2id, bcrypt (cost 12+) |
+| Data integrity | SHA-256, SHA-384, SHA-512 |
+| Digital signatures | SHA-256 minimum |
+| HMAC | HMAC-SHA-256 minimum |
+
+**Prohibited:** MD5, SHA-1 (except legacy compatibility)
+
+#### TLS/SSL
+
+| Requirement | Standard |
+|-------------|----------|
+| Minimum version | TLS 1.2 |
+| Preferred version | TLS 1.3 |
+| Certificate validity | 1 year maximum |
+| Certificate type | OV or EV for public services |
+
+**Prohibited:** SSL 2.0, SSL 3.0, TLS 1.0, TLS 1.1
+
+### Encryption Requirements
+
+#### Data at Rest
+
+| Data Classification | Encryption Required |
+|---------------------|---------------------|
+| Public | Optional |
+| Internal | Recommended |
+| Confidential | Required |
+| Restricted (Healthcare) | Required, additional controls |
+
+**Required encryption locations:**
+- Database storage (TDE or application-level)
+- Backup media
+- Portable devices
+- Cloud storage
+- Removable media
+
+#### Data in Transit
+
+All data must be encrypted in transit using:
+- TLS 1.2+ for HTTPS
+- TLS 1.2+ for API communications
+- Encrypted VPN for remote access
+- SSH for administrative access
+- SFTP/SCP for file transfers
+
+**Prohibited:** FTP, Telnet, HTTP (for sensitive data), unencrypted email
+
+### Key Management
+
+#### Key Generation
+
+- Use cryptographically secure random number generators
+- Generate keys in secure environments
+- Document key generation procedures
+- Minimum key sizes as specified above
+
+#### Key Storage
+
+| Key Type | Storage Location |
+|----------|------------------|
+| Application keys | Azure Key Vault |
+| TLS certificates | Azure Key Vault, ACM |
+| SSH keys | Hardware token, encrypted storage |
+| Database keys | Key Vault with CMK |
+| Backup keys | Separate secure location |
+
+**Never store keys:**
+- In source code
+- In plain text files
+- In emails or chat
+- On shared drives
+
+#### Key Access
+
+- Access on need-to-know basis
+- Separate key management duties
+- Log all key access
+- MFA required for key access
+
+#### Key Rotation
+
+| Key Type | Rotation Frequency |
+|----------|-------------------|
+| TLS certificates | Annual (before expiry) |
+| API keys | Annual or on compromise |
+| Encryption keys | Annual |
+| SSH keys | Annual or on personnel change |
+| Service accounts | Annual |
+
+#### Key Revocation
+
+Immediately revoke keys when:
+- Compromise suspected
+- Personnel termination
+- Key exposure detected
+- Certificate validity issues
+
+Maintain certificate revocation lists (CRL) and OCSP responders.
+
+#### Key Archival
+
+- Archive keys needed for decryption of historical data
+- Secure archival storage with access controls
+- Document archived keys and their purpose
+- Define retention periods
+
+### Certificate Management
+
+#### Certificate Lifecycle
+
+1. **Request** - Submit CSR through approved process
+2. **Approval** - Security review and approval
+3. **Issuance** - Generate from approved CA
+4. **Installation** - Secure deployment
+5. **Monitoring** - Track expiration, usage
+6. **Renewal** - Renew before expiration
+7. **Revocation** - Revoke when compromised
+
+#### Certificate Authorities
+
+- Use approved CAs (DigiCert, Let's Encrypt for internal)
+- Maintain internal CA for non-public certificates
+- Document CA trust relationships
+
+### Password Hashing
+
+For storing user passwords:
+- Use Argon2id (preferred) or bcrypt
+- Minimum cost factor: bcrypt 12, Argon2 t=3, m=64MB
+- Unique salt per password
+- Never store plain text passwords
+- Never use reversible encryption for passwords
+
+### Digital Signatures
+
+Use digital signatures for:
+- Code signing
+- Document signing
+- Email signing (S/MIME)
+- API request authentication
+
+Requirements:
+- RSA 2048+ or ECDSA P-256+
+- SHA-256+ hash algorithm
+- Timestamp signatures where applicable
+
+## Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| Developers | Implement approved cryptography |
+| Security Team | Define standards, review implementations |
+| IT Operations | Manage keys and certificates |
+| Security Officer | Audit compliance, approve exceptions |
+
+## Compliance
+
+- Annual cryptographic review
+- Automated certificate monitoring
+- Key management audits
+- Compliance with NEN 7510, ISO 27001
+
+## Exceptions
+
+Exceptions to this policy require:
+- Written business justification
+- Risk assessment
+- Security Officer approval
+- Time-limited approval with review date
+
+## Related Documents
+
+- [Secure Development Policy](/isms/policies/secure-development)
+- [Access Control Policy](/isms/policies/access-control)
+- [Information Classification Policy](/isms/policies/information-classification)
+- [A.10 Cryptography](/isms/annex-a)
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2024-03-01 | Jan-Marc Verlinden | Initial version |

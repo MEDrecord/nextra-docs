@@ -1,0 +1,189 @@
+# Information Classification Policy
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/policies/information-classification/page.mdx"
+/>
+
+## Purpose
+
+This policy establishes a framework for classifying information based on sensitivity and defines handling requirements for each classification level to protect MEDrecord data appropriately.
+
+## Scope
+
+This policy applies to all information created, received, maintained, or transmitted by MEDrecord, regardless of format (digital, paper, verbal).
+
+## Classification Levels
+
+### Public
+
+**Definition:** Information intended for public access with no restrictions.
+
+**Examples:**
+- Marketing materials
+- Public website content
+- Press releases
+- Published documentation
+
+**Handling Requirements:**
+| Aspect | Requirement |
+|--------|-------------|
+| Storage | No restrictions |
+| Sharing | Freely shareable |
+| Disposal | No special requirements |
+| Labeling | Optional |
+
+---
+
+### Internal
+
+**Definition:** Information for internal use that is not intended for public disclosure.
+
+**Examples:**
+- Internal procedures
+- Meeting notes
+- Project documentation
+- Employee contact information
+
+**Handling Requirements:**
+| Aspect | Requirement |
+|--------|-------------|
+| Storage | Company systems only |
+| Sharing | Within MEDrecord employees |
+| Disposal | Delete or shred when no longer needed |
+| Labeling | "Internal" in document footer |
+
+---
+
+### Confidential
+
+**Definition:** Sensitive business information that could cause harm if disclosed.
+
+**Examples:**
+- Financial data
+- Business strategies
+- Customer contracts
+- Source code
+- Employee personal data
+
+**Handling Requirements:**
+| Aspect | Requirement |
+|--------|-------------|
+| Storage | Encrypted storage, access controlled |
+| Sharing | Need-to-know basis, NDA required for external |
+| Transmission | Encrypted (TLS, encrypted email) |
+| Disposal | Secure deletion, certified shredding |
+| Labeling | "Confidential" clearly marked |
+
+---
+
+### Restricted (Healthcare/Patient Data)
+
+**Definition:** Highly sensitive data subject to regulatory requirements (GDPR, NEN 7510).
+
+**Examples:**
+- Patient health records
+- Medical data
+- Biometric data
+- Genetic information
+- Special category personal data
+
+**Handling Requirements:**
+| Aspect | Requirement |
+|--------|-------------|
+| Storage | Encrypted, access logged, NEN 7510 compliant |
+| Sharing | Explicit authorization required, audit trail |
+| Transmission | End-to-end encryption required |
+| Processing | DPIA may be required |
+| Disposal | Certified secure destruction, documented |
+| Labeling | "Restricted - Healthcare Data" |
+| Retention | Per legal requirements |
+
+## Classification Guidelines
+
+### How to Classify
+
+1. **Identify the information type** - What kind of data is it?
+2. **Consider the impact** - What harm could disclosure cause?
+3. **Check regulations** - Are there legal requirements (GDPR, NEN 7510)?
+4. **Apply the highest applicable level** - When in doubt, classify higher
+5. **Document the classification** - Label appropriately
+
+### Impact Assessment
+
+| Impact Level | Description | Classification |
+|--------------|-------------|----------------|
+| None | No negative impact | Public |
+| Low | Minor inconvenience | Internal |
+| Medium | Business damage, privacy concern | Confidential |
+| High | Regulatory breach, significant harm | Restricted |
+
+### Special Considerations
+
+**Aggregated Data:**
+- Multiple low-classification items may require higher classification when combined
+
+**Derived Data:**
+- Classification of derived data is based on source data classification
+
+**Time-Sensitive:**
+- Some information may be reclassified over time (e.g., after public announcement)
+
+## Handling Matrix
+
+| Action | Public | Internal | Confidential | Restricted |
+|--------|--------|----------|--------------|------------|
+| Email (internal) | Yes | Yes | Encrypted | Encrypted + approval |
+| Email (external) | Yes | NDA | Encrypted + NDA | Prohibited* |
+| Cloud storage | Any | Company approved | Encrypted | Approved systems only |
+| Print | Yes | Yes | Minimize | Prohibited unless required |
+| Mobile access | Yes | Yes | Approved apps | Approved apps + MFA |
+| Verbal discussion | Anywhere | Private setting | Private setting | Secure room only |
+
+*External sharing of Restricted data requires explicit legal authorization
+
+## Labeling
+
+### Document Labeling
+
+- Include classification in document header or footer
+- Use classification tags in file names: `[CONFIDENTIAL] Contract.pdf`
+- Apply metadata labels where systems support it
+
+### Email Labeling
+
+- Include classification in subject line for Confidential/Restricted
+- Use sensitivity labels in Outlook where available
+
+## Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| Information Owner | Assign classification, review periodically |
+| All Employees | Handle information per classification, report mishandling |
+| Data Protection Officer | Oversee Restricted data handling |
+| IT Team | Implement technical controls per classification |
+| Security Officer | Define policy, monitor compliance |
+
+## Compliance
+
+- Classification audits are conducted quarterly
+- Mishandling incidents must be reported immediately
+- Violations may result in disciplinary action
+- Regulatory breaches will be reported as required by law
+
+## Related Documents
+
+- [Privacy Policy](/isms/policies/privacy)
+- [Acceptable Use Policy](/isms/policies/acceptable-use)
+- [Data Retention Policy](/isms/policies/information-retention)
+- [A.8.2 Information Classification](/isms/annex-a)
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2024-03-01 | Jan-Marc Verlinden | Initial version |
