@@ -17,6 +17,14 @@ export async function OPTIONS() {
 // Enable edge caching
 export const revalidate = 300 // Cache for 5 minutes
 
+interface DocumentMeta {
+  version?: string
+  status?: 'draft' | 'review' | 'approved'
+  approvedBy?: string
+  approvedDate?: string
+  filePath?: string
+}
+
 interface KnowledgeItem {
   id: string
   title: string
@@ -25,6 +33,50 @@ interface KnowledgeItem {
   content: string
   tags: string[]
   lastModified?: string
+  documentMeta?: DocumentMeta
+}
+
+// Extract DocumentMeta props from MDX content
+function extractDocumentMeta(content: string): DocumentMeta | undefined {
+  // Match <DocumentMeta ... /> component
+  const metaMatch = content.match(/<DocumentMeta\s+([\s\S]*?)\/>/m)
+  if (!metaMatch) return undefined
+  
+  const propsStr = metaMatch[1]
+  const meta: DocumentMeta = {}
+  
+  // Extract each prop
+  const versionMatch = propsStr.match(/version=["']([^"']+)["']/)
+  if (versionMatch) meta.version = versionMatch[1]
+  
+  const statusMatch = propsStr.match(/status=["']([^"']+)["']/)
+  if (statusMatch) meta.status = statusMatch[1] as DocumentMeta['status']
+  
+  const approvedByMatch = propsStr.match(/approvedBy=["']([^"']+)["']/)
+  if (approvedByMatch) meta.approvedBy = approvedByMatch[1]
+  
+  const approvedDateMatch = propsStr.match(/approvedDate=["']([^"']+)["']/)
+  if (approvedDateMatch) meta.approvedDate = approvedDateMatch[1]
+  
+  const filePathMatch = propsStr.match(/filePath=["']([^"']+)["']/)
+  if (filePathMatch) meta.filePath = filePathMatch[1]
+  
+  return Object.keys(meta).length > 0 ? meta : undefined
+}
+
+// Remove React components from content for clean markdown
+function cleanContent(content: string): string {
+  return content
+    // Remove DocumentMeta component
+    .replace(/<DocumentMeta[\s\S]*?\/>/gm, '')
+    // Remove other custom components but keep their content readable
+    .replace(/<(QuickStats|ControlStatusCard|RiskHeatmap|AuditLinks)[\s\S]*?\/>/gm, '')
+    // Remove div wrappers but keep content
+    .replace(/<div[^>]*>/gm, '')
+    .replace(/<\/div>/gm, '')
+    // Clean up extra whitespace
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
 }
 
 // Recursively read MDX files from a directory
@@ -55,14 +107,21 @@ async function readMdxFiles(dir: string, basePath: string, type: KnowledgeItem['
             ? tagsMatch[1].split(',').map(t => t.trim())
             : []
           
+          // Extract DocumentMeta
+          const documentMeta = extractDocumentMeta(content)
+          
+          // Clean content (remove React components)
+          const cleanedContent = cleanContent(content.replace(/^#\s+.+$/m, '')) // Remove title
+          
           items.push({
             id: `${type}-${basePath.replace(/\//g, '-')}`,
             title,
             path: basePath,
             type,
-            content: content.replace(/^#\s+.+$/m, '').trim(), // Remove title from content
+            content: cleanedContent,
             tags,
-            lastModified: stats.mtime.toISOString()
+            lastModified: stats.mtime.toISOString(),
+            documentMeta
           })
         } catch {
           // Skip files that can't be read
@@ -162,7 +221,9 @@ export async function GET(request: NextRequest) {
         tags: item.tags,
         contentPreview: item.content.slice(0, 300) + '...',
         fullContent: item.content,
-        lastModified: item.lastModified
+        lastModified: item.lastModified,
+        // Document version control metadata for ISMS compliance
+        documentMeta: item.documentMeta
       }))
     }, { headers: corsHeaders })
     
