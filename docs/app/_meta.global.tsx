@@ -143,21 +143,14 @@ export default {
   },
   docs: {
     type: 'page',
-    title: 'Documentation',
+    title: 'Products',
     items: {
-      index: 'Welcome',
-      'getting-started': { 
-        title: 'Getting Started',
-        items: GETTING_STARTED 
-      },
-      'user-guide': { 
-        title: 'User Guide',
-        items: USER_GUIDE 
-      },
-      'products': {
-        title: 'Products',
-        items: PRODUCTS
-      }
+      'healthtalk': 'HealthTalk',
+      'helpdesk': 'Helpdesk',
+      'project-management': 'Project Management',
+      'gateway': 'Gateway',
+      'agents': 'AI Agents',
+      'ehr-platform': 'EHR Platform'
     }
   },
   isms: {
