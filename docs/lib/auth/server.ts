@@ -1,8 +1,12 @@
 import 'server-only'
 
 import { cookies, headers } from 'next/headers'
+import { unstable_cache } from 'next/cache'
 import { GATEWAY_ENDPOINTS, isCrossDomainMode } from './config'
 import type { Session, User, AuthResponse } from './types'
+
+// Cache duration for user data (30 seconds)
+const USER_CACHE_TTL = 30
 
 /**
  * Server-side authentication utilities
@@ -126,10 +130,10 @@ export async function getSession(): Promise<Session | null> {
 }
 
 /**
- * Get the current user from the gateway
- * Returns null if not authenticated
+ * Internal function to fetch user (uncached)
  */
-export async function getUser(): Promise<User | null> {
+async function fetchUserFromGateway(authKey: string): Promise<User | null> {
+  // authKey is used for cache key differentiation, not for auth
   const { data, error, status } = await serverFetch<User>(GATEWAY_ENDPOINTS.userMe)
   
   if (error || !data) {
@@ -140,6 +144,42 @@ export async function getUser(): Promise<User | null> {
   }
   
   return data
+}
+
+/**
+ * Get the current user from the gateway (cached for performance)
+ * Returns null if not authenticated
+ * 
+ * Uses unstable_cache to cache the user data for 30 seconds per session
+ */
+export async function getUser(): Promise<User | null> {
+  const { hasCredentials } = await getAuthCredentials()
+  
+  if (!hasCredentials) {
+    return null
+  }
+  
+  // Get a cache key based on the session
+  const isCrossDomain = isCrossDomainMode()
+  let cacheKey: string
+  
+  if (isCrossDomain) {
+    const headerStore = await headers()
+    cacheKey = headerStore.get('x-session-id') || 'no-session'
+  } else {
+    const cookieStore = await cookies()
+    const authCookie = cookieStore.get('auth.sid')
+    cacheKey = authCookie?.value?.substring(0, 16) || 'no-session'
+  }
+  
+  // Use unstable_cache to cache the result per session
+  const cachedFetch = unstable_cache(
+    () => fetchUserFromGateway(cacheKey),
+    [`user-${cacheKey}`],
+    { revalidate: USER_CACHE_TTL, tags: ['user'] }
+  )
+  
+  return cachedFetch()
 }
 
 /**

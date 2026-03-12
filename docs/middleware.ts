@@ -46,21 +46,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Add caching headers for ISMS pages (embedded in Helpdesk)
-  // This reduces latency for repeated page loads
-  if (pathname.startsWith('/isms')) {
-    const response = NextResponse.next()
-    
-    // Cache ISMS pages for 5 minutes, allow stale content while revalidating
-    response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
-    
-    // Also set CORS headers for cross-origin embedding
-    response.headers.set('Access-Control-Allow-Origin', '*')
-    response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
-    
-    return response
-  }
-
   // Skip file extensions (assets, images, etc.)
   if (pathname.match(/\.[a-zA-Z0-9]+$/)) {
     return NextResponse.next()
