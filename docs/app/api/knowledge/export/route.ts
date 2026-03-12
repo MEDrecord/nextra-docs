@@ -116,7 +116,8 @@ async function readMdxFiles(dir: string, basePath: string, type: KnowledgeItem['
           // Clean content (remove React components)
           const cleanedContent = cleanContent(content.replace(/^#\s+.+$/m, '')) // Remove title
           
-          items.push({
+          // Build item with conditional documentMeta (for exactOptionalPropertyTypes)
+          const item: KnowledgeItem = {
             id: `${type}-${basePath.replace(/\//g, '-')}`,
             title,
             path: basePath,
@@ -124,8 +125,14 @@ async function readMdxFiles(dir: string, basePath: string, type: KnowledgeItem['
             content: cleanedContent,
             tags,
             lastModified: stats.mtime.toISOString(),
-            documentMeta
-          })
+          }
+          
+          // Only add documentMeta if it exists
+          if (documentMeta) {
+            item.documentMeta = documentMeta
+          }
+          
+          items.push(item)
         } catch {
           // Skip files that can't be read
         }
