@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
+import { marked } from 'marked'
 
 // Force dynamic rendering - this route accesses the file system
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
+
+// Configure marked for GFM (GitHub Flavored Markdown)
+marked.setOptions({
+  gfm: true,
+  breaks: true,
+})
 
 /**
  * API Route: /api/content
@@ -52,56 +59,27 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 /**
- * Convert MDX content to simple HTML
+ * Convert MDX content to HTML using marked
  */
 function mdxToHtml(mdxContent: string): string {
-  let html = mdxContent
+  let content = mdxContent
   
   // Remove frontmatter
-  html = html.replace(/^---[\s\S]*?---\n?/, '')
+  content = content.replace(/^---[\s\S]*?---\n?/, '')
   
   // Remove MDX imports and exports
-  html = html.replace(/^import\s+.*$/gm, '')
-  html = html.replace(/^export\s+.*$/gm, '')
+  content = content.replace(/^import\s+.*$/gm, '')
+  content = content.replace(/^export\s+.*$/gm, '')
   
-  // Remove JSX components
-  html = html.replace(/<[A-Z][a-zA-Z]*[^>]*\/>/g, '')
-  html = html.replace(/<[A-Z][a-zA-Z]*[^>]*>[\s\S]*?<\/[A-Z][a-zA-Z]*>/g, '')
+  // Remove JSX components (self-closing and with children)
+  content = content.replace(/<[A-Z][a-zA-Z]*[^>]*\/>/g, '')
+  content = content.replace(/<[A-Z][a-zA-Z]*[^>]*>[\s\S]*?<\/[A-Z][a-zA-Z]*>/g, '')
   
-  // Convert headers
-  html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>')
-  html = html.replace(/^#####\s+(.+)$/gm, '<h5>$1</h5>')
-  html = html.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>')
-  html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>')
-  html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>')
-  html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>')
+  // Remove JSX expressions
+  content = content.replace(/\{[^}]*\}/g, '')
   
-  // Convert formatting
-  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>')
-  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>')
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
-  html = html.replace(/^---+$/gm, '<hr />')
-  html = html.replace(/^[-*+]\s+(.+)$/gm, '<li>$1</li>')
-  html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
-  html = html.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, '<ul>$&</ul>')
-  html = html.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>')
-  
-  // Convert remaining lines to paragraphs
-  const lines = html.split('\n')
-  const processedLines = lines.map(line => {
-    const trimmed = line.trim()
-    if (!trimmed) return ''
-    if (trimmed.startsWith('<')) return line
-    return `<p>${trimmed}</p>`
-  })
-  html = processedLines.join('\n')
-  
-  html = html.replace(/<p>\s*<\/p>/g, '')
-  html = html.replace(/\n{3,}/g, '\n\n')
+  // Parse markdown to HTML using marked
+  const html = marked.parse(content, { async: false }) as string
   
   return html.trim()
 }
