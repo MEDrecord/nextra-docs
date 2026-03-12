@@ -1,16 +1,20 @@
 # Authentication
 
-HealthTalk API uses HMAC signature-based authentication for secure access.
+The MEDrecord Gateway API uses HMAC signature-based authentication for secure access across all platform products.
 
-## Authentication Method
+> For a complete overview of the Gateway architecture, see [Gateway Documentation](/docs/products/gateway).
 
-All API requests must include:
+## Quick Reference
 
-- `X-Gateway-Signature` - HMAC signature of the request
-- `X-Timestamp` - Unix timestamp of the request
-- `X-Tenant-Id` - Your organization's tenant ID
+### Required Headers
 
-## Generating the Signature
+| Header | Description |
+|--------|-------------|
+| `X-Gateway-Signature` | HMAC-SHA256 signature of the request |
+| `X-Timestamp` | Unix timestamp of the request |
+| `X-Tenant-Id` | Your organization's tenant ID |
+
+### Signature Generation
 
 ```javascript
 const crypto = require('crypto');
@@ -27,7 +31,7 @@ function generateSignature(method, path, timestamp, body, secret) {
 ## Example Request
 
 ```bash
-curl -X POST https://api.healthtalk.ai/v1/messages \
+curl -X POST https://auth.healthtalk.ai/v1/messages \
   -H "Content-Type: application/json" \
   -H "X-Gateway-Signature: abc123..." \
   -H "X-Timestamp: 1678901234" \
@@ -35,24 +39,33 @@ curl -X POST https://api.healthtalk.ai/v1/messages \
   -d '{"patientId": "123", "message": "Hello"}'
 ```
 
-## API Keys
+## API Credentials
 
-API credentials are managed in the HealthTalk admin dashboard:
+API credentials are managed in the admin dashboard of your product:
 
 1. Navigate to **Settings > API**
 2. Click **Generate New Key**
 3. Store the secret securely (it won't be shown again)
 4. Set IP restrictions if needed
 
-## Token Expiration
+## Token Validity
 
-- Signatures are valid for 5 minutes from the timestamp
+- Signatures are valid for **5 minutes** from the timestamp
+- Clock skew tolerance is **30 seconds**
 - Requests with expired timestamps are rejected
-- Clock skew tolerance is 30 seconds
 
-## Security Best Practices
+## Security Checklist
 
-- Never expose API secrets in client-side code
-- Rotate API keys regularly
-- Use IP whitelisting for production systems
-- Monitor API usage for anomalies
+For developers integrating with the Gateway API:
+
+- [ ] Never expose API secrets in client-side code
+- [ ] Rotate API keys regularly (quarterly recommended)
+- [ ] Use IP whitelisting for production systems
+- [ ] Monitor API usage for anomalies
+- [ ] Implement proper error handling for auth failures
+
+## Related Documentation
+
+- [Gateway Overview](/docs/products/gateway) - Full Gateway architecture and features
+- [Rate Limits](/developer/api-reference/rate-limits) - API usage limits
+- [Security Architecture](/developer/architecture/security) - Platform security design
