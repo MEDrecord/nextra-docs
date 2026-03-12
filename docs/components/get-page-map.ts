@@ -1,3 +1,4 @@
+// Enhanced page map with route filtering
 import { getPageMap } from 'nextra/page-map'
 import type { PageMapItem } from 'nextra'
 
