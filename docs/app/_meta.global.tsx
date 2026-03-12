@@ -34,6 +34,25 @@ const ISMS: MetaRecord = {
   }
 }
 
+const ISMS_POLICIES: MetaRecord = {
+  index: 'Overview',
+  'password': 'Password Policy',
+  'remote-working': 'Remote Working Policy',
+  'mobile-device': 'Mobile Device Policy',
+  'acceptable-use': 'Acceptable Use Policy',
+  'information-classification': 'Information Classification',
+  'privacy': 'Privacy Policy',
+  'access-control': 'Access Control Policy',
+  'secure-development': 'Secure Development Policy',
+  'cryptography': 'Cryptography Policy',
+  'backup': 'Backup Policy',
+  'supplier-relationship': 'Supplier Relationship Policy',
+  'incident-management': 'Incident Management Policy',
+  'information-security': 'Information Security Policy',
+  'code-of-conduct': 'Code of Conduct',
+  'information-retention': 'Information Retention Policy'
+}
+
 const ISMS_PROCEDURES: MetaRecord = {
   index: 'Overview',
   'access-management': 'Access Management',
@@ -148,7 +167,10 @@ export default {
       // PUBLIC - All authenticated employees
       'awareness': 'Security Awareness',
       'report-incident': 'Report Incident',
-      'policies': 'Policies',
+      'policies': {
+        title: 'Policies',
+        items: ISMS_POLICIES
+      },
       'procedures': {
         title: 'Procedures',
         items: ISMS_PROCEDURES

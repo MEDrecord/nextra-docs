@@ -1,0 +1,256 @@
+# Incident Management Policy
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/policies/incident-management/page.mdx"
+/>
+
+## Purpose
+
+This policy establishes requirements for identifying, reporting, managing, and learning from information security incidents to minimize their impact and prevent recurrence.
+
+## Scope
+
+This policy applies to all information security events and incidents involving:
+- MEDrecord information systems
+- Customer and patient data
+- Employee data
+- Third-party systems accessing MEDrecord data
+- Physical security events affecting IT assets
+
+## Definitions
+
+| Term | Definition |
+|------|------------|
+| Security Event | Observable occurrence indicating possible security issue |
+| Security Incident | Event that compromises confidentiality, integrity, or availability |
+| Data Breach | Incident involving unauthorized access to personal data |
+| Near Miss | Event that could have resulted in an incident |
+
+## Policy Statement
+
+### Incident Classification
+
+#### Severity Levels
+
+| Severity | Description | Response Time | Examples |
+|----------|-------------|---------------|----------|
+| Critical | Business-critical systems, data breach, regulatory impact | 15 minutes | Ransomware, patient data breach, production down |
+| High | Significant impact, contained threat | 1 hour | Malware detected, unauthorized access attempt |
+| Medium | Limited impact, no data loss | 4 hours | Phishing success (no data), policy violation |
+| Low | Minimal impact, informational | 24 hours | Suspicious activity, failed login attempts |
+
+#### Incident Categories
+
+- Malware/Ransomware
+- Unauthorized access
+- Data breach/leakage
+- Denial of service
+- Phishing/Social engineering
+- Physical security
+- Policy violation
+- System misuse
+
+### Incident Response Process
+
+#### Phase 1: Detection and Reporting
+
+**All employees must report:**
+- Suspicious emails or messages
+- Unusual system behavior
+- Potential data exposure
+- Lost or stolen devices
+- Physical security concerns
+
+**Reporting channels:**
+- Helpdesk: [helpdesk.healthtalk.ai](https://helpdesk.healthtalk.ai)
+- Email: security@medrecord.nl
+- Emergency: Direct to Security Officer
+
+**Response time to acknowledge:**
+- Critical: 15 minutes
+- High: 1 hour
+- Medium: 4 hours
+- Low: 24 hours
+
+#### Phase 2: Assessment and Triage
+
+Security team will:
+1. Confirm incident validity
+2. Determine severity and category
+3. Identify affected systems/data
+4. Assess business impact
+5. Escalate if necessary
+
+#### Phase 3: Containment
+
+Immediate actions to limit damage:
+- Isolate affected systems
+- Block malicious IPs/accounts
+- Preserve evidence
+- Prevent further data loss
+
+**Never:**
+- Turn off affected systems (preserves memory evidence)
+- Delete logs
+- Alert attackers to detection
+- Attempt fixes without approval
+
+#### Phase 4: Eradication
+
+Remove the threat:
+- Remove malware
+- Patch vulnerabilities
+- Reset compromised credentials
+- Clean affected systems
+
+#### Phase 5: Recovery
+
+Restore normal operations:
+- Restore from clean backups
+- Verify system integrity
+- Monitor for recurrence
+- Gradual service restoration
+
+#### Phase 6: Lessons Learned
+
+Post-incident activities:
+- Root cause analysis
+- Timeline documentation
+- Improvement recommendations
+- Policy/procedure updates
+- Training needs identified
+
+### Escalation Matrix
+
+| Severity | Notify | Escalate To | External Notification |
+|----------|--------|-------------|----------------------|
+| Critical | Immediately | CTO, CEO, Legal | Authorities, Customers (if required) |
+| High | Within 1 hour | Security Officer, IT Lead | None unless data breach |
+| Medium | Within 4 hours | IT Lead | None |
+| Low | Daily summary | None | None |
+
+### Data Breach Response
+
+When personal data is compromised:
+
+#### Regulatory Requirements
+
+| Requirement | Timeline | Authority |
+|-------------|----------|-----------|
+| AP Notification (GDPR) | 72 hours | Autoriteit Persoonsgegevens |
+| Data Subject Notification | Without undue delay | Affected individuals |
+| Healthcare Notification | 24-72 hours | IGJ (if applicable) |
+
+#### Data Breach Assessment
+
+Document:
+- Nature of breach
+- Categories of data affected
+- Number of individuals affected
+- Likely consequences
+- Measures taken/proposed
+
+### Evidence Handling
+
+#### Evidence Preservation
+
+- Create forensic images before analysis
+- Document chain of custody
+- Store evidence securely
+- Maintain integrity (hashes)
+- Follow legal hold procedures
+
+#### Documentation Requirements
+
+All incidents must be documented with:
+- Date and time of detection
+- How discovered
+- Systems/data affected
+- Actions taken
+- Timeline of events
+- Evidence collected
+- Root cause
+- Lessons learned
+
+### Communication
+
+#### Internal Communication
+
+- Need-to-know basis
+- Secure channels only
+- No speculation
+- Regular updates to stakeholders
+
+#### External Communication
+
+- All external communication via PR/Legal
+- No social media discussion
+- Customer notification per DPA/contract
+- Regulatory notification as required
+
+### Roles and Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| All Employees | Report incidents, follow instructions |
+| IT Team | Initial response, containment, recovery |
+| Security Officer | Lead response, coordinate activities |
+| DPO | Data breach assessment, regulatory notification |
+| Legal | Legal advice, external communication |
+| Management | Resource allocation, strategic decisions |
+
+### Incident Response Team
+
+The Incident Response Team (IRT) is activated for Critical/High incidents:
+- Security Officer (Lead)
+- IT Operations representative
+- Development representative
+- Legal/Compliance representative
+- Communications representative
+
+### Testing and Training
+
+| Activity | Frequency |
+|----------|-----------|
+| Tabletop exercises | Quarterly |
+| Incident response drill | Semi-annually |
+| Full simulation | Annually |
+| Awareness training | Annually (all staff) |
+| IRT training | Quarterly |
+
+### Metrics and Reporting
+
+Track and report:
+- Number of incidents by category
+- Mean time to detect (MTTD)
+- Mean time to respond (MTTR)
+- Mean time to resolve
+- Incidents by source
+- Recurring incidents
+
+Monthly security report to management.
+
+## Compliance
+
+- Incident logs retained for 5 years
+- Annual policy review
+- Compliance with GDPR, NEN 7510
+- ISO 27001 A.16 requirements
+
+## Related Documents
+
+- [Incident Response Procedure](/isms/procedures/incident-response)
+- [Privacy Policy](/isms/policies/privacy)
+- [Incident Register](/isms/registers/incidents)
+- [Report Incident](/isms/report-incident)
+- [A.16 Information Security Incident Management](/isms/annex-a)
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2024-03-01 | Jan-Marc Verlinden | Initial version |

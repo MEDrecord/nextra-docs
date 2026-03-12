@@ -37,16 +37,21 @@ This checklist tracks all ISMS documentation that needs to be migrated, created,
 
 | Item | Status | Location | Notes |
 |------|--------|----------|-------|
-| Information Security Policy | Missing | - | Master policy |
-| Access Control Policy | Missing | - | [Azure Wiki](https://dev.azure.com/medrecord/MEDrecord%20ISMS/_wiki/wikis/MEDrecord-ISMS.wiki/) |
-| Information Retention Policy | Link Only | [Azure Wiki](https://dev.azure.com/medrecord/MEDrecord%20ISMS/_wiki/wikis/MEDrecord-ISMS.wiki/1174/Information-retention-policy) | Needs migration or embed |
-| Supplier Relationship Policy | Link Only | [Azure Wiki](https://dev.azure.com/medrecord/MEDrecord%20ISMS/_wiki/wikis/MEDrecord-ISMS.wiki/1190/Supplier-relationship-policy) | Needs migration or embed |
-| Acceptable Use Policy | Missing | - | Employee IT usage rules |
-| Password Policy | Missing | - | Password requirements |
-| Remote Working Policy | Missing | - | WFH security requirements |
-| Mobile Device Policy | Missing | - | BYOD rules |
-| Data Classification Policy | Missing | - | Confidential/Internal/Public |
-| Cryptographic Policy | Missing | - | Encryption standards |
+| Information Security Policy | Done | [/isms/policies/information-security](/isms/policies/information-security) | Master policy |
+| Access Control Policy | Done | [/isms/policies/access-control](/isms/policies/access-control) | |
+| Information Retention Policy | Done | [/isms/policies/information-retention](/isms/policies/information-retention) | |
+| Supplier Relationship Policy | Done | [/isms/policies/supplier-relationship](/isms/policies/supplier-relationship) | |
+| Acceptable Use Policy | Done | [/isms/policies/acceptable-use](/isms/policies/acceptable-use) | |
+| Password Policy | Done | [/isms/policies/password](/isms/policies/password) | |
+| Remote Working Policy | Done | [/isms/policies/remote-working](/isms/policies/remote-working) | |
+| Mobile Device Policy | Done | [/isms/policies/mobile-device](/isms/policies/mobile-device) | |
+| Information Classification Policy | Done | [/isms/policies/information-classification](/isms/policies/information-classification) | |
+| Cryptography Policy | Done | [/isms/policies/cryptography](/isms/policies/cryptography) | |
+| Backup Policy | Done | [/isms/policies/backup](/isms/policies/backup) | |
+| Secure Development Policy | Done | [/isms/policies/secure-development](/isms/policies/secure-development) | |
+| Incident Management Policy | Done | [/isms/policies/incident-management](/isms/policies/incident-management) | |
+| Privacy Policy | Done | [/isms/policies/privacy](/isms/policies/privacy) | |
+| Code of Conduct | Done | [/isms/policies/code-of-conduct](/isms/policies/code-of-conduct) | |
 
 ## Procedures
 
@@ -144,7 +149,7 @@ This checklist tracks all ISMS documentation that needs to be migrated, created,
 
 ### Immediate (Before Audit)
 
-1. **Migrate key policies from Azure Wiki** - Information Security Policy, Access Control Policy
+1. ~~**Migrate key policies from Azure Wiki**~~ - DONE (15 policies migrated)
 2. **Complete Risk Register** - Import remaining risks from Confluence
 3. **Document Asset Register** - List all IT assets with owners
 4. **Upload Certificates to SharePoint** - ISO 27001, NEN 7510
@@ -154,12 +159,13 @@ This checklist tracks all ISMS documentation that needs to be migrated, created,
 1. **Create Statement of Applicability** - Document all 114 Annex A controls
 2. **Document Roles** - Security Officer, DPO, Lead Developer responsibilities
 3. **Create Training Matrix** - Who needs what training
+4. **Add remaining procedures** - Vulnerability Management, Business Continuity, Supplier Assessment
 
 ### Medium Term (Next Quarter)
 
 1. **Implement GDPR section** - Processing register, DPIA process
 2. **Add Management Reviews** - Quarterly review documentation
-3. **Complete all missing policies**
+3. **Complete Annex A controls** - Link all controls to policies
 
 ---
 
@@ -167,13 +173,13 @@ This checklist tracks all ISMS documentation that needs to be migrated, created,
 
 | Category | Done | Partial | Missing | Total |
 |----------|------|---------|---------|-------|
-| Policies | 0 | 2 | 8 | 10 |
+| Policies | 15 | 0 | 0 | 15 |
 | Procedures | 5 | 0 | 3 | 8 |
 | Annex A Sections | 0 | 6 | 8 | 14 |
 | Registers | 2 | 1 | 4 | 7 |
 | Supporting Docs | 0 | 1 | 4 | 5 |
 | Audit Artifacts | 0 | 0 | 7 | 7 |
 | GDPR | 0 | 0 | 6 | 6 |
-| **Total** | **7** | **10** | **40** | **57** |
+| **Total** | **22** | **8** | **32** | **62** |
 
-**Completion: ~12%**
+**Completion: ~35%**

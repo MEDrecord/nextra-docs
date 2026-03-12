@@ -1,0 +1,212 @@
+# Backup Policy
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/policies/backup/page.mdx"
+/>
+
+## Purpose
+
+This policy establishes requirements for backing up MEDrecord information systems and data to ensure business continuity and enable recovery from data loss events.
+
+## Scope
+
+This policy applies to all MEDrecord systems and data, including:
+- Production databases
+- Application data
+- Configuration files
+- User files and documents
+- System configurations
+- Healthcare/patient data
+
+## Policy Statement
+
+### Backup Strategy
+
+MEDrecord implements a 3-2-1 backup strategy:
+- **3** copies of data (1 primary + 2 backups)
+- **2** different storage media types
+- **1** copy stored offsite/cloud
+
+### Backup Schedule
+
+| System Type | Full Backup | Incremental | Retention |
+|-------------|-------------|-------------|-----------|
+| Production Databases | Weekly | Daily | 90 days |
+| Healthcare Data | Daily | Hourly | 7 years |
+| Configuration | On change | N/A | 1 year |
+| User Files | Weekly | Daily | 30 days |
+| System Images | Monthly | Weekly | 6 months |
+| Logs | Daily | Hourly | 2 years |
+
+### Backup Requirements
+
+#### Data Classification Requirements
+
+| Classification | Backup Frequency | Encryption | Offsite |
+|----------------|------------------|------------|---------|
+| Public | Weekly | Optional | Optional |
+| Internal | Daily | Required | Recommended |
+| Confidential | Daily | Required | Required |
+| Restricted | Hourly/Daily | Required | Required |
+
+#### Healthcare Data (NEN 7510)
+
+Healthcare data requires:
+- Daily full backups minimum
+- Point-in-time recovery capability
+- 7-year retention (or as legally required)
+- Encrypted backup storage
+- Access logging on backup data
+- Annual recovery testing
+
+### Backup Locations
+
+| Location | Type | Purpose |
+|----------|------|---------|
+| Primary Site | Local | Fast recovery, operational backups |
+| Azure Blob Storage | Cloud | Offsite disaster recovery |
+| Geo-redundant Storage | Cloud | Regional disaster protection |
+
+### Encryption
+
+All backups must be encrypted:
+- AES-256 encryption minimum
+- Keys stored separately from backup data
+- Key management per [Cryptography Policy](/isms/policies/cryptography)
+- Encrypted in transit and at rest
+
+### Backup Verification
+
+#### Automated Verification
+
+| Check | Frequency | Action on Failure |
+|-------|-----------|-------------------|
+| Backup completion | After each backup | Alert + retry |
+| Integrity check | Daily | Alert + investigate |
+| Size validation | Daily | Alert if unexpected |
+
+#### Manual Testing
+
+| Test Type | Frequency | Scope |
+|-----------|-----------|-------|
+| File restore test | Monthly | Sample files |
+| Database restore test | Quarterly | Full database |
+| Full DR test | Annually | Complete system recovery |
+
+### Recovery Time Objectives (RTO)
+
+| System Type | RTO Target | RPO Target |
+|-------------|------------|------------|
+| Critical (Production) | 4 hours | 1 hour |
+| Important (Business) | 24 hours | 24 hours |
+| Standard (Support) | 72 hours | 24 hours |
+
+### Recovery Procedures
+
+See [Backup & Restore Procedure](/isms/procedures/backup-restore) for detailed steps.
+
+#### Recovery Prioritization
+
+1. Healthcare/patient data systems
+2. Authentication systems
+3. Core business applications
+4. Communication systems
+5. Support systems
+
+### Access Control
+
+Backup systems and data access is restricted to:
+- Backup administrators
+- Security team (for audit)
+- Authorized recovery personnel
+
+Requirements:
+- MFA required for backup access
+- All access logged
+- Quarterly access review
+- Separation of duties (backup admin ≠ delete rights)
+
+### Backup Retention
+
+| Data Type | Minimum Retention | Maximum Retention |
+|-----------|-------------------|-------------------|
+| Healthcare data | 7 years | As legally required |
+| Financial data | 7 years | 10 years |
+| Operational data | 90 days | 1 year |
+| Logs | 2 years | 3 years |
+| System configs | 1 year | 2 years |
+
+### Backup Deletion
+
+Secure deletion of backup data:
+- Only authorized personnel can delete
+- Dual approval for production backup deletion
+- Documented justification required
+- Cryptographic erasure or physical destruction
+- Audit trail maintained
+
+### Disaster Recovery
+
+Backups support the following DR scenarios:
+
+| Scenario | Recovery Method |
+|----------|-----------------|
+| File corruption | Restore from latest backup |
+| Database failure | Point-in-time recovery |
+| Server failure | Restore to new hardware/VM |
+| Ransomware | Restore from isolated backup |
+| Site disaster | Restore from offsite location |
+
+Annual DR testing validates recovery procedures.
+
+### Monitoring and Alerting
+
+| Event | Alert Level | Response |
+|-------|-------------|----------|
+| Backup failure | Critical | Immediate investigation |
+| Backup warning | Warning | Next business day |
+| Storage capacity > 80% | Warning | Plan expansion |
+| Restore failure | Critical | Escalate to lead |
+
+### Documentation
+
+Maintain documentation for:
+- Backup configurations
+- Recovery procedures
+- Test results
+- Incident reports
+- Change history
+
+## Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| Backup Admin | Configure, monitor, execute backups |
+| System Owners | Define backup requirements |
+| IT Operations | Manage backup infrastructure |
+| Security Team | Audit backup security |
+| Management | Approve DR budget, review results |
+
+## Compliance
+
+- Backup logs reviewed monthly
+- Recovery tests documented
+- Annual policy review
+- NEN 7510, ISO 27001 compliance
+
+## Related Documents
+
+- [Backup & Restore Procedure](/isms/procedures/backup-restore)
+- [Incident Response Procedure](/isms/procedures/incident-response)
+- [Cryptography Policy](/isms/policies/cryptography)
+- [A.12.3 Information Backup](/isms/annex-a)
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2024-03-01 | Jan-Marc Verlinden | Initial version |

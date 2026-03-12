@@ -1,0 +1,207 @@
+# Information Retention Policy
+
+<DocumentMeta
+  version="1.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/policies/information-retention/page.mdx"
+/>
+
+## Purpose
+
+This policy establishes requirements for retaining and disposing of MEDrecord information to ensure compliance with legal requirements while minimizing data storage risks.
+
+## Scope
+
+This policy applies to all MEDrecord information regardless of format:
+- Electronic records
+- Paper documents
+- Emails and communications
+- Database records
+- Backup media
+- Application logs
+
+## Policy Statement
+
+### Retention Principles
+
+1. **Legal Compliance** - Retain data as required by law
+2. **Business Need** - Keep data needed for operations
+3. **Data Minimization** - Delete data when no longer needed
+4. **Secure Disposal** - Destroy data securely when retention ends
+
+### Retention Schedule
+
+#### Healthcare Data
+
+| Data Type | Retention Period | Legal Basis |
+|-----------|------------------|-------------|
+| Patient records (adults) | 20 years after last contact | WGBO |
+| Patient records (minors) | Until age 35, minimum 20 years | WGBO |
+| Medical device records | 15 years | MDR |
+| Clinical trial data | 25 years | GCP |
+
+#### Financial Records
+
+| Data Type | Retention Period | Legal Basis |
+|-----------|------------------|-------------|
+| Financial statements | 7 years | Fiscal law |
+| Invoices | 7 years | VAT regulations |
+| Tax records | 7 years | Tax law |
+| Contracts | 7 years after expiry | Civil code |
+
+#### HR Records
+
+| Data Type | Retention Period | Legal Basis |
+|-----------|------------------|-------------|
+| Employment contracts | 7 years after end | Labor law |
+| Payroll records | 7 years | Tax law |
+| Application records (hired) | Duration of employment + 2 years | GDPR |
+| Application records (not hired) | 4 weeks (or with consent 1 year) | GDPR |
+| Training records | 5 years | NEN 7510 |
+
+#### IT and Security
+
+| Data Type | Retention Period | Legal Basis |
+|-----------|------------------|-------------|
+| Security logs | 2 years | ISO 27001 |
+| Access logs | 2 years | NEN 7510 |
+| Audit trails | 7 years | Compliance |
+| Incident records | 5 years | ISO 27001 |
+| Backup data | Per backup policy | Business need |
+
+#### Business Records
+
+| Data Type | Retention Period | Legal Basis |
+|-----------|------------------|-------------|
+| Contracts | 7 years after expiry | Civil code |
+| Meeting minutes | 10 years | Corporate governance |
+| Policies and procedures | Active + 5 years | Compliance |
+| Email (business critical) | 7 years | Legal hold |
+| Email (general) | 3 years | Business need |
+
+### Legal Hold
+
+When litigation or investigation is anticipated:
+- Normal deletion schedules are suspended
+- Affected data must be preserved
+- Legal department issues hold notices
+- Hold remains until released by Legal
+
+### Data Disposal
+
+#### Secure Deletion Methods
+
+| Media Type | Disposal Method |
+|------------|-----------------|
+| Paper | Cross-cut shredding (DIN 66399 Level P-4) |
+| Hard drives | Degaussing + physical destruction |
+| SSDs | Cryptographic erasure + destruction |
+| Cloud storage | Verified deletion + confirmation |
+| Optical media | Physical destruction |
+| Backup tapes | Degaussing + destruction |
+
+#### Disposal Documentation
+
+Document all disposal activities:
+- Date of disposal
+- Description of records
+- Disposal method
+- Personnel involved
+- Verification of completion
+
+#### Third-Party Disposal
+
+When using disposal vendors:
+- Use certified vendors only
+- Require certificates of destruction
+- Include in supplier contracts
+- Audit vendor compliance
+
+### Responsibilities by Data Type
+
+| Data Owner | Responsible For |
+|------------|-----------------|
+| HR Manager | Employee records |
+| Finance Manager | Financial records |
+| IT Manager | System logs, backups |
+| Development Lead | Application data |
+| Data Protection Officer | Personal data compliance |
+| Security Officer | Security records |
+
+### Personal Data (GDPR)
+
+Additional requirements for personal data:
+
+- **Purpose limitation** - Delete when purpose fulfilled
+- **Data subject requests** - Respond to deletion requests within 30 days
+- **Retention justification** - Document why data is kept
+- **Regular review** - Assess retention needs annually
+
+#### Deletion vs. Anonymization
+
+When possible, anonymize data instead of deletion to:
+- Preserve statistical value
+- Enable historical analysis
+- Reduce deletion complexity
+
+Anonymization must be irreversible.
+
+### Application Data Management
+
+#### Database Records
+
+- Implement automated retention in applications
+- Archive old data before deletion
+- Maintain audit trails of deletions
+- Document retention logic in applications
+
+#### File Storage
+
+- Use folder structures aligned with retention
+- Implement automated cleanup where possible
+- Regular reviews of shared drives
+- Clear ownership and classification
+
+### Exceptions
+
+Exceptions to retention schedules require:
+- Written business justification
+- Legal review
+- Security Officer approval
+- Documented approval
+- Regular review of exception
+
+### Compliance Monitoring
+
+| Activity | Frequency |
+|----------|-----------|
+| Retention schedule review | Annual |
+| Disposal audit | Quarterly |
+| Legal hold compliance | Ongoing |
+| Policy compliance check | Annual |
+
+## Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| Data Owners | Manage retention for their data |
+| IT Team | Implement technical controls |
+| Legal | Define legal requirements |
+| DPO | GDPR compliance oversight |
+| Security Officer | Disposal verification |
+| All Employees | Follow retention guidelines |
+
+## Related Documents
+
+- [Information Classification Policy](/isms/policies/information-classification)
+- [Privacy Policy](/isms/policies/privacy)
+- [Backup Policy](/isms/policies/backup)
+- [Legal Requirements Register](/isms/registers/legal-requirements)
+
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2024-03-01 | Jan-Marc Verlinden | Initial version |
