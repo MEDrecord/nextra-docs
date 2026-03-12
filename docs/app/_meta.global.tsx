@@ -18,6 +18,7 @@ const USER_GUIDE: MetaRecord = {
 
 const ISMS: MetaRecord = {
   index: 'Overview',
+  'checklist': 'Implementation Checklist',
   'policies': 'Policies',
   'procedures': 'Procedures',
   'annex-a': 'Annex A Controls',
@@ -137,6 +138,7 @@ export default {
     title: 'ISMS',
     items: {
       index: 'Overview',
+      'checklist': 'Implementation Checklist',
       'policies': 'Policies',
       'procedures': {
         title: 'Procedures',
