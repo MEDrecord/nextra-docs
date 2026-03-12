@@ -18,13 +18,20 @@ const USER_GUIDE: MetaRecord = {
 
 const ISMS: MetaRecord = {
   index: 'Overview',
-  'checklist': 'Implementation Checklist',
+  // PUBLIC - All authenticated employees
+  'awareness': 'Security Awareness',
+  'report-incident': 'Report Incident',
   'policies': 'Policies',
   'procedures': 'Procedures',
+  // RESTRICTED - Management & Security Officer only
+  'checklist': 'Implementation Checklist',
   'annex-a': 'Annex A Controls',
   'registers': 'Registers',
   'risks': 'Risk Register',
-  'audit': 'Audit & Evidence'
+  'audit': 'Audit & Evidence',
+  'access-denied': {
+    display: 'hidden'
+  }
 }
 
 const ISMS_PROCEDURES: MetaRecord = {
@@ -138,12 +145,16 @@ export default {
     title: 'ISMS',
     items: {
       index: 'Overview',
-      'checklist': 'Implementation Checklist',
+      // PUBLIC - All authenticated employees
+      'awareness': 'Security Awareness',
+      'report-incident': 'Report Incident',
       'policies': 'Policies',
       'procedures': {
         title: 'Procedures',
         items: ISMS_PROCEDURES
       },
+      // RESTRICTED - Management & Security Officer only
+      'checklist': 'Implementation Checklist',
       'annex-a': {
         title: 'Annex A Controls',
         items: ISMS_ANNEX_A
@@ -153,7 +164,10 @@ export default {
         items: ISMS_REGISTERS
       },
       'risks': 'Risk Register',
-      'audit': 'Audit & Evidence'
+      'audit': 'Audit & Evidence',
+      'access-denied': {
+        display: 'hidden'
+      }
     }
   },
   help: {
