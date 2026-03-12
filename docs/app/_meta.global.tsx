@@ -98,8 +98,8 @@ const PRODUCTS: MetaRecord = {
   },
   'healthtalk': 'HealthTalk',
   'helpdesk': 'Helpdesk',
-  'project-management': 'Project Management',
-  'gateway': 'Gateway',
+'consortia-ai': 'ConsortiaAI',
+        'gateway': 'Gateway',
   'agents': 'AI Agents',
   'ehr-platform': 'EHR Platform'
 }
@@ -164,7 +164,7 @@ export default {
           },
           'healthtalk': 'HealthTalk',
           'helpdesk': 'Helpdesk',
-          'project-management': 'Project Management',
+          'consortia-ai': 'ConsortiaAI',
           'gateway': 'Gateway',
           'agents': 'AI Agents',
           'ehr-platform': 'EHR Platform'

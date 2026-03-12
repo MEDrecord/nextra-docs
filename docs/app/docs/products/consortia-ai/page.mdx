@@ -1,0 +1,188 @@
+# ConsortiaAI
+
+ConsortiaAI is an AI-powered research grant and consortium management platform for coordinators of European and national R&D projects. It supports the full lifecycle from funding discovery and partner matching to proposal development, consortium agreements, milestone tracking, deliverables, compliance, and reporting.
+
+## Overview
+
+ConsortiaAI helps research coordinators manage complex multi-partner projects efficiently. The platform uses AI agents to automate repetitive tasks while keeping humans in control of strategic decisions.
+
+### Target Users
+
+- Research coordinators at University Medical Centers
+- Research Support Office staff
+- Project managers for Horizon Europe, Eurostars, ZonMw, NWO projects
+- Innovation managers at healthcare organizations
+
+### Key Capabilities
+
+- **Funding Intelligence** - AI-powered call monitoring and eligibility matching
+- **Consortium Builder** - Partner discovery, outreach automation, LOI tracking
+- **Proposal Workspace** - Collaborative editing with compliance checks
+- **Agreement Management** - Templates for CA, DPA, IP schedules with approval workflows
+- **Project Execution** - Work packages, milestones, deliverables tracking
+- **Reporting Suite** - Periodic reports, financial reporting, KPI dashboards
+
+## Layout
+
+ConsortiaAI uses the standard MEDrecord three-panel layout:
+
+```
+┌──────────────┬──────────────────┬─────────────────────────────────┐
+│   Sidebar    │   Agent Chat     │          Content                │
+│              │                  │                                 │
+│  - Funding   │  AI assistant    │   [Main workspace]              │
+│  - Partners  │  for current     │   Tables, forms, editors        │
+│  - Proposals │  module context  │                                 │
+│  - Agreements│                  │                                 │
+│  - Execution │  + suggestions   │                                 │
+│  - Reports   │  + actions       │                                 │
+│              │                  │                                 │
+└──────────────┴──────────────────┴─────────────────────────────────┘
+```
+
+| Panel | Purpose |
+|-------|---------|
+| **Sidebar** | Module navigation and project selection |
+| **Agent** | Context-aware AI chat for the active module |
+| **Content** | Main workspace with tables, forms, and editors |
+
+## Modules
+
+| Module | Agent Context | Content Panel |
+|--------|---------------|---------------|
+| **Funding** | Grant discovery, eligibility checks | Call browser, deadline tracker |
+| **Partners** | Partner matching, outreach drafts | Partner database, LOI tracker |
+| **Proposals** | Section drafting, compliance | Collaborative editor, checklist |
+| **Agreements** | Legal review, clause suggestions | CA/DPA templates, approval workflow |
+| **Execution** | Task coordination, reminders | Work packages, milestone tracker |
+| **Reports** | Report generation, data aggregation | Periodic reports, KPIs |
+
+## Current Development Status
+
+ConsortiaAI is in early development. The first agent being implemented is the **Ticketing Agent** to collect user feedback and feature requests.
+
+### Phase 1: Feedback Collection (Current)
+
+| Component | Status | Description |
+|-----------|--------|-------------|
+| **Ticketing Agent** | In Development | Collect feedback, feature requests, and bug reports |
+| **Basic Layout** | Planned | Sidebar + Agent + Content structure |
+| **User Onboarding** | Planned | Early adopter registration |
+
+### Phase 2: MVP
+
+| Component | Status | Description |
+|-----------|--------|-------------|
+| Funding Module | Planned | Call monitoring and matching |
+| Partner Module | Planned | Partner database and outreach |
+| Proposal Module | Planned | Collaborative editing |
+| Execution Module | Planned | Milestone and deliverable tracking |
+
+## Ticketing Agent
+
+The Ticketing Agent is the first AI agent for ConsortiaAI, designed to:
+
+- Collect user feedback on platform features
+- Log feature requests with priority and context
+- Report bugs and issues
+- Route tickets to the development team
+
+### How It Works
+
+```
+User → Agent Chat → Ticketing Agent → Helpdesk Integration
+           │                              │
+           ▼                              ▼
+    "I need a way to         Ticket created with:
+     track partner LOIs"     - Category: Feature Request
+                             - Module: Partners
+                             - Priority: Medium
+                             - Description: LOI tracking
+```
+
+### Example Interactions
+
+| User Input | Agent Response |
+|------------|----------------|
+| "I want to request a feature" | "What feature would you like? I'll create a ticket for the team." |
+| "The deadline filter is not working" | "I'll report this bug. Can you describe what happens?" |
+| "How do I track consortium agreements?" | "That's coming in Phase 2. Want me to log this as a priority request?" |
+
+## Future Agent Roadmap
+
+| Agent | Module | Purpose | Phase |
+|-------|--------|---------|-------|
+| **Ticketing Agent** | All | Feedback and support | 1 |
+| **Grant Scout** | Funding | Monitor calls, match criteria | 2 |
+| **Partner Matcher** | Partners | Find complementary expertise | 2 |
+| **Proposal Drafter** | Proposals | Draft sections, check compliance | 2 |
+| **Legal Reviewer** | Agreements | Review terms, suggest clauses | 3 |
+| **Coordinator** | Execution | Task assignment, reminders | 3 |
+| **Reporter** | Reports | Generate periodic reports | 3 |
+
+## Document Integration
+
+ConsortiaAI integrates with enterprise document platforms:
+
+### Google Workspace
+
+- Google Docs for collaborative proposal editing
+- Google Drive for project file storage
+- Google Calendar for milestone and deadline tracking
+
+### Microsoft 365
+
+- SharePoint for document libraries and versioning
+- OneDrive for file sync across partners
+- Teams for consortium communication channels
+
+## Architecture
+
+ConsortiaAI is built on the MEDrecord platform stack:
+
+```
+User → ConsortiaAI UI → Gateway → Supabase
+              │              │
+              ▼              ▼
+        Agent Column    AI Providers
+        (Ticketing)     (OpenAI/Anthropic)
+              │
+              ▼
+        Document Services
+        (Google/Microsoft APIs)
+```
+
+### Technology Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 16, React, Tailwind CSS |
+| Backend | Gateway API, Supabase |
+| AI | AI SDK, OpenAI, Anthropic |
+| Documents | Google Workspace API, Microsoft Graph |
+| Auth | Gateway HMAC, RBAC |
+
+## Security and Compliance
+
+- **Gateway Authentication** - All requests signed with HMAC
+- **Role-Based Access** - Coordinator, Partner, Viewer roles per project
+- **Audit Trail** - Full versioning for grant submissions and agreements
+- **GDPR Compliance** - Data handling compliant with EU regulations
+- **Grant Compliance** - Rules per funding scheme (Horizon, Eurostars, ZonMw, NWO)
+
+## Resources
+
+| Resource | Link |
+|----------|------|
+| Gateway | [Gateway Documentation](/docs/products/gateway) |
+| AI Agents | [AI Agents Framework](/docs/products/agents) |
+| Helpdesk | [Helpdesk](/docs/products/helpdesk) |
+| ISMS | [Information Security](/isms) |
+
+## Getting Started
+
+ConsortiaAI is currently in development. To participate in early testing:
+
+1. **Request Access** - Contact the product team
+2. **Provide Feedback** - Use the Ticketing Agent to share your needs
+3. **Shape the Product** - Your input drives the development roadmap
