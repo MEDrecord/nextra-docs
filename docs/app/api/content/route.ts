@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
 
+// Force dynamic rendering - this route accesses the file system
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 /**
  * API Route: /api/content
  * 
@@ -68,8 +72,7 @@ export async function OPTIONS(request: NextRequest) {
   return NextResponse.json({}, { headers: getCorsHeaders(request) })
 }
 
-// Enable edge caching
-export const revalidate = 60
+
 
 /**
  * Convert MDX content to simple HTML
