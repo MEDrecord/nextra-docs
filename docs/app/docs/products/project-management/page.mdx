@@ -1,0 +1,181 @@
+# Project Management
+
+Project Management is een onderzoeksproject management platform dat het volledige lifecycle van research projecten ondersteunt - van subsidie-aanvraag tot projectafronding - met AI-gestuurde automatisering.
+
+## Overview
+
+Het platform helpt onderzoeksteams bij het vinden van subsidies, opbouwen van consortia, beheren van documenten en coordineren van projectactiviteiten.
+
+### Key Features
+
+- **Subsidie Discovery** - AI-gestuurde zoek- en matchingengine voor subsidiekansen
+- **Partner Network** - Database van potentiele partners met expertise matching
+- **Agreement Management** - Templates en workflows voor samenwerkingsovereenkomsten
+- **Document Collaboration** - Integratie met Google Docs en SharePoint
+- **Project Tracking** - Milestone tracking, deliverables en rapportage
+- **AI Agents** - Geautomatiseerde assistenten voor alle projecttaken
+
+## Use Cases
+
+### 1. Subsidie Zoeken en Aanvragen
+
+| Fase | Beschrijving | AI Agent |
+|------|--------------|----------|
+| Discovery | Monitoren van subsidiekansen (Horizon Europe, NWO, ZonMw, etc.) | Grant Scout Agent |
+| Matching | Matchen van onderzoeksthema's met beschikbare calls | Match Agent |
+| Eligibility Check | Controleren of organisatie aan criteria voldoet | Compliance Agent |
+| Proposal Writing | Assisteren bij schrijven van aanvraag | Proposal Agent |
+| Budget Planning | Opstellen van projectbegroting | Budget Agent |
+
+### 2. Consortium Building
+
+| Activiteit | Beschrijving | AI Agent |
+|------------|--------------|----------|
+| Partner Search | Zoeken naar complementaire expertise | Partner Scout Agent |
+| Outreach | Automatische introductie-emails | Outreach Agent |
+| Capability Matching | Matchen van benodigde en beschikbare expertise | Match Agent |
+| Letter of Intent | Genereren van LOI templates | Document Agent |
+
+### 3. Agreement Management
+
+| Document Type | Workflow | AI Agent |
+|---------------|----------|----------|
+| Consortium Agreement | Template selectie, clausule suggesties | Legal Agent |
+| Data Processing Agreement | GDPR compliance check | Compliance Agent |
+| Intellectual Property | IP ownership en licensing | Legal Agent |
+| Subcontracting | Partner overeenkomsten | Document Agent |
+
+### 4. Project Execution
+
+| Fase | Functionaliteit | AI Agent |
+|------|-----------------|----------|
+| Kickoff | Project setup, rolverdelingen | Coordinator Agent |
+| Work Packages | Task management per WP | Task Agent |
+| Deliverables | Document tracking en review | Review Agent |
+| Milestones | Progress monitoring en alerts | Monitor Agent |
+| Reporting | Periodic en final reports | Reporting Agent |
+
+### 5. Document Collaboration
+
+| Integratie | Functionaliteit |
+|------------|-----------------|
+| Google Docs | Real-time collaborative editing, version control |
+| SharePoint | Document library, approval workflows |
+| OneDrive | File sync en sharing |
+| Teams | Communication hub per project |
+
+## AI Agent Ecosystem
+
+```
+                    ┌─────────────────────────────────────┐
+                    │       Project Management Hub        │
+                    └─────────────────┬───────────────────┘
+                                      │
+        ┌─────────────────────────────┼─────────────────────────────┐
+        │                             │                             │
+        ▼                             ▼                             ▼
+┌───────────────┐           ┌───────────────┐           ┌───────────────┐
+│  Discovery    │           │  Execution    │           │  Documents    │
+│  Agents       │           │  Agents       │           │  Agents       │
+├───────────────┤           ├───────────────┤           ├───────────────┤
+│ Grant Scout   │           │ Coordinator   │           │ Document      │
+│ Partner Scout │           │ Task          │           │ Legal         │
+│ Match         │           │ Monitor       │           │ Compliance    │
+│ Outreach      │           │ Reporting     │           │ Review        │
+└───────────────┘           └───────────────┘           └───────────────┘
+        │                             │                             │
+        └─────────────────────────────┼─────────────────────────────┘
+                                      │
+                                      ▼
+                         ┌─────────────────────────┐
+                         │   External Services     │
+                         ├─────────────────────────┤
+                         │ Google Docs / Drive     │
+                         │ SharePoint / OneDrive   │
+                         │ Microsoft Teams         │
+                         │ Funding Databases       │
+                         └─────────────────────────┘
+```
+
+## Agent Capabilities
+
+### Grant Scout Agent
+
+- Monitort subsidiedatabases (Horizon Europe, NWO, ZonMw, RVO, etc.)
+- Filtert op relevante thema's en deadlines
+- Stuurt alerts bij nieuwe calls
+
+### Partner Scout Agent
+
+- Doorzoekt onderzoeksdatabases en publicaties
+- Identificeert organisaties met complementaire expertise
+- Genereert partner profiles
+
+### Proposal Agent
+
+- Assisteert bij schrijven van aanvraagdocumenten
+- Suggereert structuur en content
+- Checkt tegen call requirements
+
+### Legal Agent
+
+- Selecteert relevante contract templates
+- Suggereert clausules op basis van project type
+- Identificeert risico's in overeenkomsten
+
+### Compliance Agent
+
+- Controleert eligibility criteria
+- Checkt GDPR en ethics requirements
+- Valideert budget regels
+
+### Coordinator Agent
+
+- Beheert project timeline
+- Verdeelt taken over partners
+- Stuurt reminders voor deadlines
+
+### Reporting Agent
+
+- Aggregeert progress data
+- Genereert rapportages in vereist format
+- Tracked KPIs en deliverables
+
+## Architecture
+
+Project Management integreert met het MEDrecord ecosysteem:
+
+```
+Project Management
+    ├── Gateway (Auth + API)
+    ├── AI Agents Framework
+    ├── Document Services
+    │   ├── Google Workspace API
+    │   └── Microsoft Graph API
+    └── External Data Sources
+        ├── Funding Databases
+        ├── Research Networks
+        └── Partner Registries
+```
+
+## Security and Compliance
+
+- **Access Control** - Role-based permissions per project
+- **Audit Trail** - Volledige logging van alle acties
+- **Data Classification** - Automatic classification van documenten
+- **Encryption** - Data at rest en in transit encrypted
+
+## Getting Started
+
+1. **Project Setup** - Maak een nieuw project aan
+2. **Team Configuration** - Voeg teamleden toe en wijs rollen toe
+3. **Connect Services** - Koppel Google Workspace of Microsoft 365
+4. **Start Discovery** - Activeer Grant Scout Agent voor subsidie monitoring
+
+## Resources
+
+| Resource | Link |
+|----------|------|
+| API Documentation | [Gateway](/docs/products/gateway) |
+| AI Agents | [AI Agents](/docs/products/agents) |
+| User Guide | Coming Soon |

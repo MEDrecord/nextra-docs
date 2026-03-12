@@ -96,6 +96,7 @@ const PRODUCTS: MetaRecord = {
   overview: 'Overview',
   'healthtalk': 'HealthTalk',
   'helpdesk': 'Helpdesk',
+  'project-management': 'Project Management',
   'gateway': 'Gateway',
   'agents': 'AI Agents',
   'ehr-platform': 'EHR Platform'
