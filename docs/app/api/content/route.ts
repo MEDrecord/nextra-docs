@@ -10,38 +10,22 @@ export const runtime = 'nodejs'
  * API Route: /api/content
  * 
  * Returns documentation page content as JSON for the helpdesk integration.
- * The gateway handles authentication - this endpoint trusts forwarded requests.
  * 
  * Query Parameters:
- * - path: The documentation path (e.g., /help/faq, help/faq)
+ * - path: The documentation path (e.g., /help/faq, /isms/policies/password)
  * 
- * Response Format:
- * {
- *   success: true,
- *   path: "/help/faq",
- *   title: "Frequently Asked Questions",
- *   content: "<article>...rendered HTML...</article>",
- *   lastModified: "2026-03-10T12:00:00.000Z"
- * }
+ * Valid paths match the URL structure of the docs site:
+ * - /isms -> app/isms/page.mdx
+ * - /help/faq -> app/help/faq/page.mdx
+ * - /docs/getting-started/introduction -> app/docs/getting-started/introduction/page.mdx
  */
 
 /**
- * CORS Configuration
- * 
- * Allows:
- * - All *.healthtalk.ai subdomains (production, staging, test environments)
- * - localhost for development
- * 
- * Uses dynamic origin validation instead of hardcoded list for flexibility.
+ * CORS Configuration - allows *.healthtalk.ai and localhost
  */
 const HEALTHTALK_DOMAIN_PATTERN = /^https:\/\/([a-z0-9-]+\.)*healthtalk\.ai$/
 const LOCALHOST_PATTERN = /^http:\/\/localhost(:\d+)?$/
 
-/**
- * Validate if an origin is allowed
- * - Any *.healthtalk.ai subdomain over HTTPS
- * - localhost with any port for development
- */
 function isAllowedOrigin(origin: string): boolean {
   if (!origin) return false
   return HEALTHTALK_DOMAIN_PATTERN.test(origin) || LOCALHOST_PATTERN.test(origin)
@@ -50,21 +34,16 @@ function isAllowedOrigin(origin: string): boolean {
 function getCorsHeaders(request: NextRequest): Record<string, string> {
   const origin = request.headers.get('origin') || ''
   const isAllowed = isAllowedOrigin(origin)
-  
-  // Security: Only reflect the origin if it's allowed
-  // For non-allowed origins, return empty Access-Control-Allow-Origin
-  // which will cause the browser to block the request
   const allowOrigin = isAllowed ? origin : ''
   
   return {
-    // Reflect allowed origin (required for credentials mode)
     ...(allowOrigin && { 'Access-Control-Allow-Origin': allowOrigin }),
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Session-Id',
     'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Max-Age': '86400', // Cache preflight for 24 hours
+    'Access-Control-Max-Age': '86400',
     'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
-    'Vary': 'Origin', // Important: Tell caches to vary by Origin header
+    'Vary': 'Origin',
   }
 }
 
@@ -72,25 +51,22 @@ export async function OPTIONS(request: NextRequest) {
   return NextResponse.json({}, { headers: getCorsHeaders(request) })
 }
 
-
-
 /**
  * Convert MDX content to simple HTML
- * This is a lightweight conversion that handles basic Markdown syntax
  */
 function mdxToHtml(mdxContent: string): string {
   let html = mdxContent
   
-  // Remove frontmatter if present
+  // Remove frontmatter
   html = html.replace(/^---[\s\S]*?---\n?/, '')
   
   // Remove MDX imports and exports
   html = html.replace(/^import\s+.*$/gm, '')
   html = html.replace(/^export\s+.*$/gm, '')
   
-  // Remove JSX components (keep text content if simple)
-  html = html.replace(/<[A-Z][a-zA-Z]*[^>]*\/>/g, '') // Self-closing components
-  html = html.replace(/<[A-Z][a-zA-Z]*[^>]*>[\s\S]*?<\/[A-Z][a-zA-Z]*>/g, '') // Components with children
+  // Remove JSX components
+  html = html.replace(/<[A-Z][a-zA-Z]*[^>]*\/>/g, '')
+  html = html.replace(/<[A-Z][a-zA-Z]*[^>]*>[\s\S]*?<\/[A-Z][a-zA-Z]*>/g, '')
   
   // Convert headers
   html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>')
@@ -100,56 +76,31 @@ function mdxToHtml(mdxContent: string): string {
   html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>')
   html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>')
   
-  // Convert bold and italic
+  // Convert formatting
   html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
-  html = html.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>')
-  html = html.replace(/__(.+?)__/g, '<strong>$1</strong>')
-  html = html.replace(/_(.+?)_/g, '<em>$1</em>')
-  
-  // Convert inline code
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>')
-  
-  // Convert code blocks
   html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>')
-  
-  // Convert links
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
-  
-  // Convert images
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
-  
-  // Convert horizontal rules
   html = html.replace(/^---+$/gm, '<hr />')
-  html = html.replace(/^\*\*\*+$/gm, '<hr />')
-  
-  // Convert unordered lists
-  html = html.replace(/^(\s*)[-*+]\s+(.+)$/gm, '$1<li>$2</li>')
-  
-  // Convert ordered lists
-  html = html.replace(/^(\s*)\d+\.\s+(.+)$/gm, '$1<li>$2</li>')
-  
-  // Wrap consecutive <li> elements in <ul> (simplified)
+  html = html.replace(/^[-*+]\s+(.+)$/gm, '<li>$1</li>')
+  html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
   html = html.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, '<ul>$&</ul>')
-  
-  // Convert blockquotes
   html = html.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>')
   
-  // Convert paragraphs (lines not already wrapped)
+  // Convert remaining lines to paragraphs
   const lines = html.split('\n')
   const processedLines = lines.map(line => {
     const trimmed = line.trim()
     if (!trimmed) return ''
-    if (trimmed.startsWith('<')) return line // Already HTML
+    if (trimmed.startsWith('<')) return line
     return `<p>${trimmed}</p>`
   })
   html = processedLines.join('\n')
   
-  // Clean up empty paragraphs
   html = html.replace(/<p>\s*<\/p>/g, '')
-  
-  // Clean up extra whitespace
   html = html.replace(/\n{3,}/g, '\n\n')
   
   return html.trim()
@@ -164,10 +115,14 @@ function extractTitle(content: string): string {
 }
 
 /**
- * Normalize path - handle with/without leading slash
+ * Normalize and validate the path
  */
 function normalizePath(inputPath: string): string {
   let normalized = inputPath.trim()
+  
+  // Remove .mdx extension if provided
+  normalized = normalized.replace(/\/page\.mdx$/, '')
+  normalized = normalized.replace(/\.mdx$/, '')
   
   // Add leading slash if missing
   if (!normalized.startsWith('/')) {
@@ -184,51 +139,38 @@ function normalizePath(inputPath: string): string {
 }
 
 /**
- * Find the app directory across different environments
- * Vercel serverless deploys the docs subfolder as the root
+ * Get the app directory - works on Vercel and locally
  */
-async function findAppDir(): Promise<string | null> {
-  const cwd = process.cwd()
+function getAppDir(): string {
+  // On Vercel, the docs folder is deployed as the root
+  // cwd is /var/task which contains the app folder
+  return path.join(process.cwd(), 'app')
+}
+
+/**
+ * Try multiple file paths to find the MDX file
+ */
+async function findMdxFile(normalizedPath: string): Promise<{ filePath: string; content: string } | null> {
+  const appDir = getAppDir()
   
-  // Log for debugging
-  console.log('[Content API] cwd:', cwd)
-  
-  const possiblePaths = [
-    // Vercel deployment (docs folder is deployed as root)
-    path.join(cwd, 'app'),
-    // Monorepo local development
-    path.join(cwd, 'docs', 'app'),
-    // Vercel serverless function paths
-    '/var/task/app',
-    '/var/task/.next/server/app',
-    // Relative to this file's location
-    path.resolve(__dirname, '..', '..'),
+  // Paths to try (in order of priority)
+  const pathsToTry = [
+    // Direct path: /isms -> app/isms/page.mdx
+    path.join(appDir, normalizedPath, 'page.mdx'),
+    // Index page: /isms -> app/isms/index.mdx (fallback)
+    path.join(appDir, normalizedPath, 'index.mdx'),
+    // Direct MDX file: /isms -> app/isms.mdx (unlikely but check)
+    path.join(appDir, `${normalizedPath}.mdx`),
   ]
   
-  for (const p of possiblePaths) {
+  for (const filePath of pathsToTry) {
     try {
-      await fs.access(p)
-      console.log('[Content API] Found app dir:', p)
-      return p
+      const content = await fs.readFile(filePath, 'utf-8')
+      return { filePath, content }
     } catch {
-      console.log('[Content API] Not found:', p)
+      // File doesn't exist, try next
       continue
     }
-  }
-  
-  // Last resort: try to list cwd contents
-  try {
-    const cwdContents = await fs.readdir(cwd)
-    console.log('[Content API] cwd contents:', cwdContents)
-    
-    // Check if 'app' folder exists in cwd
-    if (cwdContents.includes('app')) {
-      const appPath = path.join(cwd, 'app')
-      console.log('[Content API] Found app in cwd:', appPath)
-      return appPath
-    }
-  } catch (e) {
-    console.log('[Content API] Failed to read cwd:', e)
   }
   
   return null
@@ -237,16 +179,11 @@ async function findAppDir(): Promise<string | null> {
 export async function GET(request: NextRequest) {
   const corsHeaders = getCorsHeaders(request)
   
-  // Get path parameter
   const pathParam = request.nextUrl.searchParams.get('path')
   
   if (!pathParam) {
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Missing path parameter',
-        path: null
-      },
+      { success: false, error: 'Missing path parameter', path: null },
       { status: 400, headers: corsHeaders }
     )
   }
@@ -254,47 +191,19 @@ export async function GET(request: NextRequest) {
   const normalizedPath = normalizePath(pathParam)
   
   try {
-    // Find app directory
-    const appDir = await findAppDir()
+    const result = await findMdxFile(normalizedPath)
     
-    if (!appDir) {
+    if (!result) {
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Content directory not found',
-          path: normalizedPath
-        },
-        { status: 500, headers: corsHeaders }
-      )
-    }
-    
-    // Construct file path
-    // Path like /help/faq -> app/help/faq/page.mdx
-    const mdxPath = path.join(appDir, normalizedPath, 'page.mdx')
-    
-    // Check if file exists
-    try {
-      await fs.access(mdxPath)
-    } catch {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Page not found',
-          path: normalizedPath
-        },
+        { success: false, error: 'Page not found', path: normalizedPath },
         { status: 404, headers: corsHeaders }
       )
     }
     
-    // Read MDX content
-    const mdxContent = await fs.readFile(mdxPath, 'utf-8')
-    
-    // Get file stats for lastModified
-    const stats = await fs.stat(mdxPath)
-    
-    // Extract title and convert to HTML
-    const title = extractTitle(mdxContent)
-    const htmlContent = mdxToHtml(mdxContent)
+    const { filePath, content } = result
+    const stats = await fs.stat(filePath)
+    const title = extractTitle(content)
+    const htmlContent = mdxToHtml(content)
     
     return NextResponse.json(
       {
@@ -309,17 +218,12 @@ export async function GET(request: NextRequest) {
     
   } catch (error) {
     console.error('[Content API] Error:', error)
-    console.error('[Content API] Stack:', error instanceof Error ? error.stack : 'No stack')
     
     return NextResponse.json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
-        path: normalizedPath,
-        debug: process.env.NODE_ENV === 'development' ? {
-          cwd: process.cwd(),
-          errorStack: error instanceof Error ? error.stack : undefined
-        } : undefined
+        path: normalizedPath
       },
       { status: 500, headers: corsHeaders }
     )
