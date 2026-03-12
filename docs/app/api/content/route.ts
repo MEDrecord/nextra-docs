@@ -251,7 +251,7 @@ export async function GET(request: NextRequest) {
         success: true,
         path: normalizedPath,
         title,
-        content: `<article class="prose">${htmlContent}</article>`,
+        content: `<article class="prose prose-sm max-w-none">${htmlContent}</article>`,
         lastModified: stats.mtime.toISOString()
       },
       { headers: corsHeaders }
