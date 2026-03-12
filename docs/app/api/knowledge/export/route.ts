@@ -40,26 +40,26 @@ interface KnowledgeItem {
 function extractDocumentMeta(content: string): DocumentMeta | undefined {
   // Match <DocumentMeta ... /> component
   const metaMatch = content.match(/<DocumentMeta\s+([\s\S]*?)\/>/m)
-  if (!metaMatch) return undefined
+  if (!metaMatch?.[1]) return undefined
   
   const propsStr = metaMatch[1]
   const meta: DocumentMeta = {}
   
   // Extract each prop
   const versionMatch = propsStr.match(/version=["']([^"']+)["']/)
-  if (versionMatch) meta.version = versionMatch[1]
+  if (versionMatch?.[1]) meta.version = versionMatch[1]
   
   const statusMatch = propsStr.match(/status=["']([^"']+)["']/)
-  if (statusMatch) meta.status = statusMatch[1] as DocumentMeta['status']
+  if (statusMatch?.[1]) meta.status = statusMatch[1] as DocumentMeta['status']
   
   const approvedByMatch = propsStr.match(/approvedBy=["']([^"']+)["']/)
-  if (approvedByMatch) meta.approvedBy = approvedByMatch[1]
+  if (approvedByMatch?.[1]) meta.approvedBy = approvedByMatch[1]
   
   const approvedDateMatch = propsStr.match(/approvedDate=["']([^"']+)["']/)
-  if (approvedDateMatch) meta.approvedDate = approvedDateMatch[1]
+  if (approvedDateMatch?.[1]) meta.approvedDate = approvedDateMatch[1]
   
   const filePathMatch = propsStr.match(/filePath=["']([^"']+)["']/)
-  if (filePathMatch) meta.filePath = filePathMatch[1]
+  if (filePathMatch?.[1]) meta.filePath = filePathMatch[1]
   
   return Object.keys(meta).length > 0 ? meta : undefined
 }
