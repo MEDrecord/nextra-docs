@@ -93,6 +93,9 @@ const DEVELOPER_TOOLS: MetaRecord = {
 }
 
 const PRODUCTS: MetaRecord = {
+  overview: {
+    display: 'hidden'
+  },
   'healthtalk': 'HealthTalk',
   'helpdesk': 'Helpdesk',
   'project-management': 'Project Management',
@@ -144,8 +147,17 @@ export default {
     type: 'page',
     title: 'Products',
     items: {
+      index: {
+        display: 'hidden'
+      },
+      'getting-started': {
+        display: 'hidden'
+      },
+      'user-guide': {
+        display: 'hidden'
+      },
       'products': {
-        title: 'Products',
+        title: '',
         items: PRODUCTS
       }
     }
