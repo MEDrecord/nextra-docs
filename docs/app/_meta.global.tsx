@@ -47,6 +47,7 @@ const ISMS_REGISTERS: MetaRecord = {
 
 const DEVELOPER_TOOLS: MetaRecord = {
   overview: 'Overview',
+  'platform-stack': 'Platform Stack',
   'ai-assistance': 'AI Assistance',
   'project-rules': 'Project Rules',
   'custom-commands': 'Custom Commands',
@@ -89,6 +90,15 @@ export default {
     theme: themeConfig
   },
   index: {
+    type: 'page',
+    display: 'hidden'
+  },
+  // Hide utility routes from navigation
+  admin: {
+    type: 'page',
+    display: 'hidden'
+  },
+  auth: {
     type: 'page',
     display: 'hidden'
   },
