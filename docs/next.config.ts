@@ -80,10 +80,12 @@ const nextConfig = withNextra({
     NEXT_PUBLIC_INKEEP_API_KEY:
       'dee399c7f7ac40b9de0d0b85ca32959953b9ff7c9fc8d96c'
   },
-  // Include tsconfig.json in the deployment for Nextra TSDoc feature
-  // TSDoc uses TypeScript compiler API which needs tsconfig at runtime
+  // Include files in the deployment for runtime access
+  // - tsconfig.json: Nextra TSDoc feature uses TypeScript compiler API
+  // - app/**/*.mdx: Content API needs raw MDX files to serve documentation
   outputFileTracingIncludes: {
-    '/*': ['./tsconfig.json']
+    '/*': ['./tsconfig.json'],
+    '/api/content': ['./app/**/*.mdx', './app/**/*.md'],
   },
   headers: async () => [
     {
