@@ -52,7 +52,7 @@ ConsortiaAI is multi-tenant, supporting multiple organizations with isolated dat
 | **Users** | Per-tenant user management with roles |
 | **Projects** | Tenant-scoped, shareable via consortium invites |
 | **Settings** | Per-tenant configuration |
-| **Integrations** | Tenant-specific API keys (Cal.com, Stripe) |
+| **Integrations** | Tenant-specific API keys (Cal.com, Stripe, Document Services) |
 
 ### Gateway Integration
 
@@ -118,10 +118,12 @@ ConsortiaAI helps research coordinators manage complex multi-partner projects ef
 - **Funding Intelligence** - AI-powered call monitoring and eligibility matching
 - **Consortium Builder** - Partner discovery, outreach automation, LOI tracking
 - **Proposal Workspace** - Collaborative editing with compliance checks
-- **Contracts and Agreements** - Templates for CA, DPA, IP schedules with e-signatures
+- **Contracts and Agreements** - Templates, negotiation, custom e-signatures
 - **Planning and Scheduling** - Cal.com integration for partner meetings and deadlines
 - **Project Execution** - Work packages, milestones, deliverables tracking
 - **Financials and Payments** - Budget tracking, success fees, invoicing via Stripe
+- **Communication Tracking** - WhatsApp, email integration for audit trail
+- **Project Documentation** - Per-proposal docs (Nextra-style) with version control
 - **Reporting Suite** - Periodic reports, financial reporting, KPI dashboards
 
 ## Layout
@@ -139,8 +141,9 @@ ConsortiaAI uses the standard MEDrecord three-panel layout:
 │  - Planning  │  + suggestions   │                                 │
 │  - Execution │  + actions       │                                 │
 │  - Financials│                  │                                 │
+│  - Comms     │                  │                                 │
+│  - Docs      │                  │                                 │
 │  - Reports   │                  │                                 │
-│              │                  │                                 │
 └──────────────┴──────────────────┴─────────────────────────────────┘
 ```
 
@@ -161,11 +164,245 @@ ConsortiaAI uses the standard MEDrecord three-panel layout:
 | **Planning** | Meeting scheduling, availability | Cal.com booking, milestone calendar |
 | **Execution** | Task coordination, reminders | Work packages, milestone tracker |
 | **Financials** | Invoice generation, fee tracking | Budget, payments, financial reports |
+| **Comms** | Message search, action extraction | WhatsApp/email threads, history |
+| **Docs** | Documentation assistance | Project docs, templates, version history |
 | **Reports** | Report generation, data aggregation | Periodic reports, KPIs |
+
+## Document Services
+
+ConsortiaAI agents can fully manage documents in Google Workspace and Microsoft 365.
+
+### Agent Document Operations (CRUD)
+
+| Operation | Google Workspace | Microsoft 365 |
+|-----------|------------------|---------------|
+| **Create** | Drive API `files.create`, Docs API | SharePoint `POST /drive/items` |
+| **Read** | Drive API `files.get`, Docs API `get` | Graph API `GET /drive/items/{id}` |
+| **Update** | Docs API `batchUpdate`, Sheets API | Graph API `PATCH`, content updates |
+| **Delete** | Drive API `files.delete` | Graph API `DELETE /drive/items/{id}` |
+| **List** | Drive API `files.list` | Graph API `GET /drive/children` |
+
+### Document Agent Capabilities
+
+| Agent | Document Actions |
+|-------|-----------------|
+| **Proposal Agent** | Create proposal from template, insert sections, update budget spreadsheets |
+| **Contract Agent** | Generate CA/DPA from templates, fill partner details, manage clause libraries |
+| **Reporting Agent** | Create periodic reports, populate KPI tables, generate financial summaries |
+| **Finance Agent** | Update budget spreadsheets, generate invoice documents |
+
+### Integration Architecture
+
+```
+Agent → Gateway → Document Service Router
+                       │
+          ┌────────────┼────────────┐
+          ▼            ▼            ▼
+    Google APIs   Microsoft    Project Docs
+    (Workspace)   Graph API    (Nextra/MDX)
+```
+
+### Example Interactions
+
+| User Input | Agent Action |
+|------------|--------------|
+| "Create proposal document for Health-AI-2025" | Creates Google Doc from Horizon template |
+| "Update budget table with partner contributions" | Modifies Google Sheet with new data |
+| "Generate consortium agreement for all partners" | Creates contract doc, fills partner details |
+| "Share deliverable D3.1 with reviewers" | Sets permissions in Google Drive/SharePoint |
+
+## Custom E-Signature (ConsortiaSign)
+
+ConsortiaAI includes a custom-built e-signature system, replacing third-party dependencies like PandaDoc.
+
+### Architecture
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                      ConsortiaSign                             │
+├────────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │   Document   │  │   Signing    │  │    Audit     │         │
+│  │   Prepare    │  │   Workflow   │  │    Trail     │         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+│         │                 │                  │                 │
+│         ▼                 ▼                  ▼                 │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │  PDF Render  │  │  Email/SMS   │  │  Timestamp   │         │
+│  │  + Fields    │  │  Invites     │  │  Authority   │         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### Features
+
+| Feature | Implementation |
+|---------|----------------|
+| **Document Prep** | PDF.js for rendering, drag-drop signature field placement |
+| **Signing Flow** | Email invites with secure magic links for external signers |
+| **Canvas Signature** | Draw or type signature, stored securely |
+| **Authentication** | Gateway auth for internal, magic link for external signers |
+| **Audit Trail** | Timestamp, IP address, user agent, document hash |
+| **Certificate** | Signed PDF with embedded digital certificate |
+| **Storage** | Signed documents in Supabase Storage, encrypted |
+
+### Signing Workflow
+
+```
+Coordinator → Prepare Document → Add Signature Fields
+                                        │
+                                        ▼
+                              Send to Signers (Email)
+                                        │
+                    ┌───────────────────┼───────────────────┐
+                    ▼                   ▼                   ▼
+              Signer A            Signer B            Signer C
+              (Internal)          (Partner)           (External)
+              Gateway Auth        Gateway Auth        Magic Link
+                    │                   │                   │
+                    └───────────────────┼───────────────────┘
+                                        │
+                                        ▼
+                              All Signed → Generate Certificate
+                                        │
+                                        ▼
+                              Store in Document Vault
+```
+
+### Legal Compliance
+
+| Requirement | Solution |
+|-------------|----------|
+| **eIDAS (EU)** | Advanced Electronic Signature (AdES) compliant |
+| **Timestamping** | RFC 3161 timestamp authority integration |
+| **Document Integrity** | SHA-256 hash before and after signing |
+| **Identity Verification** | Gateway auth + optional ID verification |
+| **Audit Log** | Immutable log of all signing events |
+
+### Qualified Signatures (QES)
+
+For grants requiring Qualified Electronic Signatures, ConsortiaSign integrates with Trust Service Providers:
+
+| Provider | Use Case |
+|----------|----------|
+| **Signicat** | EU-wide QES for formal grant agreements |
+| **GlobalSign** | International digital certificates |
+
+## Communication Tracking
+
+Track all consortium communications for audit trail and action item extraction.
+
+### WhatsApp Integration
+
+```
+WhatsApp Business API → Webhook → Gateway → ConsortiaAI
+                                      │
+                                      ├── Store messages per project
+                                      ├── Link to partners/contacts
+                                      └── AI analysis (actions, decisions)
+```
+
+| Feature | Description |
+|---------|-------------|
+| **Message Sync** | WhatsApp Cloud API webhooks for real-time sync |
+| **Contact Linking** | Map phone numbers to consortium partners |
+| **Thread View** | Conversations grouped by project/partner |
+| **Full-Text Search** | Search across all message history |
+| **AI Summary** | Agent summarizes conversation threads |
+| **Action Extraction** | Auto-detect tasks, decisions, deadlines |
+
+### Communication Agent
+
+| User Input | Agent Action |
+|------------|--------------|
+| "What did partner X say about the deadline?" | Searches messages, summarizes |
+| "Extract action items from last week's chats" | Analyzes threads, lists tasks |
+| "Find the agreement we made about IP" | Searches for IP-related decisions |
+
+### Privacy Compliance
+
+| Requirement | Implementation |
+|-------------|----------------|
+| **Consent** | Required from all participants before sync |
+| **GDPR** | Data processing agreement, right to deletion |
+| **Scope** | Only business-related project conversations |
+| **Retention** | Configurable retention period per project |
+
+## Project Documentation (Nextra-style)
+
+Each proposal/project gets its own documentation workspace with MDX support.
+
+### Documentation Structure
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                  ConsortiaAI Docs System                       │
+├────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────┐  ┌─────────────────┐                     │
+│  │  Global Docs    │  │  Project Docs   │                     │
+│  │  (Templates)    │  │  (Per Proposal) │                     │
+│  │                 │  │                 │                     │
+│  │  - Guidelines   │  │  - README       │                     │
+│  │  - Templates    │  │  - Work Packages│                     │
+│  │  - Best Practice│  │  - Partners     │                     │
+│  │  - Compliance   │  │  - Deliverables │                     │
+│  └─────────────────┘  │  - Meetings     │                     │
+│          │            │  - Decisions    │                     │
+│          │            └─────────────────┘                     │
+│          │                    │                               │
+│          ▼                    ▼                               │
+│  ┌─────────────────────────────────────────┐                  │
+│  │         Unified Search (Knowledge API)  │                  │
+│  └─────────────────────────────────────────┘                  │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### Features
+
+| Feature | Description |
+|---------|-------------|
+| **Auto-Generated** | Docs structure created when project starts |
+| **MDX Support** | Rich content with React components |
+| **Version Control** | Full history of all document changes |
+| **Access Control** | Project-level RBAC |
+| **Templates** | Pre-built docs for Horizon, Eurostars, ZonMw |
+| **Export** | PDF, Word for grant submissions |
+| **Search** | Unified search across global and project docs |
+
+### Per-Project Docs Template
+
+When a new project is created, it automatically gets:
+
+```
+/projects/{project-id}/docs/
+├── index.mdx           # Project overview
+├── work-packages/
+│   ├── index.mdx       # WP overview
+│   ├── wp1.mdx         # Work package details
+│   └── ...
+├── partners/
+│   ├── index.mdx       # Partner list
+│   └── {partner}.mdx   # Partner details
+├── deliverables/
+│   └── {deliverable}.mdx
+├── meetings/
+│   └── {date}-{topic}.mdx
+└── decisions/
+    └── {date}-{topic}.mdx
+```
+
+### Documentation Agent
+
+| User Input | Agent Action |
+|------------|--------------|
+| "Create WP3 documentation" | Generates MDX file with WP template |
+| "Document today's steering committee decisions" | Creates meeting notes with decisions |
+| "What did we agree about data sharing?" | Searches project docs for data sharing decisions |
+| "Export project docs for audit" | Generates PDF compilation of all docs |
 
 ## Planning and Scheduling (Cal.com)
 
-ConsortiaAI integrates with Cal.com for consortium scheduling and coordination:
+ConsortiaAI integrates with Cal.com for consortium scheduling and coordination.
 
 ### Features
 
@@ -190,8 +427,6 @@ ConsortiaAI → Cal.com API
 
 ### Scheduling Agent
 
-The Scheduling Agent automates meeting coordination:
-
 | User Input | Agent Action |
 |------------|--------------|
 | "Schedule kick-off with all partners" | Finds availability, creates Cal.com event |
@@ -200,7 +435,7 @@ The Scheduling Agent automates meeting coordination:
 
 ## Contracts and Agreements
 
-Full contract lifecycle management for research consortia:
+Full contract lifecycle management for research consortia.
 
 ### Contract Types
 
@@ -221,7 +456,7 @@ Full contract lifecycle management for research consortia:
 | **Templates** | Pre-approved templates per contract type |
 | **Drafting** | AI-assisted clause suggestions, version tracking |
 | **Negotiation** | Redline tracking, comment threads, approval workflows |
-| **Signatures** | E-signature integration (DocuSign, Adobe Sign) |
+| **Signatures** | ConsortiaSign (custom e-signature) |
 | **Storage** | Secure document vault with expiry alerts |
 | **Compliance** | Auto-check against funding scheme rules |
 
@@ -232,10 +467,11 @@ Full contract lifecycle management for research consortia:
 | "Draft a DPA for partner X" | Generates DPA from template with partner details |
 | "Review IP clause in section 5" | Analyzes clause, suggests improvements |
 | "What are the termination terms?" | Extracts and summarizes relevant clauses |
+| "Send CA for signature to all partners" | Prepares ConsortiaSign workflow |
 
 ## Financials and Payments (Stripe)
 
-Track budgets, partner contributions, and success-based payments:
+Track budgets, partner contributions, and success-based payments.
 
 ### Payment Types
 
@@ -287,16 +523,25 @@ ConsortiaAI is in early development. The first agent being implemented is the **
 | Partner Module | Planned | Partner database and outreach |
 | Planning Module | Planned | Cal.com integration |
 | Proposal Module | Planned | Collaborative editing |
+| Document Services | Planned | Google/SharePoint CRUD |
 
 ### Phase 3: Agreements and Execution
 
 | Component | Status | Description |
 |-----------|--------|-------------|
-| Contracts Module | Planned | Templates, negotiation, e-signatures |
+| Contracts Module | Planned | Templates, negotiation |
+| ConsortiaSign | Planned | Custom e-signature system |
 | Execution Module | Planned | Milestone and deliverable tracking |
+| Project Docs | Planned | Per-proposal documentation |
+
+### Phase 4: Communication and Finance
+
+| Component | Status | Description |
+|-----------|--------|-------------|
+| WhatsApp Sync | Planned | Communication tracking |
 | Financials Module | Planned | Stripe integration, invoicing |
 
-### Phase 4: Advanced Features
+### Phase 5: Advanced Features
 
 | Component | Status | Description |
 |-----------|--------|-------------|
@@ -339,16 +584,26 @@ User → Agent Chat → Ticketing Agent → Helpdesk Integration
 | Agent | Module | Purpose | Phase |
 |-------|--------|---------|-------|
 | **Ticketing Agent** | All | Feedback and support | 1 |
+| **Document Agent** | Docs | CRUD Google/SharePoint docs | 2 |
 | **Scheduling Agent** | Planning | Cal.com meetings, reminders | 2 |
 | **Grant Scout** | Funding | Monitor calls, match criteria | 2 |
 | **Partner Matcher** | Partners | Find complementary expertise | 2 |
-| **Proposal Drafter** | Proposals | Draft sections, check compliance | 2 |
-| **Contract Agent** | Contracts | Review terms, suggest clauses | 3 |
-| **Finance Agent** | Financials | Invoices, payment tracking | 3 |
-| **Coordinator** | Execution | Task assignment, reminders | 3 |
-| **Reporter** | Reports | Generate periodic reports | 4 |
+| **Proposal Agent** | Proposals | Draft sections, manage docs | 2 |
+| **Contract Agent** | Contracts | Review terms, manage signatures | 3 |
+| **Comms Agent** | Comms | Search messages, extract actions | 4 |
+| **Finance Agent** | Financials | Invoices, payment tracking | 4 |
+| **Coordinator** | Execution | Task assignment, reminders | 4 |
+| **Docs Agent** | Project Docs | Create/update project documentation | 3 |
+| **Reporter** | Reports | Generate periodic reports | 5 |
 
 ## Integrations
+
+### Document Services
+
+| Platform | API | Features |
+|----------|-----|----------|
+| **Google Workspace** | Drive, Docs, Sheets API | Full CRUD, templates, sharing |
+| **Microsoft 365** | Graph API | SharePoint, OneDrive, Teams integration |
 
 ### Cal.com
 
@@ -368,37 +623,58 @@ User → Agent Chat → Ticketing Agent → Helpdesk Integration
 | Subscriptions | Recurring platform fees |
 | Webhooks | Payment status updates |
 
-### E-Signature (DocuSign/Adobe Sign)
+### WhatsApp Business
 
 | Feature | Use Case |
 |---------|----------|
-| Envelope Creation | Send contracts for signing |
-| Signing Workflows | Multi-party approval sequences |
-| Webhooks | Signature completion notifications |
+| Cloud API | Message sync via webhooks |
+| Business Profile | Official consortium communications |
+| Templates | Pre-approved message templates |
 
-### Document Services
+### Trust Service Providers (E-Signature)
 
-| Platform | Features |
+| Provider | Use Case |
 |----------|----------|
-| **Google Workspace** | Docs, Drive, Calendar integration |
-| **Microsoft 365** | SharePoint, OneDrive, Teams integration |
+| Signicat | Qualified Electronic Signatures (QES) |
+| GlobalSign | Digital certificates |
 
 ## Architecture
 
 ConsortiaAI is built on the MEDrecord platform stack:
 
 ```
-User → ConsortiaAI UI → Gateway → Supabase
-              │              │
-              ▼              ▼
-        Agent Column    AI Providers
-              │         (OpenAI/Anthropic)
-              ▼
-        Integrations
-        ├── Cal.com (Scheduling)
-        ├── Stripe (Payments)
-        ├── DocuSign (E-Signatures)
-        └── Google/Microsoft (Documents)
+┌─────────────────────────────────────────────────────────────────┐
+│                        ConsortiaAI                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
+│  │  Document   │  │ ConsortiaSign│ │  Comms      │             │
+│  │  Services   │  │  (E-Sign)   │  │  Service    │             │
+│  │             │  │             │  │             │             │
+│  │  Google     │  │  Custom     │  │  WhatsApp   │             │
+│  │  SharePoint │  │  AdES/QES   │  │  Email      │             │
+│  │  Project Docs│ │  compliant  │  │             │             │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘             │
+│         │                │                │                     │
+│         ▼                ▼                ▼                     │
+│  ┌─────────────────────────────────────────────────────┐       │
+│  │                   AI Agent Layer                    │       │
+│  │                                                     │       │
+│  │  Doc Agent │ Contract Agent │ Comms Agent │ ...    │       │
+│  └─────────────────────────────────────────────────────┘       │
+│                           │                                     │
+│                           ▼                                     │
+│  ┌─────────────────────────────────────────────────────┐       │
+│  │                      Gateway                        │       │
+│  │         (Auth, Multi-tenancy, RBAC)                │       │
+│  └─────────────────────────────────────────────────────┘       │
+│                           │                                     │
+│                           ▼                                     │
+│  ┌─────────────────────────────────────────────────────┐       │
+│  │                     Supabase                        │       │
+│  │              (Data, Files, Realtime)               │       │
+│  └─────────────────────────────────────────────────────┘       │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Technology Stack
@@ -408,10 +684,12 @@ User → ConsortiaAI UI → Gateway → Supabase
 | Frontend | Next.js 16, React, Tailwind CSS |
 | Backend | Gateway API, Supabase |
 | AI | AI SDK, OpenAI, Anthropic |
+| Documents | Google Workspace API, Microsoft Graph, MDX |
+| E-Signature | Custom ConsortiaSign (AdES), TSP integration (QES) |
 | Scheduling | Cal.com API |
 | Payments | Stripe API |
-| Documents | Google Workspace API, Microsoft Graph |
-| Auth | Gateway HMAC, RBAC |
+| Communication | WhatsApp Business API |
+| Auth | Gateway (Azure B2C), RBAC |
 
 ## Security and Compliance
 
@@ -432,12 +710,14 @@ User → ConsortiaAI UI → Gateway → Supabase
 | **Encryption at Rest** | AES-256 |
 | **Audit Trail** | Full versioning for contracts and submissions |
 | **Data Isolation** | Row-level security per tenant |
+| **Document Integrity** | SHA-256 hashing for signed documents |
 
 ### Compliance
 
 | Standard | Scope |
 |----------|-------|
-| **GDPR** | Data handling compliant with EU regulations |
+| **GDPR** | Data handling, consent for WhatsApp, right to deletion |
+| **eIDAS** | Electronic signatures (AdES, QES integration) |
 | **NEN 7510** | Healthcare information security (inherited from MEDrecord) |
 | **Grant Rules** | Compliance per funding scheme (Horizon, Eurostars, ZonMw, NWO) |
 | **PCI DSS** | Stripe handles payment data securely |
