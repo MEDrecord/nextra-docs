@@ -250,6 +250,71 @@ async function validateSession(request: NextRequest) {
 }
 ```
 
+### Bridge Client Pattern (HealthTalk)
+
+HealthTalk uses a bridge client pattern where the frontend calls same-origin API routes, which then make server-side calls to external services. This avoids cookie forwarding issues.
+
+```
+┌──────────────┐     ┌─────────────────────────────────┐     ┌──────────────┐
+│  HealthTalk  │     │     Helpdesk API Routes         │     │   Gateway    │
+│  Frontend    │     │     (same origin)               │     │              │
+└──────┬───────┘     └────────────┬────────────────────┘     └──────┬───────┘
+       │                          │                                  │
+       │  fetch('/api/bridge/..') │                                  │
+       │  (no cookies needed)     │                                  │
+       ├─────────────────────────>│                                  │
+       │                          │  Server-side call                │
+       │                          │  (HMAC or direct)                │
+       │                          ├─────────────────────────────────>│
+       │                          │                                  │
+       │  Response                │  Response                        │
+       │<─────────────────────────┤<─────────────────────────────────┤
+```
+
+**ht-bridge-client.ts:**
+
+```typescript
+// Client-side: calls same-origin API routes
+export async function htBridgeClient(endpoint: string, options?: RequestInit) {
+  const response = await fetch(`/api/bridge${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+  return response.json()
+}
+
+// Usage in HealthTalk component
+const data = await htBridgeClient('/patients', { method: 'GET' })
+```
+
+**API Route (server-side):**
+
+```typescript
+// app/api/bridge/patients/route.ts
+export async function GET(request: NextRequest) {
+  // Server-side: no cookie forwarding needed
+  const response = await fetch(`${GATEWAY_URL}/api/patients`, {
+    headers: {
+      'X-Gateway-Key': process.env.GATEWAY_KEY,
+      'X-Gateway-Signature': calculateHMAC(body),
+    },
+  })
+  return Response.json(await response.json())
+}
+```
+
+**Why this pattern:**
+
+| Aspect | Direct Cookie Forwarding | Bridge Client Pattern |
+|--------|--------------------------|----------------------|
+| Cookie handling | Complex cross-origin issues | Not needed |
+| Security | Cookie exposure risk | Server-side only |
+| CORS | Requires configuration | Same-origin |
+| Caching | Limited | Full control |
+
 ### For Backend Services
 
 ```typescript
