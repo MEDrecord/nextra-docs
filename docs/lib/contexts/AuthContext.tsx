@@ -15,7 +15,6 @@ import {
   getStoredUser, 
   clearStoredAuth,
   verifySession,
-  redirectToSignin,
 } from '../auth/client'
 
 interface AuthContextValue {
@@ -137,17 +136,8 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
     }
   }, [fetchSession, initialUser])
 
-  // Handle cross-domain auth redirect if not authenticated on protected pages
-  useEffect(() => {
-    if (!isLoading && !user && isCrossDomain) {
-      // In cross-domain mode, if we're on a protected page without auth,
-      // redirect to signin
-      const isAuthPage = window.location.pathname.startsWith('/auth/')
-      if (!isAuthPage) {
-        redirectToSignin(window.location.pathname)
-      }
-    }
-  }, [isLoading, user, isCrossDomain])
+  // Note: Auto-redirect is NOT done here - middleware handles route protection
+  // This allows the AuthContext to be used on public pages without forcing login
 
   const refetchSession = useCallback(async () => {
     await fetchSession()

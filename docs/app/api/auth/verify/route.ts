@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getUser } from '../../../../lib/auth/server'
 
+// Force dynamic - this route accesses cookies/headers for authentication
+export const dynamic = 'force-dynamic'
+
 /**
  * API Route: Verify Authentication Status
  * 

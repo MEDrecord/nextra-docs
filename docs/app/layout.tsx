@@ -6,8 +6,11 @@ import { Head } from 'nextra/components'
 import type React from 'react'
 import { AuthProvider } from '../lib/contexts/AuthContext'
 import { getUser } from '../lib/auth/server'
-import { isCrossDomainMode } from '../lib/auth/config'
 import './globals.css'
+
+// Force dynamic rendering - this is an authenticated docs site
+// Server-side auth requires cookies() which needs dynamic rendering
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   description: 'HealthTalk Documentation - Help center and knowledge base.',
@@ -47,32 +50,30 @@ export const metadata: Metadata = {
 }
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
-  // Fetch page map first
-  const pageMap = await getEnhancedPageMap()
-  
-  // In cross-domain mode, user is managed via localStorage on the client
-  // In same-domain mode, we can fetch the user server-side using cookies
-  const isCrossDomain = isCrossDomainMode()
-  const user = isCrossDomain 
-    ? null  // Client will handle auth via localStorage
-    : await getUser().catch(() => null)
+  // Fetch page map and user in parallel
+  const [pageMap, user] = await Promise.all([
+    getEnhancedPageMap(),
+    getUser().catch(() => null), // Graceful fallback if auth fails
+  ])
   
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
-        <Layout
-          navbar={null}
-          pageMap={pageMap}
-          editLink={null}
-          feedback={{ content: null }}
-          sidebar={{ defaultMenuCollapseLevel: 1 }}
-          footer={null}
-          copyPageButton={false}
-          toc={{ float: false, extraContent: null, backToTop: null }}
-        >
-          {children}
-        </Layout>
+        <AuthProvider initialUser={user}>
+          <Layout
+            navbar={null}
+            pageMap={pageMap}
+            editLink={null}
+            feedback={{ content: null }}
+            sidebar={{ defaultMenuCollapseLevel: 1 }}
+            footer={null}
+            copyPageButton={false}
+            toc={{ float: false, extraContent: null, backToTop: null }}
+          >
+            {children}
+          </Layout>
+        </AuthProvider>
       </body>
     </html>
   )
