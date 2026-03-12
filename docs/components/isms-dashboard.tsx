@@ -1,6 +1,41 @@
 'use client'
 
-import { Shield, AlertTriangle, CheckCircle, Clock, FileText, Users, ExternalLink } from 'lucide-react'
+// Simple inline SVG icons
+const ShieldIcon = ({ className = "h-5 w-5" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+  </svg>
+)
+
+const AlertTriangleIcon = ({ className = "h-5 w-5" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+  </svg>
+)
+
+const FileTextIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+  </svg>
+)
+
+const ClockIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+)
+
+const UsersIcon = ({ className = "h-5 w-5" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+)
+
+const ExternalLinkIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+  </svg>
+)
 
 // Control Status Summary Card
 interface ControlStatusProps {
@@ -17,7 +52,7 @@ export function ControlStatusCard({ implemented, partial, notImplemented, notApp
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
       <div className="flex items-center gap-2 mb-4">
-        <Shield className="h-5 w-5 text-blue-600" />
+        <ShieldIcon className="h-5 w-5 text-blue-600" />
         <h3 className="font-semibold text-gray-900 dark:text-white">Annex A Controls</h3>
       </div>
       
@@ -92,7 +127,6 @@ const EXPOSURE_COLORS = [
 ]
 
 export function RiskHeatmap({ risks }: RiskHeatmapProps) {
-  // Group risks by likelihood and impact
   const riskMatrix: Risk[][][] = [
     [[], [], []],
     [[], [], []],
@@ -108,7 +142,7 @@ export function RiskHeatmap({ risks }: RiskHeatmapProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
       <div className="flex items-center gap-2 mb-4">
-        <AlertTriangle className="h-5 w-5 text-orange-600" />
+        <AlertTriangleIcon className="h-5 w-5 text-orange-600" />
         <h3 className="font-semibold text-gray-900 dark:text-white">Risk Heatmap</h3>
       </div>
 
@@ -120,18 +154,16 @@ export function RiskHeatmap({ risks }: RiskHeatmapProps) {
         </div>
         
         <div className="flex-1">
-          {/* Header row */}
           <div className="grid grid-cols-3 gap-1 mb-1">
             <div className="text-center text-xs text-gray-500">Low</div>
             <div className="text-center text-xs text-gray-500">Medium</div>
             <div className="text-center text-xs text-gray-500">High</div>
           </div>
           
-          {/* Matrix rows (reversed so High is at top) */}
           {['H', 'M', 'L'].map((likelihood, li) => (
             <div key={likelihood} className="grid grid-cols-3 gap-1 mb-1">
               {['L', 'M', 'H'].map((impact, ii) => {
-                const actualLi = 2 - li // Reverse for display
+                const actualLi = 2 - li
                 const cellRisks = riskMatrix[actualLi][ii]
                 return (
                   <div
@@ -185,15 +217,15 @@ interface QuickStatsProps {
 
 export function QuickStats({ policies, controls, risks, openIncidents }: QuickStatsProps) {
   const stats = [
-    { label: 'Policies', value: policies, icon: FileText, color: 'text-blue-600' },
-    { label: 'Controls', value: controls, icon: Shield, color: 'text-green-600' },
-    { label: 'Risks', value: risks, icon: AlertTriangle, color: 'text-orange-600' },
-    { label: 'Open Incidents', value: openIncidents, icon: Clock, color: 'text-red-600' },
+    { label: 'Policies', value: policies, Icon: FileTextIcon, color: 'text-blue-600' },
+    { label: 'Controls', value: controls, Icon: ShieldIcon, color: 'text-green-600' },
+    { label: 'Risks', value: risks, Icon: AlertTriangleIcon, color: 'text-orange-600' },
+    { label: 'Open Incidents', value: openIncidents, Icon: ClockIcon, color: 'text-red-600' },
   ]
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {stats.map(({ label, value, icon: Icon, color }) => (
+      {stats.map(({ label, value, Icon, color }) => (
         <div key={label} className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
           <div className="flex items-center gap-2 mb-2">
             <Icon className={`h-4 w-4 ${color}`} />
@@ -222,7 +254,7 @@ export function AuditLinks({ links }: AuditLinksProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
       <div className="flex items-center gap-2 mb-4">
-        <Users className="h-5 w-5 text-purple-600" />
+        <UsersIcon className="h-5 w-5 text-purple-600" />
         <h3 className="font-semibold text-gray-900 dark:text-white">Audit Resources</h3>
       </div>
 
@@ -239,7 +271,7 @@ export function AuditLinks({ links }: AuditLinksProps) {
               <div className="font-medium text-gray-900 dark:text-white">{link.title}</div>
               <div className="text-sm text-gray-500">{link.description}</div>
             </div>
-            {link.external && <ExternalLink className="h-4 w-4 text-gray-400" />}
+            {link.external && <ExternalLinkIcon className="h-4 w-4 text-gray-400" />}
           </a>
         ))}
       </div>
@@ -247,7 +279,7 @@ export function AuditLinks({ links }: AuditLinksProps) {
   )
 }
 
-// Control Status Badge for individual controls
+// Control Status Badge
 interface ControlStatusBadgeProps {
   status: 'implemented' | 'partial' | 'not-implemented' | 'not-applicable'
 }
