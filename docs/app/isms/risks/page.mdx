@@ -8,46 +8,106 @@
   filePath="docs/app/isms/risks/page.mdx"
 />
 
-This section contains all identified and assessed risks. For a summary view, see the [Risk Assessment Register](/isms/registers/risk-assessment).
+This section contains all identified and assessed risks with their current treatment status.
 
-## Active Risks
+## Risk Overview
+
+<RiskHeatmap
+  risks={[
+    { id: '2019-04', title: 'Social engineering', likelihood: 'L', impact: 'L', treatment: 'ACCEPT' },
+    { id: '2019-05', title: 'Vulnerability exploited', likelihood: 'M', impact: 'H', treatment: 'MITIGATE' },
+    { id: '2019-06', title: 'Account sharing', likelihood: 'L', impact: 'L', treatment: 'ACCEPT' },
+    { id: '2019-08', title: 'Insufficient supplier control', likelihood: 'M', impact: 'M', treatment: 'MITIGATE' },
+    { id: '2019-11', title: 'Loss of crypto keys', likelihood: 'L', impact: 'L', treatment: 'ACCEPT' },
+    { id: '2019-14', title: 'Email intercepted', likelihood: 'L', impact: 'L', treatment: 'ACCEPT' },
+    { id: '2019-28', title: 'Improper hardening', likelihood: 'M', impact: 'H', treatment: 'TRANSFER' },
+    { id: '2019-29', title: 'Weak passwords', likelihood: 'L', impact: 'H', treatment: 'ACCEPT' },
+  ]}
+/>
+
+## Risk Treatment Plan
+
+| Risk ID | Risk Title | Likelihood | Impact | Exposure | Treatment | Status |
+|---------|------------|------------|--------|----------|-----------|--------|
+| 2019-04 | [Social engineering](/isms/risks/2019-04-social-engineering) | <ExposureBadge level="L" /> | <ExposureBadge level="L" /> | <ExposureBadge level="L" /> | <RiskTreatmentBadge treatment="ACCEPT" /> | Monitored |
+| 2019-05 | [Vulnerability in technology](/isms/risks/2019-05-security-vulnerability) | <ExposureBadge level="M" /> | <ExposureBadge level="H" /> | <ExposureBadge level="H" /> | <RiskTreatmentBadge treatment="MITIGATE" /> | In progress |
+| 2019-06 | [Account sharing](/isms/risks/2019-06-account-sharing) | <ExposureBadge level="L" /> | <ExposureBadge level="L" /> | <ExposureBadge level="L" /> | <RiskTreatmentBadge treatment="ACCEPT" /> | Monitored |
+| 2019-08 | [Insufficient supplier control](/isms/risks/2019-08-insufficient-supplier-control) | <ExposureBadge level="M" /> | <ExposureBadge level="M" /> | <ExposureBadge level="M" /> | <RiskTreatmentBadge treatment="MITIGATE" /> | In progress |
+| 2019-11 | [Loss of cryptographic keys](/isms/risks/2019-11-loss-cryptographic-keys) | <ExposureBadge level="L" /> | <ExposureBadge level="L" /> | <ExposureBadge level="L" /> | <RiskTreatmentBadge treatment="ACCEPT" /> | Monitored |
+| 2019-14 | [E-mail intercepted](/isms/risks/2019-14-email-intercepted) | <ExposureBadge level="L" /> | <ExposureBadge level="L" /> | <ExposureBadge level="L" /> | <RiskTreatmentBadge treatment="ACCEPT" /> | Monitored |
+| 2019-28 | [Improper configuration](/isms/risks/2019-28-improper-configuration) | <ExposureBadge level="M" /> | <ExposureBadge level="H" /> | <ExposureBadge level="M" /> | <RiskTreatmentBadge treatment="TRANSFER" /> | Transferred |
+| 2019-29 | [Weak passwords](/isms/risks/2019-29-weak-passwords) | <ExposureBadge level="L" /> | <ExposureBadge level="H" /> | <ExposureBadge level="M" /> | <RiskTreatmentBadge treatment="ACCEPT" /> | Monitored |
+
+## Risk Categories
 
 ### Social Engineering and Human Factors
 
-- [2019-04 Social engineering](/isms/risks/2019-04-social-engineering)
-- [2019-06 Account sharing](/isms/risks/2019-06-account-sharing)
-- [2019-29 Usage of weak passwords](/isms/risks/2019-29-weak-passwords)
+Risks related to human behavior and social manipulation.
+
+- [2019-04 Social engineering](/isms/risks/2019-04-social-engineering) - Employees give access to unauthorized people
+- [2019-06 Account sharing](/isms/risks/2019-06-account-sharing) - Ex-employee damages or leaks information
+- [2019-29 Usage of weak passwords](/isms/risks/2019-29-weak-passwords) - Password hacked or guessed
 
 ### Technical and Infrastructure
 
-- [2019-05 Security vulnerability in underlying technology](/isms/risks/2019-05-security-vulnerability)
-- [2019-08 Insufficient control of suppliers](/isms/risks/2019-08-insufficient-supplier-control)
-- [2019-11 Loss of cryptographic keys](/isms/risks/2019-11-loss-cryptographic-keys)
-- [2019-14 E-mail is intercepted](/isms/risks/2019-14-email-intercepted)
-- [2019-28 Improper configuration/hardening](/isms/risks/2019-28-improper-configuration)
+Risks related to systems, software, and technical vulnerabilities.
+
+- [2019-05 Security vulnerability exploited](/isms/risks/2019-05-security-vulnerability) - Vulnerability in underlying technology
+- [2019-11 Loss of cryptographic keys](/isms/risks/2019-11-loss-cryptographic-keys) - Data inaccessible due to key loss
+- [2019-14 E-mail intercepted](/isms/risks/2019-14-email-intercepted) - Insecure SMTP communication
+- [2019-28 Improper configuration](/isms/risks/2019-28-improper-configuration) - Unnecessary services or ports open
+
+### Third Party and Supply Chain
+
+Risks related to suppliers and external dependencies.
+
+- [2019-08 Insufficient supplier control](/isms/risks/2019-08-insufficient-supplier-control) - Supplier does not meet requirements
 
 ## Risk Assessment Methodology
 
 ### Likelihood Levels
 
-| Level | Description |
-|-------|-------------|
-| L (Low) | Unlikely to occur |
-| M (Medium) | May occur occasionally |
-| H (High) | Likely to occur |
+| Level | Code | Description | Frequency |
+|-------|------|-------------|-----------|
+| Low | L | Unlikely to occur | Less than once per year |
+| Medium | M | May occur occasionally | 1-4 times per year |
+| High | H | Likely to occur | More than 4 times per year |
 
 ### Impact Levels
 
-| Level | Description |
-|-------|-------------|
-| L (Low) | Minor impact |
-| M (Medium) | Moderate impact |
-| H (High) | Severe impact |
+| Level | Code | Description | Business Impact |
+|-------|------|-------------|-----------------|
+| Low | L | Minor impact | Minimal disruption, no data loss |
+| Medium | M | Moderate impact | Some disruption, limited data exposure |
+| High | H | Severe impact | Major disruption, significant data breach |
 
 ### Exposure Matrix
 
-| Likelihood / Impact | L | M | H |
-|---------------------|---|---|---|
-| H | M | H | H |
-| M | L | M | H |
-| L | L | L | M |
+The exposure (residual risk) is calculated based on likelihood and impact:
+
+|  | **Impact: Low** | **Impact: Medium** | **Impact: High** |
+|--|-----------------|--------------------|--------------------|
+| **Likelihood: High** | Medium | High | High |
+| **Likelihood: Medium** | Low | Medium | High |
+| **Likelihood: Low** | Low | Low | Medium |
+
+### Treatment Options
+
+| Treatment | Description | When to Use |
+|-----------|-------------|-------------|
+| **Accept** | Accept the risk without additional measures | Low exposure, cost of treatment exceeds benefit |
+| **Mitigate** | Implement controls to reduce likelihood or impact | Medium/high exposure, feasible controls available |
+| **Transfer** | Transfer risk to third party (insurance, outsourcing) | High impact, cannot be mitigated internally |
+| **Avoid** | Eliminate the risk by removing the activity | Very high exposure, no feasible mitigation |
+
+## Review Schedule
+
+- **Quarterly**: Review high and medium exposure risks
+- **Annually**: Full risk assessment review
+- **Ad-hoc**: After security incidents or significant changes
+
+## Related Documents
+
+- [Annex A Controls](/isms/annex-a) - Controls that mitigate risks
+- [Incident Register](/isms/registers/incidents) - Security incidents
+- [Change Register](/isms/registers/changes) - Changes that may affect risks

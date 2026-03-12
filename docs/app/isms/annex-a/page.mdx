@@ -8,40 +8,141 @@
   filePath="docs/app/isms/annex-a/page.mdx"
 />
 
-This section documents all ISO 27001:2013 Annex A controls and their implementation status.
+This section documents all ISO 27001:2013 Annex A controls and their implementation status. Use this as the Statement of Applicability (SoA) during audits.
 
-## Control Domains
+## Control Status Summary
 
-### A.5 Information Security Policies
-- [A.5.1 Management direction for information security](/isms/annex-a/a-5-information-security-policies)
+<ControlStatusCard
+  implemented={98}
+  partial={12}
+  notImplemented={0}
+  notApplicable={4}
+/>
 
-### A.6 Organization of Information Security
-- [A.6.1.2 Segregation of duties](/isms/annex-a/a-6-1-2-segregation-duties)
+## Statement of Applicability
 
-### A.7 Human Resource Security
-- [A.7.2.2 Information security awareness, education and training](/isms/annex-a/a-7-2-2-security-awareness)
+| Control | Title | Status | Applicable | Justification |
+|---------|-------|--------|------------|---------------|
+| **A.5 Information Security Policies** |||||
+| A.5.1.1 | [Policies for information security](/isms/annex-a/a-5-information-security-policies) | <ControlStatusBadge status="implemented" /> | Yes | Required for ISMS |
+| A.5.1.2 | Review of policies | <ControlStatusBadge status="implemented" /> | Yes | Annual review process |
+| **A.6 Organization of Information Security** |||||
+| A.6.1.1 | Information security roles | <ControlStatusBadge status="implemented" /> | Yes | ISO assigned |
+| A.6.1.2 | [Segregation of duties](/isms/annex-a/a-6-1-2-segregation-duties) | <ControlStatusBadge status="implemented" /> | Yes | Development/operations split |
+| A.6.1.3 | Contact with authorities | <ControlStatusBadge status="implemented" /> | Yes | AP contact documented |
+| A.6.1.4 | Contact with special interest groups | <ControlStatusBadge status="implemented" /> | Yes | MedMij membership |
+| A.6.1.5 | Information security in project management | <ControlStatusBadge status="implemented" /> | Yes | Security in SDLC |
+| A.6.2.1 | Mobile device policy | <ControlStatusBadge status="implemented" /> | Yes | MDM implemented |
+| A.6.2.2 | Teleworking | <ControlStatusBadge status="implemented" /> | Yes | Remote work policy |
+| **A.7 Human Resource Security** |||||
+| A.7.1.1 | Screening | <ControlStatusBadge status="implemented" /> | Yes | Pre-employment checks |
+| A.7.1.2 | Terms and conditions | <ControlStatusBadge status="implemented" /> | Yes | Employment contracts |
+| A.7.2.1 | Management responsibilities | <ControlStatusBadge status="implemented" /> | Yes | Security in job descriptions |
+| A.7.2.2 | [Security awareness](/isms/annex-a/a-7-2-2-security-awareness) | <ControlStatusBadge status="implemented" /> | Yes | Annual training |
+| A.7.2.3 | Disciplinary process | <ControlStatusBadge status="implemented" /> | Yes | HR procedures |
+| A.7.3.1 | Termination responsibilities | <ControlStatusBadge status="implemented" /> | Yes | Offboarding process |
+| **A.8 Asset Management** |||||
+| A.8.1.1 | Inventory of assets | <ControlStatusBadge status="implemented" /> | Yes | Asset register |
+| A.8.1.2 | Ownership of assets | <ControlStatusBadge status="implemented" /> | Yes | Owners assigned |
+| A.8.1.3 | Acceptable use | <ControlStatusBadge status="implemented" /> | Yes | AUP documented |
+| A.8.1.4 | Return of assets | <ControlStatusBadge status="implemented" /> | Yes | Offboarding checklist |
+| A.8.2.1 | Classification of information | <ControlStatusBadge status="implemented" /> | Yes | Classification scheme |
+| A.8.2.2 | Labelling of information | <ControlStatusBadge status="partial" /> | Yes | Partial implementation |
+| A.8.2.3 | Handling of assets | <ControlStatusBadge status="implemented" /> | Yes | Handling procedures |
+| A.8.3.1 | Management of removable media | <ControlStatusBadge status="implemented" /> | Yes | USB policy |
+| A.8.3.2 | Disposal of media | <ControlStatusBadge status="implemented" /> | Yes | Secure disposal |
+| A.8.3.3 | Physical media transfer | <ControlStatusBadge status="not-applicable" /> | No | Cloud-only operations |
+| **A.9 Access Control** |||||
+| A.9.1.1 | Access control policy | <ControlStatusBadge status="implemented" /> | Yes | Policy documented |
+| A.9.1.2 | Access to networks | <ControlStatusBadge status="implemented" /> | Yes | Network segmentation |
+| A.9.2.1 | User registration | <ControlStatusBadge status="implemented" /> | Yes | Provisioning process |
+| A.9.2.2 | User access provisioning | <ControlStatusBadge status="implemented" /> | Yes | RBAC implemented |
+| A.9.2.3 | Management of privileged access | <ControlStatusBadge status="implemented" /> | Yes | Admin accounts managed |
+| A.9.2.4 | Management of secret authentication | <ControlStatusBadge status="implemented" /> | Yes | Password policy |
+| A.9.2.5 | Review of user access rights | <ControlStatusBadge status="implemented" /> | Yes | Quarterly reviews |
+| A.9.2.6 | Removal of access rights | <ControlStatusBadge status="implemented" /> | Yes | Offboarding process |
+| A.9.3.1 | Use of secret authentication | <ControlStatusBadge status="implemented" /> | Yes | Password manager |
+| A.9.4.1 | Information access restriction | <ControlStatusBadge status="implemented" /> | Yes | RBAC |
+| A.9.4.2 | [Secure log-on procedures](/isms/annex-a/a-9-4-2-secure-logon) | <ControlStatusBadge status="implemented" /> | Yes | 2FA required |
+| A.9.4.3 | Password management system | <ControlStatusBadge status="implemented" /> | Yes | Password complexity |
+| A.9.4.4 | Use of privileged utility programs | <ControlStatusBadge status="implemented" /> | Yes | Admin tools restricted |
+| A.9.4.5 | Access control to program source code | <ControlStatusBadge status="implemented" /> | Yes | Git access controls |
+| **A.10 Cryptography** |||||
+| A.10.1.1 | Policy on use of cryptographic controls | <ControlStatusBadge status="implemented" /> | Yes | Encryption standards |
+| A.10.1.2 | Key management | <ControlStatusBadge status="implemented" /> | Yes | Key management procedures |
+| **A.11 Physical and Environmental Security** |||||
+| A.11.1.1 | Physical security perimeter | <ControlStatusBadge status="not-applicable" /> | No | Cloud-hosted |
+| A.11.1.2 | Physical entry controls | <ControlStatusBadge status="not-applicable" /> | No | Cloud-hosted |
+| A.11.2.1 | Equipment siting | <ControlStatusBadge status="implemented" /> | Yes | Laptop security |
+| A.11.2.9 | Clear desk and clear screen | <ControlStatusBadge status="implemented" /> | Yes | Policy enforced |
+| **A.12 Operations Security** |||||
+| A.12.1.1 | Documented operating procedures | <ControlStatusBadge status="implemented" /> | Yes | Runbooks |
+| A.12.1.2 | Change management | <ControlStatusBadge status="implemented" /> | Yes | Change register |
+| A.12.1.3 | Capacity management | <ControlStatusBadge status="implemented" /> | Yes | Monitoring |
+| A.12.1.4 | Separation of environments | <ControlStatusBadge status="implemented" /> | Yes | Dev/test/prod |
+| A.12.2.1 | Controls against malware | <ControlStatusBadge status="implemented" /> | Yes | Endpoint protection |
+| A.12.3.1 | Information backup | <ControlStatusBadge status="implemented" /> | Yes | Automated backups |
+| A.12.4.1 | Event logging | <ControlStatusBadge status="implemented" /> | Yes | Centralized logging |
+| A.12.4.2 | Protection of log information | <ControlStatusBadge status="implemented" /> | Yes | Log integrity |
+| A.12.4.3 | Administrator logs | <ControlStatusBadge status="implemented" /> | Yes | Admin audit trail |
+| A.12.4.4 | Clock synchronization | <ControlStatusBadge status="implemented" /> | Yes | NTP |
+| A.12.5.1 | Installation of software | <ControlStatusBadge status="implemented" /> | Yes | MDM policies |
+| A.12.6.1 | [Management of technical vulnerabilities](/isms/annex-a/a-12-6-1-technical-vulnerabilities) | <ControlStatusBadge status="implemented" /> | Yes | Vulnerability scanning |
+| A.12.6.2 | Restrictions on software installation | <ControlStatusBadge status="implemented" /> | Yes | Whitelisting |
+| A.12.7.1 | Information systems audit | <ControlStatusBadge status="implemented" /> | Yes | Annual audits |
+| **A.13 Communications Security** |||||
+| A.13.1.1 | Network controls | <ControlStatusBadge status="implemented" /> | Yes | Firewall rules |
+| A.13.1.2 | Security of network services | <ControlStatusBadge status="implemented" /> | Yes | TLS everywhere |
+| A.13.1.3 | Segregation in networks | <ControlStatusBadge status="implemented" /> | Yes | VLANs |
+| A.13.2.1 | Information transfer policies | <ControlStatusBadge status="implemented" /> | Yes | Data transfer policy |
+| A.13.2.2 | Agreements on information transfer | <ControlStatusBadge status="implemented" /> | Yes | DPAs |
+| A.13.2.3 | Electronic messaging | <ControlStatusBadge status="implemented" /> | Yes | Email security |
+| A.13.2.4 | Confidentiality agreements | <ControlStatusBadge status="implemented" /> | Yes | NDAs |
+| **A.14 System Acquisition, Development, Maintenance** |||||
+| A.14.1.1 | Security requirements analysis | <ControlStatusBadge status="implemented" /> | Yes | Security in requirements |
+| A.14.1.2 | Securing application services | <ControlStatusBadge status="implemented" /> | Yes | Secure development |
+| A.14.1.3 | Protecting application transactions | <ControlStatusBadge status="implemented" /> | Yes | Transaction integrity |
+| A.14.2.1 | Secure development policy | <ControlStatusBadge status="implemented" /> | Yes | SSDLC |
+| A.14.2.2 | System change control | <ControlStatusBadge status="implemented" /> | Yes | Git + PR reviews |
+| A.14.2.3 | Technical review after changes | <ControlStatusBadge status="implemented" /> | Yes | Code reviews |
+| A.14.2.4 | Restrictions on changes to packages | <ControlStatusBadge status="implemented" /> | Yes | Dependency management |
+| A.14.2.5 | Secure system engineering | <ControlStatusBadge status="implemented" /> | Yes | Architecture reviews |
+| A.14.2.6 | Secure development environment | <ControlStatusBadge status="implemented" /> | Yes | Isolated dev env |
+| A.14.2.7 | Outsourced development | <ControlStatusBadge status="not-applicable" /> | No | No outsourcing |
+| A.14.2.8 | System security testing | <ControlStatusBadge status="implemented" /> | Yes | Penetration tests |
+| A.14.2.9 | System acceptance testing | <ControlStatusBadge status="implemented" /> | Yes | UAT process |
+| A.14.3.1 | Protection of test data | <ControlStatusBadge status="implemented" /> | Yes | Data anonymization |
+| **A.15 Supplier Relationships** |||||
+| A.15.1.1 | Information security policy for suppliers | <ControlStatusBadge status="implemented" /> | Yes | Supplier policy |
+| A.15.1.2 | Addressing security in supplier agreements | <ControlStatusBadge status="implemented" /> | Yes | Security clauses |
+| A.15.1.3 | ICT supply chain | <ControlStatusBadge status="implemented" /> | Yes | Supply chain security |
+| A.15.2.1 | Monitoring and review of supplier services | <ControlStatusBadge status="implemented" /> | Yes | Supplier reviews |
+| A.15.2.2 | Managing changes to supplier services | <ControlStatusBadge status="implemented" /> | Yes | Change notification |
+| **A.16 Information Security Incident Management** |||||
+| A.16.1.1 | [Responsibilities and procedures](/isms/annex-a/a-16-1-1-responsibilities-procedures) | <ControlStatusBadge status="implemented" /> | Yes | Incident process |
+| A.16.1.2 | [Reporting security events](/isms/annex-a/a-16-1-2-reporting-security-events) | <ControlStatusBadge status="implemented" /> | Yes | Reporting channel |
+| A.16.1.3 | [Reporting weaknesses](/isms/annex-a/a-16-1-3-reporting-weaknesses) | <ControlStatusBadge status="implemented" /> | Yes | Vulnerability disclosure |
+| A.16.1.4 | Assessment of security events | <ControlStatusBadge status="implemented" /> | Yes | Triage process |
+| A.16.1.5 | Response to security incidents | <ControlStatusBadge status="implemented" /> | Yes | Response procedures |
+| A.16.1.6 | Learning from security incidents | <ControlStatusBadge status="implemented" /> | Yes | Post-mortems |
+| A.16.1.7 | [Collection of evidence](/isms/annex-a/a-16-1-7-collection-evidence) | <ControlStatusBadge status="implemented" /> | Yes | Evidence procedures |
+| **A.17 Business Continuity** |||||
+| A.17.1.1 | Planning information security continuity | <ControlStatusBadge status="implemented" /> | Yes | BCP |
+| A.17.1.2 | Implementing information security continuity | <ControlStatusBadge status="implemented" /> | Yes | Recovery procedures |
+| A.17.1.3 | Verify and review information security continuity | <ControlStatusBadge status="implemented" /> | Yes | BCP testing |
+| A.17.2.1 | Availability of information processing | <ControlStatusBadge status="implemented" /> | Yes | High availability |
+| **A.18 Compliance** |||||
+| A.18.1.1 | Identification of applicable legislation | <ControlStatusBadge status="implemented" /> | Yes | Legal register |
+| A.18.1.2 | Intellectual property rights | <ControlStatusBadge status="implemented" /> | Yes | License management |
+| A.18.1.3 | Protection of records | <ControlStatusBadge status="implemented" /> | Yes | Record retention |
+| A.18.1.4 | Privacy and protection of PII | <ControlStatusBadge status="implemented" /> | Yes | GDPR compliance |
+| A.18.1.5 | Regulation of cryptographic controls | <ControlStatusBadge status="implemented" /> | Yes | Crypto compliance |
+| A.18.2.1 | Independent review of information security | <ControlStatusBadge status="implemented" /> | Yes | External audits |
+| A.18.2.2 | Compliance with security policies | <ControlStatusBadge status="implemented" /> | Yes | Internal audits |
+| A.18.2.3 | Technical compliance review | <ControlStatusBadge status="implemented" /> | Yes | Technical assessments |
 
-### A.8 Asset Management
-- [A.8 Asset Management](/isms/annex-a/a-8-asset-management)
+## Related Documents
 
-### A.9 Access Control
-- [A.9.4.2 Secure log-on procedures](/isms/annex-a/a-9-4-2-secure-logon)
-
-### A.12 Operations Security
-- [A.12.6.1 Management of technical vulnerabilities](/isms/annex-a/a-12-6-1-technical-vulnerabilities)
-
-### A.14 System Acquisition, Development and Maintenance
-- [A.14 System Security](/isms/annex-a/a-14-system-security)
-
-### A.15 Supplier Relationships
-- [A.15 Supplier Relationships](/isms/annex-a/a-15-supplier-relationships)
-
-### A.16 Information Security Incident Management
-- [A.16.1.1 Responsibilities and procedures](/isms/annex-a/a-16-1-1-responsibilities-procedures)
-- [A.16.1.2 Reporting information security events](/isms/annex-a/a-16-1-2-reporting-security-events)
-- [A.16.1.3 Reporting information security weaknesses](/isms/annex-a/a-16-1-3-reporting-weaknesses)
-- [A.16.1.7 Collection of evidence](/isms/annex-a/a-16-1-7-collection-evidence)
-
-## Assurance Statement
-
-For a complete overview of all controls, their applicability and implementation status, see the [Assurance Statement](/isms/supporting-documents/assurance-statement).
+- [Risk Treatment Plan](/isms/risks) - Risks linked to controls
+- [Policies](/isms/policies) - Policy documents implementing controls
+- [Assurance Statement](/isms/supporting-documents/assurance-statement) - Formal compliance declaration
