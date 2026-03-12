@@ -166,11 +166,12 @@ export function RiskHeatmap({ risks }: RiskHeatmapProps) {
             <div key={likelihood} className="grid grid-cols-3 gap-1 mb-1">
               {['L', 'M', 'H'].map((impact, ii) => {
                 const actualLi = 2 - li
-                const cellRisks = riskMatrix[actualLi][ii]
+                const cellRisks = riskMatrix[actualLi]?.[ii] ?? []
+                const cellColor = EXPOSURE_COLORS[actualLi]?.[ii] ?? 'bg-gray-100'
                 return (
                   <div
                     key={`${likelihood}-${impact}`}
-                    className={`${EXPOSURE_COLORS[actualLi][ii]} rounded p-2 min-h-[60px] flex flex-col items-center justify-center`}
+                    className={`${cellColor} rounded p-2 min-h-[60px] flex flex-col items-center justify-center`}
                   >
                     {cellRisks.length > 0 && (
                       <span className="text-lg font-bold text-gray-900 dark:text-white">
