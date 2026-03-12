@@ -54,9 +54,31 @@ AI extends capacity by handling analysis, calculation, drafting, and verificatio
 - Business and career alignment
 - Final decision making and argumentation
 
-## Phase-Gated Workflow
+## Full Project Lifecycle
 
-ResearchOps uses a 4-phase model with mandatory quality gates:
+ResearchOps covers the complete research project lifecycle:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    ResearchOps Full Lifecycle                       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  PRE-AWARD (Proposal)                POST-AWARD (Execution)         │
+│  ════════════════════                ══════════════════════         │
+│                                                                     │
+│  Phase 1: Knowledge Base    →    Phase 5: Project Kick-off         │
+│  Phase 2: Writing Infra     →    Phase 6: Execution & Monitoring   │
+│  Phase 3: Writing           →    Phase 7: Periodic Reporting       │
+│  Phase 4: Assembly          →    Phase 8: Final Review & Close     │
+│           ↓                                                         │
+│       SUBMISSION → EVALUATION → GRANT AWARD ────────→              │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+## Pre-Award: Phase-Gated Workflow
+
+The proposal phases use mandatory quality gates:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -111,6 +133,141 @@ Section drafts based on locked infrastructure from Phase 1-2.
 ### Phase 4: Assembly and Submit
 
 Final assembly, formatting, compliance check, and submission.
+
+## Post-Award: Project Management
+
+After grant award, ResearchOps transitions to project execution.
+
+### Phase 5: Project Kick-off
+
+| Task | Description | Output |
+|------|-------------|--------|
+| **Grant Agreement** | Sign GA with funding body | Signed GA |
+| **Consortium Agreement** | Finalize CA with partners | Signed CA |
+| **Kick-off Meeting** | Align all partners on objectives | Meeting notes |
+| **Work Package Setup** | Create WP structure in system | WP templates |
+| **Resource Allocation** | Assign PMs, budget per partner | Resource plan |
+| **Communication Plan** | Define reporting cadence | Comms matrix |
+| **Risk Register** | Initialize project risks | Risk log |
+
+### Phase 6: Execution and Monitoring
+
+Track progress across all work packages:
+
+| Module | Features |
+|--------|----------|
+| **Work Packages** | Tasks, deliverables, milestones per WP |
+| **Time Tracking** | PM hours per partner, per WP |
+| **Budget Tracking** | Actuals vs. planned, burn rate |
+| **Deliverables** | Upload, review, approve deliverables |
+| **Milestones** | Track completion with evidence |
+| **Meetings** | Consortium calls, WP meetings |
+| **Issues and Risks** | Track blockers, escalations |
+| **Change Requests** | Amendments to GA (budget shifts, extensions) |
+
+**Execution Dashboard:**
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  PROJECT: Health-AI-2025                    Month 14 of 36          │
+│  Horizon-HLTH-2025-01                       Budget: €2.4M           │
+│  ████████████████████░░░░░░░░░░░░░░░░  39% complete                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  WORK PACKAGES           BUDGET              NEXT MILESTONES        │
+│  WP1 Management  ████ 45%   Spent: €840K     M14: D2.1 due in 15d  │
+│  WP2 Research    ████ 38%   Budget: €2.4M    M18: Review meeting   │
+│  WP3 Development ███░ 32%   Remaining: €1.56M M24: Prototype ready │
+│  WP4 Pilot       ░░░░ 0%    Burn rate: OK                          │
+│  WP5 Dissem.     ██░░ 25%                                          │
+│                                                                     │
+│  DELIVERABLES THIS PERIOD        PARTNER STATUS                    │
+│  □ D2.1 Requirements (draft)     UMC Utrecht    ████ On track      │
+│  □ D3.1 Architecture (review)    TU Delft       ████ On track      │
+│  ✓ D1.2 Data Mgmt Plan           Philips        ███░ Minor delay   │
+│                                  SME Partner    ██░░ At risk       │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Phase 7: Periodic Reporting
+
+EU grants require periodic reports (typically every 12-18 months):
+
+| Report Type | Content | Automation |
+|-------------|---------|------------|
+| **Technical Report** | WP progress, deliverables, milestones | AI drafts from tracked data |
+| **Financial Report** | Costs per partner, per cost category | Auto-generated from time/budget |
+| **Publishable Summary** | Public summary of achievements | AI drafts, human reviews |
+| **Deliverables** | Attach completed deliverables | Pull from repository |
+| **Cost Statements** | Per-partner financial statements | Generate from actuals |
+
+**Reporting Workflow:**
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Periodic Report Generation                       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. Data Collection (automated)                                     │
+│     └─ Pull: timesheets, deliverables, milestones, costs           │
+│                                                                     │
+│  2. Draft Generation (AI)                                           │
+│     └─ Reporting Agent drafts sections from collected data         │
+│                                                                     │
+│  3. Partner Review (human)                                          │
+│     └─ Each partner reviews their sections, provides input         │
+│                                                                     │
+│  4. Coordinator Consolidation (human + AI)                          │
+│     └─ Merge feedback, ensure consistency, compliance check        │
+│                                                                     │
+│  5. Quality Gate (AI + human)                                       │
+│     └─ Cross-check against GA, flag inconsistencies                │
+│                                                                     │
+│  6. Submission (coordinator)                                        │
+│     └─ Upload to EC Funding Portal                                 │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Phase 8: Final Review and Close
+
+| Task | Description | Output |
+|------|-------------|--------|
+| **Final Technical Report** | Complete project achievements | Technical report |
+| **Final Financial Report** | All costs, final payment request | Financial report |
+| **Deliverable Check** | Verify all deliverables submitted | Checklist |
+| **KPI Assessment** | Measure against original KPIs | KPI report |
+| **Lessons Learned** | Document what worked, what didn't | Lessons doc |
+| **IP Management** | Document IP generated, ownership | IP register |
+| **Data Archival** | Archive project data per DMP | Archive |
+| **EC Review** | Respond to EC reviewer questions | Responses |
+| **Final Payment** | Receive final payment tranche | Payment |
+| **Project Closure** | Administrative closure | Closure report |
+
+**Final Review Dashboard:**
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  FINAL REVIEW: Health-AI-2025               Status: In Review       │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  DELIVERABLES           FINANCIALS           KPIs                   │
+│  ✓ 28/30 Submitted      Total: €2.38M        Publications: 12/10 ✓ │
+│  □ D5.4 Pending         Claimed: €2.38M      Patents: 1/2 ⚠        │
+│  □ D5.5 In review       Eligible: €2.36M     SME impact: 3/3 ✓     │
+│                         Variance: -€20K      Jobs created: 8/5 ✓   │
+│                                                                     │
+│  EC REVIEWER COMMENTS                                               │
+│  □ Q1: Clarify WP3 methodology change                              │
+│  □ Q2: Provide evidence for D4.2 pilot results                     │
+│  ✓ Q3: Budget reallocation justified                               │
+│                                                                     │
+│  ACTIONS                                                            │
+│  [Respond to Q1] [Upload D5.4] [Generate Lessons Learned]          │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ## Lock Points and Quality Gates
 
@@ -189,19 +346,31 @@ project-knowledge/
 
 ## Specialized Agents
 
-ResearchOps uses specialized agents per methodology:
+ResearchOps uses specialized agents across the full lifecycle:
 
 ```
 .researchops/agents/
-├── compliance-officer.md     # Admissibility, eligibility rules
-├── evaluation-strategist.md  # Scoring criteria optimization
-├── budget-architect.md       # Cost structures, PM rates
-├── evidence-researcher.md    # Supporting data, citations
-├── section-writer.md         # Part B content generation
-└── qa-auditor.md             # Cross-check, coherence
+├── Pre-Award (Proposal)
+│   ├── compliance-officer.md     # Admissibility, eligibility rules
+│   ├── evaluation-strategist.md  # Scoring criteria optimization
+│   ├── budget-architect.md       # Cost structures, PM rates
+│   ├── evidence-researcher.md    # Supporting data, citations
+│   ├── section-writer.md         # Part B content generation
+│   └── qa-auditor.md             # Cross-check, coherence
+│
+└── Post-Award (Execution)
+    ├── onboarding-agent.md       # Partner setup, GA/CA guidance
+    ├── progress-agent.md         # WP tracking, delay detection
+    ├── budget-agent.md           # Spend monitoring, forecasting
+    ├── meeting-agent.md          # Scheduling, agendas, minutes
+    ├── risk-agent.md             # Risk monitoring, mitigation
+    ├── reporting-agent.md        # Draft reports from tracked data
+    ├── review-agent.md           # EC reviewer response preparation
+    ├── archive-agent.md          # Data organization, archival
+    └── lessons-agent.md          # Extract lessons learned
 ```
 
-### Agent Capabilities
+### Pre-Award Agents
 
 | Agent | Role | When Used |
 |-------|------|-----------|
@@ -211,6 +380,20 @@ ResearchOps uses specialized agents per methodology:
 | **Evidence Researcher** | Finds supporting data | P12 |
 | **Section Writer** | Drafts proposal sections | Phase 3 |
 | **QA Auditor** | Cross-checks consistency | P9, P11 |
+
+### Post-Award Agents
+
+| Agent | Role | When Used |
+|-------|------|-----------|
+| **Onboarding Agent** | Partner setup, GA/CA guidance | Phase 5 |
+| **Progress Agent** | WP tracking, delay detection | Phase 6 |
+| **Budget Agent** | Spend monitoring, forecasting | Phase 6-8 |
+| **Meeting Agent** | Scheduling, agendas, minutes | Phase 6 |
+| **Risk Agent** | Risk monitoring, mitigation | Phase 6 |
+| **Reporting Agent** | Draft reports from tracked data | Phase 7-8 |
+| **Review Agent** | EC reviewer response preparation | Phase 8 |
+| **Archive Agent** | Data organization, archival | Phase 8 |
+| **Lessons Agent** | Extract lessons learned | Phase 8 |
 
 ## Dashboard
 
@@ -342,15 +525,48 @@ ResearchOps uses the standard MEDrecord three-panel layout:
 ┌──────────────┬──────────────────┬─────────────────────────────────┐
 │   Sidebar    │   Agent Chat     │          Content                │
 │              │                  │                                 │
-│  - Projects  │  Context-aware   │   Dashboard / Phase View        │
+│  PRE-AWARD   │  Context-aware   │   Dashboard / Phase View        │
 │  - Funding   │  AI assistant    │   Task details, documents       │
 │  - Partners  │                  │   Journey Network               │
 │  - Proposals │  "Run P3"        │                                 │
-│  - Contracts │  "What's next?"  │                                 │
-│  - Planning  │                  │                                 │
+│              │  "What's next?"  │                                 │
+│  POST-AWARD  │  "Draft report"  │                                 │
+│  - Projects  │                  │                                 │
 │  - Execution │                  │                                 │
 │  - Reports   │                  │                                 │
+│  - Contracts │                  │                                 │
+│  - Planning  │                  │                                 │
 └──────────────┴──────────────────┴─────────────────────────────────┘
+```
+
+### Module Structure
+
+```
+ResearchOps Modules
+├── PRE-AWARD
+│   ├── Funding Intelligence      # Call discovery, matching
+│   ├── Consortium Builder        # Partner search, matching
+│   └── Proposal Workspace        # Phase 1-4 execution
+│       ├── Phase 1: Knowledge Base
+│       ├── Phase 2: Writing Infrastructure
+│       ├── Phase 3: Writing
+│       └── Phase 4: Assembly
+│
+├── TRANSITION
+│   └── Contracts & Agreements    # GA, CA, signatures
+│
+├── POST-AWARD
+│   └── Project Workspace         # Phase 5-8 execution
+│       ├── Phase 5: Kick-off
+│       ├── Phase 6: Execution & Monitoring
+│       ├── Phase 7: Periodic Reporting
+│       └── Phase 8: Final Review & Close
+│
+└── SHARED
+    ├── Planning (Cal.com)        # Scheduling across phases
+    ├── Financials (Stripe)       # Budget tracking, payments
+    ├── Communication Tracking    # WhatsApp, email
+    └── Project Documentation     # Per-project docs
 ```
 
 ## Document Services
@@ -500,7 +716,7 @@ Cal.com integration for consortium coordination:
 
 ## Development Status
 
-### Phase 1: Feedback Collection (Current)
+### Dev Phase 1: Feedback Collection (Current)
 
 | Component | Status |
 |-----------|--------|
@@ -508,31 +724,43 @@ Cal.com integration for consortium coordination:
 | Basic Layout | Planned |
 | User Onboarding | Planned |
 
-### Phase 2: Phase Engine
+### Dev Phase 2: Proposal Engine (Pre-Award)
 
 | Component | Status |
 |-----------|--------|
 | Phase-gated workflow | Planned |
 | Lock mechanism | Planned |
 | Quality gates | Planned |
-| Dashboard | Planned |
+| Proposal Dashboard | Planned |
 | Journey Network | Planned |
+| Pre-Award Agents | Planned |
 
-### Phase 3: Core Modules
+### Dev Phase 3: Core Integrations
 
 | Component | Status |
 |-----------|--------|
-| Specialized agents | Planned |
-| Document services | Planned |
+| Document services (Google/MS365) | Planned |
 | Cal.com integration | Planned |
-
-### Phase 4: Advanced
-
-| Component | Status |
-|-----------|--------|
 | ResearchOps Sign | Planned |
 | WhatsApp sync | Planned |
+
+### Dev Phase 4: Project Management (Post-Award)
+
+| Component | Status |
+|-----------|--------|
+| Project Workspace | Planned |
+| Execution Dashboard | Planned |
+| Periodic Reporting | Planned |
+| Final Review | Planned |
+| Post-Award Agents | Planned |
+
+### Dev Phase 5: Advanced
+
+| Component | Status |
+|-----------|--------|
 | Stripe integration | Planned |
+| Partner Portal | Planned |
+| EC Portal Integration | Planned |
 
 ## Resources
 
