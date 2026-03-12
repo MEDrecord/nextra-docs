@@ -93,9 +93,12 @@ const DEVELOPER_TOOLS: MetaRecord = {
 }
 
 const PRODUCTS: MetaRecord = {
-  overview: 'Overview',
+  overview: {
+    display: 'hidden'
+  },
   'healthtalk': 'HealthTalk',
   'helpdesk': 'Helpdesk',
+  'project-management': 'Project Management',
   'gateway': 'Gateway',
   'agents': 'AI Agents',
   'ehr-platform': 'EHR Platform'
@@ -142,19 +145,19 @@ export default {
   },
   docs: {
     type: 'page',
-    title: 'Documentation',
+    title: 'Products',
     items: {
-      index: 'Welcome',
-      'getting-started': { 
-        title: 'Getting Started',
-        items: GETTING_STARTED 
+      index: {
+        display: 'hidden'
       },
-      'user-guide': { 
-        title: 'User Guide',
-        items: USER_GUIDE 
+      'getting-started': {
+        display: 'hidden'
+      },
+      'user-guide': {
+        display: 'hidden'
       },
       'products': {
-        title: 'Products',
+        title: '',
         items: PRODUCTS
       }
     }
