@@ -1,15 +1,15 @@
-# ConsortiaAI
+# ResearchOps
 
-ConsortiaAI is an AI-powered research grant and consortium management platform for coordinators of European and national R&D projects. It supports the full lifecycle from funding discovery and partner matching to proposal development, consortium agreements, milestone tracking, deliverables, compliance, and reporting.
+ResearchOps is the operating system for research projects. It helps research teams secure funding faster and manage complex collaborative projects with confidence — from funding discovery and consortium building to proposal development, project coordination, and reporting.
 
 ## Part of MEDrecord
 
-ConsortiaAI is a product within the MEDrecord ecosystem, sharing the same infrastructure, authentication, and design language as HealthTalk, Helpdesk, and other MEDrecord products.
+ResearchOps is a product within the MEDrecord ecosystem, sharing the same infrastructure, authentication, and design language as HealthTalk, Helpdesk, and other MEDrecord products.
 
 | Aspect | Description |
 |--------|-------------|
-| **Brand** | ConsortiaAI by MEDrecord |
-| **Domain** | consortia-ai.healthtalk.ai |
+| **Brand** | ResearchOps by MEDrecord |
+| **Domain** | researchops.healthtalk.ai |
 | **Authentication** | Gateway (Azure B2C) - shared with all MEDrecord apps |
 | **Design System** | MEDrecord UI (Sidebar + Agent + Content layout) |
 | **Data Platform** | Supabase via Gateway |
@@ -17,14 +17,17 @@ ConsortiaAI is a product within the MEDrecord ecosystem, sharing the same infras
 
 ### Brand Identity
 
-- **Logo**: ConsortiaAI wordmark with MEDrecord endorsement
-- **Colors**: MEDrecord primary palette with research-focused accent
-- **Typography**: Consistent with MEDrecord design system
-- **Voice**: Professional, supportive, research-focused
+| Element | Value |
+|---------|-------|
+| **Tagline** | The operating system for research projects |
+| **Primary Color** | Deep Blue (#1F3A5F) - trust, research |
+| **Secondary Color** | Teal (#2F9C95) - collaboration |
+| **Accent Color** | Light Blue (#5FA8D3) - technology |
+| **Voice** | Professional, supportive, research-focused |
 
 ## Grant Engineering Philosophy
 
-ConsortiaAI adopts a **Cognitive Offloading** approach inspired by the LOGIQ AI methodology. This is not "AI chatting" but "AI grant engineering":
+ResearchOps adopts a **Cognitive Offloading** approach. This is not "AI chatting" but "AI grant engineering":
 
 ### Core Principles
 
@@ -53,11 +56,11 @@ AI extends capacity by handling analysis, calculation, drafting, and verificatio
 
 ## Phase-Gated Workflow
 
-ConsortiaAI uses a 4-phase model with mandatory quality gates:
+ResearchOps uses a 4-phase model with mandatory quality gates:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    ConsortiaAI Proposal Engine                      │
+│                    ResearchOps Proposal Engine                      │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  Phase 1              Phase 2              Phase 3        Phase 4   │
@@ -186,10 +189,10 @@ project-knowledge/
 
 ## Specialized Agents
 
-ConsortiaAI uses specialized agents per methodology:
+ResearchOps uses specialized agents per methodology:
 
 ```
-.consortia/agents/
+.researchops/agents/
 ├── compliance-officer.md     # Admissibility, eligibility rules
 ├── evaluation-strategist.md  # Scoring criteria optimization
 ├── budget-architect.md       # Cost structures, PM rates
@@ -211,11 +214,11 @@ ConsortiaAI uses specialized agents per methodology:
 
 ## Dashboard
 
-The ConsortiaAI dashboard provides real-time visibility:
+The ResearchOps dashboard provides real-time visibility:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│  CONSORTIAAI                                    47 : 15 : 30        │
+│  RESEARCHOPS                                    47 : 15 : 30        │
 │  Horizon-HLTH-2025 - Digital Health - AI       DAYS  HRS   MIN     │
 │  ████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░  5/27 tasks          │
 ├─────────────────────────────────────────────────────────────────────┤
@@ -291,21 +294,21 @@ Node types with color coding:
 
 ## Multi-Tenancy
 
-ConsortiaAI is multi-tenant, supporting multiple organizations with isolated data.
+ResearchOps is multi-tenant, supporting multiple organizations with isolated data.
 
 ### Tenant Structure
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     ConsortiaAI Platform                    │
+│                     ResearchOps Platform                    │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
 │  │  Tenant A   │  │  Tenant B   │  │  Tenant C   │         │
 │  │  (UMC X)    │  │  (Institute)│  │  (Company)  │         │
 │  ├─────────────┤  ├─────────────┤  ├─────────────┤         │
 │  │ Projects    │  │ Projects    │  │ Projects    │         │
-│  │ Partners    │  │ Partners    │  │ Partners    │         │
-│  │ Users       │  │ Users       │  │ Users       │         │
+│  │ Partners    │  │ Partners    │  ��� Partners    │         │
+│  │ Users       ���  │ Users       │  │ Users       │         │
 │  │ Settings    │  │ Settings    │  │ Settings    │         │
 │  └─────────────┘  └─────────────┘  └─────────────┘         │
 └─────────────────────────────────────────────────────────────┘
@@ -314,7 +317,7 @@ ConsortiaAI is multi-tenant, supporting multiple organizations with isolated dat
 ### Gateway Integration
 
 ```
-User → Gateway → ConsortiaAI
+User → Gateway → ResearchOps
           │
           ├── Validates auth.sid cookie
           ├── Extracts tenant context (X-Tenant-Id)
@@ -333,7 +336,7 @@ User → Gateway → ConsortiaAI
 
 ## Layout
 
-ConsortiaAI uses the standard MEDrecord three-panel layout:
+ResearchOps uses the standard MEDrecord three-panel layout:
 
 ```
 ┌──────────────┬──────────────────┬─────────────────────────────────┐
@@ -352,7 +355,7 @@ ConsortiaAI uses the standard MEDrecord three-panel layout:
 
 ## Document Services
 
-ConsortiaAI agents can fully manage documents in Google Workspace and Microsoft 365.
+ResearchOps agents can fully manage documents in Google Workspace and Microsoft 365.
 
 ### Agent Document Operations
 
@@ -364,7 +367,7 @@ ConsortiaAI agents can fully manage documents in Google Workspace and Microsoft 
 | **Delete** | Drive API `files.delete` | Graph API `DELETE` |
 | **List** | Drive API `files.list` | Graph API `GET /drive/children` |
 
-## Custom E-Signature (ConsortiaSign)
+## Custom E-Signature (ResearchOps Sign)
 
 Custom-built e-signature system with eIDAS compliance.
 
@@ -386,7 +389,7 @@ Track consortium communications for audit trail:
 ### WhatsApp Integration
 
 ```
-WhatsApp Business API → Webhook → Gateway → ConsortiaAI
+WhatsApp Business API → Webhook → Gateway → ResearchOps
                                       │
                                       ├── Store messages per project
                                       ├── Link to partners
@@ -426,7 +429,7 @@ Cal.com integration for consortium coordination:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        ConsortiaAI                              │
+│                        ResearchOps                              │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
@@ -463,7 +466,7 @@ Cal.com integration for consortium coordination:
 | AI | AI SDK, OpenAI, Anthropic |
 | Phase Engine | Custom state machine with locks |
 | Documents | Google Workspace API, Microsoft Graph |
-| E-Signature | ConsortiaSign (AdES), TSP (QES) |
+| E-Signature | ResearchOps Sign (AdES), TSP (QES) |
 | Scheduling | Cal.com API |
 | Payments | Stripe API |
 | Communication | WhatsApp Business API |
@@ -527,7 +530,7 @@ Cal.com integration for consortium coordination:
 
 | Component | Status |
 |-----------|--------|
-| ConsortiaSign | Planned |
+| ResearchOps Sign | Planned |
 | WhatsApp sync | Planned |
 | Stripe integration | Planned |
 
@@ -542,7 +545,7 @@ Cal.com integration for consortium coordination:
 
 ## Getting Started
 
-ConsortiaAI is in development. To participate:
+ResearchOps is in development. To participate:
 
 1. **Request Access** - Contact the product team
 2. **Provide Feedback** - Use the Ticketing Agent
