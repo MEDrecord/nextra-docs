@@ -87,21 +87,7 @@ const nextConfig = withNextra({
   },
   headers: async () => [
     {
-      // Cache ISMS pages for better performance when embedded
-      source: '/isms/:path*',
-      headers: [
-        {
-          key: 'Cache-Control',
-          value: 'public, s-maxage=300, stale-while-revalidate=600',
-        },
-        {
-          key: 'Access-Control-Allow-Origin',
-          value: '*',
-        },
-      ],
-    },
-    {
-      // Cache API responses
+      // Cache API responses and enable CORS for helpdesk embedding
       source: '/api/knowledge/:path*',
       headers: [
         {

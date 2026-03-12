@@ -104,13 +104,11 @@ export async function GET(request: NextRequest) {
     }
     
     if (!appDir) {
-      console.error('[Knowledge Export] No valid app directory found. CWD:', cwd)
       return NextResponse.json({
         success: true,
         format: format,
         itemCount: 0,
-        items: [],
-        debug: { cwd, checked: possiblePaths }
+        items: []
       }, { headers: corsHeaders })
     }
     
@@ -169,7 +167,6 @@ export async function GET(request: NextRequest) {
     }, { headers: corsHeaders })
     
   } catch (error) {
-    console.error('Knowledge export error:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500, headers: corsHeaders }
