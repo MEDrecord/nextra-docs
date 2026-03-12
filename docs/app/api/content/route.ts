@@ -153,6 +153,23 @@ function getAppDir(): string {
 async function findMdxFile(normalizedPath: string): Promise<{ filePath: string; content: string } | null> {
   const appDir = getAppDir()
   
+  console.log('[v0] findMdxFile - appDir:', appDir)
+  console.log('[v0] findMdxFile - normalizedPath:', normalizedPath)
+  console.log('[v0] findMdxFile - cwd:', process.cwd())
+  
+  // List contents of cwd to debug
+  try {
+    const cwdContents = await fs.readdir(process.cwd())
+    console.log('[v0] cwd contents:', cwdContents)
+    
+    if (cwdContents.includes('app')) {
+      const appContents = await fs.readdir(path.join(process.cwd(), 'app'))
+      console.log('[v0] app/ contents:', appContents)
+    }
+  } catch (e) {
+    console.log('[v0] Error listing dirs:', e)
+  }
+  
   // Paths to try (in order of priority)
   const pathsToTry = [
     // Direct path: /isms -> app/isms/page.mdx
@@ -163,12 +180,16 @@ async function findMdxFile(normalizedPath: string): Promise<{ filePath: string; 
     path.join(appDir, `${normalizedPath}.mdx`),
   ]
   
+  console.log('[v0] pathsToTry:', pathsToTry)
+  
   for (const filePath of pathsToTry) {
     try {
+      console.log('[v0] Trying:', filePath)
       const content = await fs.readFile(filePath, 'utf-8')
+      console.log('[v0] Found file:', filePath)
       return { filePath, content }
-    } catch {
-      // File doesn't exist, try next
+    } catch (e) {
+      console.log('[v0] Not found:', filePath, (e as Error).message)
       continue
     }
   }
