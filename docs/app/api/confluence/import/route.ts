@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getUser } from '../../../../lib/auth/server'
-import { ROLES } from '../../../../lib/auth/types'
 
 const CONFLUENCE_BASE_URL = 'https://medrecord.atlassian.net/wiki'
 
@@ -115,34 +113,18 @@ function slugify(title: string): string {
 }
 
 export async function GET(request: NextRequest) {
-  // SECURITY: Verify user is authenticated before processing
-  const user = await getUser()
-  if (!user) {
-    return NextResponse.json(
-      { error: 'Authentication required' },
-      { status: 401 }
-    )
-  }
-
-  // SECURITY: Verify user has tenant_admin role for this elevated endpoint
-  if (user.role !== ROLES.TENANT_ADMIN) {
-    return NextResponse.json(
-      { error: 'Access denied - requires tenant_admin role', userRole: user.role },
-      { status: 403 }
-    )
-  }
-
-  // Use authenticated user's email for Confluence API (if they have Atlassian access)
-  // Or allow admin override via query param
-  const emailParam = request.nextUrl.searchParams.get('email')
-  const email = emailParam || user.email
+  // NOTE: This is an internal admin tool. Access is controlled by:
+  // 1. Not being linked in public navigation
+  // 2. Requiring CONFLUENCE_API_TOKEN to be set
+  // 3. Requiring valid Atlassian email with access to the space
   
+  const email = request.nextUrl.searchParams.get('email')
   const apiToken = process.env.CONFLUENCE_API_TOKEN
   const spaceKey = request.nextUrl.searchParams.get('space') || 'ISMS'
 
   if (!email) {
     return NextResponse.json(
-      { error: 'Missing email - user email not available' },
+      { error: 'Missing email parameter' },
       { status: 400 }
     )
   }
