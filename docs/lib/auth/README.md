@@ -503,6 +503,224 @@ redirectToSignin()
 
 ---
 
+## Helpdesk Integration Guide
+
+The Helpdesk application (`helpdesk.healthtalk.ai`) can integrate with this docs site to display documentation content and leverage the shared authentication.
+
+### Authentication Flow for Helpdesk
+
+Since both apps are on the same domain (`*.healthtalk.ai`), they share the same `auth.sid` cookie set by the Gateway. This means:
+
+1. **User authenticates on Helpdesk** → Cookie set for `*.healthtalk.ai`
+2. **Helpdesk fetches from Docs API** → Cookie automatically included
+3. **No additional auth needed** - Single Sign-On via shared cookie
+
+### Content API
+
+The docs site exposes a `/api/content` endpoint for retrieving documentation as JSON.
+
+**Endpoint:** `https://docs.healthtalk.ai/api/content` (or `docs-tst.healthtalk.ai` for test)
+
+**Request:**
+```http
+GET /api/content?path=/help/faq
+Origin: https://helpdesk.healthtalk.ai
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "path": "/help/faq",
+  "title": "Frequently Asked Questions",
+  "content": "<article class=\"prose\">...HTML content...</article>",
+  "lastModified": "2026-03-10T12:00:00.000Z"
+}
+```
+
+### CORS Configuration
+
+The `/api/content` endpoint allows requests from:
+- All `*.healthtalk.ai` subdomains (HTTPS only)
+- `localhost` with any port (development)
+
+Requests from other origins will be blocked.
+
+### Integration Code Example
+
+**Helpdesk Frontend (TypeScript):**
+
+```typescript
+// lib/docs-api.ts
+const DOCS_API_URL = process.env.NEXT_PUBLIC_DOCS_URL || 'https://docs.healthtalk.ai'
+
+export interface DocsContent {
+  success: boolean
+  path: string
+  title: string
+  content: string
+  lastModified: string
+  error?: string
+}
+
+/**
+ * Fetch documentation content from the Docs site.
+ * Uses credentials: 'include' to send the shared auth.sid cookie.
+ */
+export async function fetchDocsContent(path: string): Promise<DocsContent> {
+  const response = await fetch(
+    `${DOCS_API_URL}/api/content?path=${encodeURIComponent(path)}`,
+    {
+      credentials: 'include', // Important: sends auth.sid cookie
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: 'Unknown error' }))
+    throw new Error(error.error || `Failed to fetch: ${response.status}`)
+  }
+  
+  return response.json()
+}
+
+// Usage in a React component
+export function HelpArticle({ articlePath }: { articlePath: string }) {
+  const [content, setContent] = useState<DocsContent | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  
+  useEffect(() => {
+    fetchDocsContent(articlePath)
+      .then(setContent)
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [articlePath])
+  
+  if (loading) return <Spinner />
+  if (error) return <ErrorMessage message={error} />
+  if (!content?.success) return <NotFound />
+  
+  return (
+    <article>
+      <h1>{content.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: content.content }} />
+      <footer>Last updated: {new Date(content.lastModified).toLocaleDateString()}</footer>
+    </article>
+  )
+}
+```
+
+**Server-side (if Helpdesk has a backend):**
+
+```typescript
+// pages/api/help/[...path].ts (Next.js API route)
+import { NextApiRequest, NextApiResponse } from 'next'
+
+const DOCS_API_URL = process.env.DOCS_API_URL || 'https://docs.healthtalk.ai'
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const path = (req.query.path as string[]).join('/')
+  
+  // Forward the auth cookie from the incoming request
+  const response = await fetch(
+    `${DOCS_API_URL}/api/content?path=/${path}`,
+    {
+      headers: {
+        'Cookie': req.headers.cookie || '',
+      },
+    }
+  )
+  
+  const data = await response.json()
+  res.status(response.status).json(data)
+}
+```
+
+### Authentication States
+
+When integrating, handle these states:
+
+| Scenario | HTTP Status | Response |
+|----------|-------------|----------|
+| Success | 200 | `{ success: true, title, content, ... }` |
+| Page not found | 404 | `{ success: false, error: "Page not found" }` |
+| Missing path param | 400 | `{ success: false, error: "Missing path parameter" }` |
+| Server error | 500 | `{ success: false, error: "..." }` |
+
+### Triggering Sign In from Helpdesk
+
+If you need to redirect users to sign in from Helpdesk:
+
+```typescript
+// Redirect to Gateway signin with callback back to Helpdesk
+const GATEWAY_URL = 'https://auth-test-b2c.healthtalk.ai'
+const TENANT_ID = 'your-tenant-id'
+
+function redirectToSignin(callbackPath: string = '/') {
+  const callbackUrl = encodeURIComponent(
+    `${window.location.origin}${callbackPath}`
+  )
+  window.location.href = `${GATEWAY_URL}/api/auth/signin?tenantId=${TENANT_ID}&callbackUrl=${callbackUrl}`
+}
+```
+
+### Verifying User Session
+
+To check if a user is authenticated before making requests:
+
+```typescript
+// Check session via Docs verify endpoint
+async function isAuthenticated(): Promise<boolean> {
+  try {
+    const response = await fetch(
+      `${DOCS_API_URL}/api/auth/verify`,
+      { credentials: 'include' }
+    )
+    const data = await response.json()
+    return data.authenticated === true
+  } catch {
+    return false
+  }
+}
+```
+
+Or directly with the Gateway:
+
+```typescript
+// Check session directly with Gateway
+async function getUser(): Promise<User | null> {
+  try {
+    const response = await fetch(
+      'https://auth-test-b2c.healthtalk.ai/api/user/me',
+      { credentials: 'include' }
+    )
+    if (!response.ok) return null
+    return response.json()
+  } catch {
+    return null
+  }
+}
+```
+
+### Environment Variables for Helpdesk
+
+```env
+# Docs API URL
+NEXT_PUBLIC_DOCS_URL=https://docs.healthtalk.ai      # Production
+NEXT_PUBLIC_DOCS_URL=https://docs-tst.healthtalk.ai  # Test
+
+# Gateway URL (for direct auth operations)
+NEXT_PUBLIC_GATEWAY_URL=https://auth-test-b2c.healthtalk.ai
+
+# Tenant ID (get from Gateway admin)
+NEXT_PUBLIC_TENANT_ID=helpdesk
+```
+
+---
+
 ## Changelog
 
 ### v1.0.0
@@ -513,3 +731,4 @@ redirectToSignin()
 - Middleware protection for all routes
 - AuthContext with SSR/SSG safe defaults
 - Smart URL detection for preview environments
+- `/api/content` endpoint for helpdesk integration
