@@ -1,77 +1,161 @@
 # AI Assistance
 
-Best practices for working effectively with AI coding assistants like Claude Code, GitHub Copilot, and similar tools.
+Best practices for working effectively with AI coding assistants like v0, Claude Code, GitHub Copilot, and Cursor.
 
-## Core Principles
+## The Prompt Framework
 
-### 1. Use Parallel Worktrees
+Better prompts = better results, faster. From testing, good prompts consistently deliver:
 
-Run multiple AI sessions for different parts of your codebase simultaneously:
+- Cleaner, more maintainable code
+- Smarter UX decisions (AI understands intent and optimizes accordingly)
+- Faster generation time (30-40% faster with less unnecessary code)
+
+### Three Inputs That Drive Great Prompts
+
+The best prompts always include three core inputs:
+
+```markdown
+Build [product surface: components, data, actions].
+Used by [who],
+in [what moment],
+to [what decision or outcome].
+
+Constraints:
+- platform / device
+- visual tone
+- layout assumptions
+```
+
+### 1. Product Surface
+
+**What specifically are you building?**
+
+List the actual components, features, and data. Not "a dashboard", but what data it shows, what actions users can take, and what the key sections are.
+
+| Vague | Specific |
+|-------|----------|
+| "Build a user profile page" | "Build a user profile page showing: profile photo, display name, email, bio, member since date, activity stats (posts, comments), recent activity feed with timestamps, edit profile button" |
+| "Create a dashboard" | "Dashboard displaying: top 5 performers with names and revenue, team progress bar, pipeline with stages (Leads → Qualified → Closed), 6-month trend chart" |
+
+When you're specific about the product surface, AI doesn't waste time inventing features you don't need.
+
+### 2. Context of Use
+
+**Who's using this, and in what moment?**
+
+Be specific about your users and how they interact with the product in real life. Their role, technical comfort level, time constraints, and environment shape how AI designs the UX.
+
+Ask yourself:
+- Who uses this? (role, technical level)
+- When do they use it? (morning standup, during patient consult, on-call)
+- How much time do they have? (quick glance vs. deep analysis)
+- What decision are they trying to make?
+
+**Example for MEDrecord:**
+
+```markdown
+Used by care coordinators (non-technical),
+during patient intake on tablet devices,
+to quickly assess risk factors and assign appropriate care pathways.
+Checked multiple times per day between appointments.
+```
+
+AI optimizes for assumed usage. If you don't define the context, it will guess.
+
+### 3. Constraints & Taste
+
+**How should it work and look?**
+
+Constraints tell AI what not to invent. Include:
+
+- Platform/device assumptions
+- Accessibility requirements
+- Color systems and visual tone
+- Layout expectations
+- MEDrecord-specific rules
+
+**MEDrecord Constraints Template:**
+
+```markdown
+Constraints:
+- NEN-7510 compliant (no PHI in logs or client state)
+- WCAG 2.1 AA accessible
+- Gateway pattern (no direct DB access from client)
+- shadcn/ui components only
+- Mobile-responsive, tablet-optimized
+- Professional healthcare aesthetic
+```
+
+## Full Prompt Example
+
+Here's a complete prompt using the framework for a MEDrecord feature:
+
+```markdown
+Build a patient risk assessment dashboard showing:
+- Risk score with color indicator (high/medium/low)
+- Key risk factors list with severity badges
+- Recent vital signs trend (last 7 days)
+- Recommended actions checklist
+- Quick notes input field
+
+Used by care coordinators (managing 20-30 patients),
+on tablets during morning rounds,
+to prioritize which patients need immediate attention.
+Checked every 2-3 hours to update care priorities.
+
+Constraints:
+- Mobile-first, works on iPad in portrait mode
+- High contrast for clinical environment lighting
+- Color code: red for high risk, yellow for moderate, green for stable
+- Maximum 2-column layout
+- No PHI visible in URL or logs
+- Gateway auth pattern required
+- shadcn/ui components
+```
+
+## Iterating on Generations
+
+Once AI generates your app, you have two main ways to iterate:
+
+| Method | Best For |
+|--------|----------|
+| **Prompt for changes** | Functional changes, adding features, restructuring layouts |
+| **Design Mode** (v0) | Quick visual changes like colors, spacing, typography |
+
+Use prompts for logic and structure. Use Design Mode for visual tweaks.
+
+## Development Workflow Best Practices
+
+### Use Parallel Worktrees
+
+Run multiple AI sessions for different parts of your codebase:
 
 - One session for frontend work
 - One session for API/backend
 - One session for infrastructure or agents
 
-This maximizes throughput while maintaining context separation.
-
-### 2. Plan Before Implementing
+### Plan Before Implementing
 
 Always propose architecture and get approval before writing code:
 
-- Start with a high-level plan
-- Get stakeholder buy-in on approach
-- Document decisions before implementation
-- Use planning mode for complex features
+1. Start with a high-level plan
+2. Get stakeholder buy-in on approach
+3. Document decisions before implementation
+4. Use planning mode for complex features
 
-### 3. Invest in Project Rules
+### Invest in Project Rules
 
-Create and maintain project-specific rules files that capture:
+Create and maintain project-specific rules files. See [Project Rules](/developer/developer-tools/project-rules) for templates.
 
-- API architecture patterns
-- Data access rules
-- UI framework preferences
-- Naming conventions
-- Security requirements
-
-See [Project Rules](/docs/developer-tools/project-rules) for templates.
-
-### 4. Create Custom Commands
-
-Define reusable commands for common tasks:
-
-- `/techdebt` - Identify and document technical debt
-- `/security-audit` - Review code for security issues
-- `/compliance-check` - Verify regulatory compliance
-- `/explain` - Get detailed explanations of code
-
-See [Custom Commands](/docs/developer-tools/custom-commands) for examples.
-
-### 5. Automate Bug Fixing
+### Automate Bug Fixing
 
 Point AI at CI failures or logs to troubleshoot:
 
 - Feed CI/CD failure logs directly to AI
-- Include Docker/container logs for context
+- Include container logs for context
 - Let AI propose fixes with full error context
 
-### 6. Write Better Prompts
-
-Effective prompting improves results:
-
-- Write detailed specs for features
-- Include acceptance criteria
-- Provide examples of expected output
-- Ask AI to "grill" you on changes before committing
-
-### 7. Color-Code Environments
-
-Use visual cues to prevent mistakes:
-
-- Different terminal colors per environment (dev/test/prod)
-- Clear naming conventions for branches
-- Environment indicators in prompts
-
-### 8. Use Subagents for Complex Tasks
+### Use Subagents for Complex Tasks
 
 Delegate complex analysis to specialized subagents:
 
@@ -80,22 +164,6 @@ Delegate complex analysis to specialized subagents:
 - Documentation generation
 - Test coverage analysis
 
-### 9. AI for Data and Analytics
-
-Use AI with database tools for analysis:
-
-- Natural language queries instead of writing SQL
-- Generate reports and visualizations
-- Analyze metrics without deep database knowledge
-
-### 10. Enable Learning Mode
-
-Use explanatory output for onboarding:
-
-- Have AI explain changes in detail for new team members
-- Generate documentation alongside code
-- Create learning materials from real implementations
-
 ## Anti-Patterns to Avoid
 
 - Blindly accepting AI suggestions without review
@@ -103,3 +171,11 @@ Use explanatory output for onboarding:
 - Skipping tests because "AI wrote it"
 - Ignoring context limits - break large tasks into smaller ones
 - Not maintaining project rules as codebase evolves
+- Vague prompts that force AI to guess
+
+## Resources
+
+- [Project Rules](/developer/developer-tools/project-rules) - Set up coding standards
+- [Custom Commands](/developer/developer-tools/custom-commands) - Reusable automation
+- [Code Patterns](/knowledge/patterns) - Patterns from code reviews
+- [v0 Documentation](https://v0.dev/docs) - Official v0 docs
