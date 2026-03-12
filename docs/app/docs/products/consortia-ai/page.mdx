@@ -2,6 +2,106 @@
 
 ConsortiaAI is an AI-powered research grant and consortium management platform for coordinators of European and national R&D projects. It supports the full lifecycle from funding discovery and partner matching to proposal development, consortium agreements, milestone tracking, deliverables, compliance, and reporting.
 
+## Part of MEDrecord
+
+ConsortiaAI is a product within the MEDrecord ecosystem, sharing the same infrastructure, authentication, and design language as HealthTalk, Helpdesk, and other MEDrecord products.
+
+| Aspect | Description |
+|--------|-------------|
+| **Brand** | ConsortiaAI by MEDrecord |
+| **Domain** | consortia-ai.healthtalk.ai |
+| **Authentication** | Gateway (Azure B2C) - shared with all MEDrecord apps |
+| **Design System** | MEDrecord UI (Sidebar + Agent + Content layout) |
+| **Data Platform** | Supabase via Gateway |
+| **AI Framework** | MEDrecord AI Agents |
+
+### Brand Identity
+
+- **Logo**: ConsortiaAI wordmark with MEDrecord endorsement
+- **Colors**: MEDrecord primary palette with research-focused accent
+- **Typography**: Consistent with MEDrecord design system
+- **Voice**: Professional, supportive, research-focused
+
+## Multi-Tenancy
+
+ConsortiaAI is multi-tenant, supporting multiple organizations with isolated data and configurations.
+
+### Tenant Structure
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     ConsortiaAI Platform                    │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │  Tenant A   │  │  Tenant B   │  │  Tenant C   │         │
+│  │  (UMC X)    │  │  (Institute)│  │  (Company)  │         │
+│  ├─────────────┤  ├─────────────┤  ├─────────────┤         │
+│  │ Projects    │  │ Projects    │  │ Projects    │         │
+│  │ Partners    │  │ Partners    │  │ Partners    │         │
+│  │ Users       │  │ Users       │  │ Users       │         │
+│  │ Settings    │  │ Settings    │  │ Settings    │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Tenant Isolation
+
+| Aspect | Isolation Level |
+|--------|-----------------|
+| **Data** | Fully isolated - no cross-tenant data access |
+| **Users** | Per-tenant user management with roles |
+| **Projects** | Tenant-scoped, shareable via consortium invites |
+| **Settings** | Per-tenant configuration |
+| **Integrations** | Tenant-specific API keys (Cal.com, Stripe) |
+
+### Gateway Integration
+
+ConsortiaAI uses Gateway for multi-tenant routing:
+
+```
+User → Gateway → ConsortiaAI
+          │
+          ├── Validates auth.sid cookie
+          ├── Extracts tenant context (X-Tenant-Id)
+          ├── Validates tenant membership
+          └── Returns user with tenant role
+```
+
+**Headers from Gateway:**
+
+| Header | Description |
+|--------|-------------|
+| `X-User-Id` | Authenticated user identifier |
+| `X-Tenant-Id` | Active tenant/organization |
+| `X-Tenant-Role` | User role within tenant |
+
+### Tenant Roles
+
+| Role | Description | Permissions |
+|------|-------------|-------------|
+| **Owner** | Tenant administrator | Full access, manage users, billing |
+| **Coordinator** | Project coordinator | Create projects, manage partners, full project access |
+| **Partner** | External consortium partner | Invited project access only |
+| **Viewer** | Read-only access | View projects, no edit rights |
+
+### Cross-Tenant Collaboration
+
+Research consortia often span multiple organizations. ConsortiaAI handles this via:
+
+1. **Consortium Invites** - Invite partners from other tenants to specific projects
+2. **Shared Workspaces** - Project-level access for cross-tenant collaboration
+3. **Federated Identity** - Partners authenticate via their own tenant
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                    Project: Health-AI-2025                   │
+├──────────────────────────────────────────────────────────────┤
+│  Coordinator (Tenant A)  ←→  Partner (Tenant B)              │
+│  Coordinator (Tenant A)  ←→  Partner (Tenant C)              │
+│  Coordinator (Tenant A)  ←→  External Partner (Email invite) │
+└──────────────────────────────────────────────────────────────┘
+```
+
 ## Overview
 
 ConsortiaAI helps research coordinators manage complex multi-partner projects efficiently. The platform uses AI agents to automate repetitive tasks while keeping humans in control of strategic decisions.
@@ -315,12 +415,32 @@ User → ConsortiaAI UI → Gateway → Supabase
 
 ## Security and Compliance
 
-- **Gateway Authentication** - All requests signed with HMAC
-- **Role-Based Access** - Coordinator, Partner, Viewer roles per project
-- **Audit Trail** - Full versioning for contracts and grant submissions
-- **GDPR Compliance** - Data handling compliant with EU regulations
-- **Grant Compliance** - Rules per funding scheme (Horizon, Eurostars, ZonMw, NWO)
-- **PCI Compliance** - Stripe handles payment data securely
+### Authentication and Authorization
+
+| Feature | Implementation |
+|---------|----------------|
+| **Gateway Authentication** | Cookie-based auth via Azure B2C |
+| **Multi-Tenant Isolation** | Tenant context via Gateway headers |
+| **Role-Based Access** | Owner, Coordinator, Partner, Viewer per tenant |
+| **Project-Level Permissions** | Fine-grained access per project |
+
+### Data Security
+
+| Feature | Implementation |
+|---------|----------------|
+| **Encryption in Transit** | TLS 1.3 |
+| **Encryption at Rest** | AES-256 |
+| **Audit Trail** | Full versioning for contracts and submissions |
+| **Data Isolation** | Row-level security per tenant |
+
+### Compliance
+
+| Standard | Scope |
+|----------|-------|
+| **GDPR** | Data handling compliant with EU regulations |
+| **NEN 7510** | Healthcare information security (inherited from MEDrecord) |
+| **Grant Rules** | Compliance per funding scheme (Horizon, Eurostars, ZonMw, NWO) |
+| **PCI DSS** | Stripe handles payment data securely |
 
 ## Resources
 
