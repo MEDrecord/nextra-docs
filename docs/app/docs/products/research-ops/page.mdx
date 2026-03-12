@@ -344,6 +344,260 @@ project-knowledge/
 └── annexes/                      # Supporting documents
 ```
 
+## Document Architecture
+
+ResearchOps uses a hybrid document strategy: internal Nextra pages for structured content and external tools (Google Docs/Word) for collaborative proposal writing.
+
+### Document Types and Tools
+
+| Document Type | Tool | Reason |
+|---------------|------|--------|
+| **Agent definitions** | Nextra (MDX) | System docs, versioned, searchable |
+| **Phase outputs (P1-P11)** | Nextra (MDX) | Structured, lockable, AI-generated |
+| **Templates** | Nextra (MDX) | Reusable, versioned |
+| **Proposal content (Part B)** | Google Docs / Word | Collaborative writing with partners |
+| **Budget annexes** | Excel / Sheets | Partner contributions |
+| **Deliverables** | Google Docs / Word | Standard format for EC |
+
+### Why This Split
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Document Architecture                            │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  NEXTRA (Internal)                     EXTERNAL (Partner Collab)   │
+│  ═════════════════                     ════════════════════════    │
+│                                                                     │
+│  Structured Analysis                   Collaborative Writing        │
+│  - AI generates                        - Partners edit together     │
+│  - Human approves                      - Familiar tools             │
+│  - System locks                        - Real-time comments         │
+│  - Versioned                           - Track changes              │
+│                                                                     │
+│  ┌─────────────────┐                   ┌─────────────────┐         │
+│  │ Phase 1-2       │                   │ Part B Sections │         │
+│  │ outputs         │ ──── AI drafts   │ Budget Annex    │         │
+│  │ Agent defs      │      to Docs ──> │ Partner descs   │         │
+│  │ Templates       │                   │ Deliverables    │         │
+│  └─────────────────┘                   └─────────────────┘         │
+│         │                                       │                   │
+│         └───────────── QA checks ───────────────┘                   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Nextra Structure
+
+```
+researchops.healthtalk.ai/
+├── docs/                           # Public documentation
+│   ├── getting-started/
+│   ├── phases/
+│   │   ├── phase-1-knowledge-base/
+│   │   ├── phase-2-writing-infra/
+│   │   └── ...
+│   └── agents/                     # Agent definitions
+│       ├── overview.mdx
+│       ├── compliance-officer.mdx
+│       ├── evaluation-strategist.mdx
+│       └── ...
+│
+├── projects/                       # Per-project knowledge (protected)
+│   └── [project-id]/
+│       ├── _meta.json              # Auto-generated sidebar
+│       ├── overview.mdx
+│       ├── phase-1/
+│       │   ├── 01-call-context.mdx
+│       │   ├── 02-compliance-checklist.mdx
+│       │   └── 06-logic-map.mdx    # [LOCKED]
+│       ├── phase-2/
+│       │   ├── evidence-library.mdx
+│       │   └── partner-profiles.mdx
+│       └── external-docs.mdx       # Links to Google Docs/SharePoint
+│
+└── templates/                      # Reusable templates
+    ├── phase-1/
+    │   ├── call-context-template.mdx
+    │   └── compliance-template.mdx
+    └── phase-2/
+        └── ...
+```
+
+### Agent Definition Pages
+
+Agent definitions live as Nextra MDX pages with structured documentation:
+
+```mdx
+// docs/agents/compliance-officer.mdx
+
+# Compliance Officer
+
+The Compliance Officer agent verifies proposals against call requirements.
+
+## Capabilities
+
+| Capability | Description |
+|------------|-------------|
+| Admissibility check | Verify consortium composition, budget limits |
+| Eligibility check | Partner eligibility, country requirements |
+| Document compliance | Page limits, formatting, annexes |
+
+## When Used
+
+- **P2**: Initial compliance analysis
+- **Phase 4**: Final submission check
+
+## Inputs
+
+- `call_document` (file): EU call document (PDF)
+- `consortium` (object): Partner list with countries and types
+
+## Outputs
+
+- `02-compliance-checklist.md`: Structured compliance report
+```
+
+### Project Knowledge Pages
+
+Phase outputs are stored as Nextra MDX pages per project:
+
+```mdx
+// projects/[project-id]/phase-1/01-call-context.mdx
+
+---
+title: Call Context
+status: locked
+locked_at: 2025-03-10T14:30:00Z
+locked_by: jan-marc
+version: 3
+---
+
+# Call Context Analysis
+
+| Field | Value |
+|-------|-------|
+| Call ID | HORIZON-HLTH-2025-01 |
+| Deadline | 2025-04-15 |
+| Budget | 4-6M |
+| Duration | 36-48 months |
+
+## Key Topics
+
+- Digital health interventions for chronic disease management
+- AI-assisted diagnostics and decision support
+- Patient empowerment through digital tools
+
+---
+
+*Approved by: Jan-Marc | 10 March 2025*
+```
+
+### External Documents Reference
+
+Projects track external Google Docs/SharePoint documents:
+
+```mdx
+// projects/[project-id]/external-docs.mdx
+
+# Proposal Documents
+
+Documents edited in Google Docs / SharePoint for collaborative writing.
+
+## Part B Sections
+
+| Document | Type | Status | Words | Limit |
+|----------|------|--------|-------|-------|
+| Part B - Section 1: Excellence | Google Docs | In Review | 4,250 | 5,000 |
+| Part B - Section 2: Impact | Google Docs | Draft | 2,100 | 4,000 |
+| Budget Annex | SharePoint | Complete | - | - |
+
+## Quick Actions
+
+- Open All in Google Drive
+- Run Compliance Check
+- Export Assembly Package
+```
+
+### Document Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         Document Flow                               │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  1. AI Generates Analysis (Phase 1-2)                               │
+│     └─ Creates MDX pages in Nextra                                 │
+│                                                                     │
+│  2. Human Reviews and Approves                                      │
+│     └─ Views in Nextra, approves, locks P6                         │
+│                                                                     │
+│  3. AI Creates Draft in Google Docs (Phase 3)                       │
+│     └─ Uses locked analysis as input                               │
+│     └─ Creates Google Doc via API                                  │
+│     └─ Stores reference in external-docs.mdx                       │
+│                                                                     │
+│  4. Partners Edit in Google Docs                                    │
+│     └─ Familiar tools, real-time collaboration                     │
+│     └─ ResearchOps tracks status via API                           │
+│                                                                     │
+│  5. QA Agent Checks Compliance                                      │
+│     └─ Fetches content from Google Docs API                        │
+│     └─ Compares against locked Nextra analysis                     │
+│     └─ Reports in ResearchOps dashboard                            │
+│                                                                     │
+│  6. Assembly (Phase 4)                                              │
+│     └─ Downloads from Google/SharePoint                            │
+│     └─ Assembles into submission package                           │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### MDX Components Library
+
+Custom components for ResearchOps documents:
+
+| Component | Purpose |
+|-----------|---------|
+| `LockedBanner` | Shows locked status with timestamp |
+| `CallDetails` | Structured call information card |
+| `ComplianceCheck` | Pass/fail indicator per criterion |
+| `PhaseProgress` | Phase completion status |
+| `ExternalDocList` | List of Google/SharePoint documents |
+| `Timeline` | Milestone timeline visualization |
+| `BudgetSummary` | Budget breakdown table |
+| `RiskMatrix` | Risk assessment grid |
+| `PartnerTable` | Partner capabilities overview |
+
+### Database Schema for Document Tracking
+
+```sql
+-- project_documents (tracks both internal and external)
+create table project_documents (
+  id uuid primary key,
+  project_id uuid references projects(id),
+  phase integer not null,
+  document_type text not null, -- 'analysis', 'proposal', 'deliverable'
+  title text not null,
+  
+  -- For Nextra docs: content stored in MDX files
+  nextra_path text, -- 'projects/abc/phase-1/01-call-context.mdx'
+  
+  -- For external docs: reference to Google/SharePoint
+  storage_type text, -- 'nextra', 'google_docs', 'sharepoint'
+  external_id text, -- Google Doc ID or SharePoint URL
+  external_url text, -- Direct link
+  
+  -- Status tracking
+  status text default 'draft', -- draft, review, approved, locked
+  word_count integer,
+  last_synced_at timestamptz,
+  
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+```
+
 ## Specialized Agents
 
 ResearchOps uses specialized agents across the full lifecycle:
