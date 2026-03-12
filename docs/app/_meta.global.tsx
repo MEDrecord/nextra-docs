@@ -16,32 +16,6 @@ const USER_GUIDE: MetaRecord = {
   'analytics': 'Analytics'
 }
 
-const API_REFERENCE: MetaRecord = {
-  overview: 'Overview',
-  authentication: 'Authentication',
-  endpoints: 'Endpoints',
-  webhooks: 'Webhooks',
-  'error-handling': 'Error Handling',
-  'rate-limits': 'Rate Limits'
-}
-
-const COMPLIANCE: MetaRecord = {
-  overview: 'Overview',
-  'iso-13485': 'ISO 13485',
-  'iso-62304': 'ISO 62304',
-  'nen-7510': 'NEN 7510',
-  'gdpr': 'GDPR',
-  'audit-trail': 'Audit Trail'
-}
-
-const ARCHITECTURE: MetaRecord = {
-  overview: 'Overview',
-  'system-design': 'System Design',
-  'data-flow': 'Data Flow',
-  'security': 'Security',
-  'integrations': 'Integrations'
-}
-
 const ISMS: MetaRecord = {
   index: 'Overview',
   'policies': 'Policies',
@@ -166,23 +140,12 @@ export default {
   },
   developer: {
     type: 'page',
-    title: 'Developer',
+    title: 'Developer Tools',
     items: {
-      'api-reference': { 
-        title: 'API Reference',
-        items: API_REFERENCE 
-      },
-      'architecture': { 
-        title: 'Architecture',
-        items: ARCHITECTURE 
-      },
+      index: 'Overview',
       'developer-tools': {
-        title: 'Developer Tools',
+        title: 'Tools',
         items: DEVELOPER_TOOLS
-      },
-      'compliance': { 
-        title: 'Compliance',
-        items: COMPLIANCE 
       }
     }
   }
