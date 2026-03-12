@@ -21,7 +21,8 @@ const ISMS: MetaRecord = {
   'policies': 'Policies',
   'annex-a': 'Annex A Controls',
   'registers': 'Registers',
-  'risks': 'Risk Register'
+  'risks': 'Risk Register',
+  'audit': 'Audit & Evidence'
 }
 
 const ISMS_ANNEX_A: MetaRecord = {
@@ -135,7 +136,8 @@ export default {
         title: 'Registers',
         items: ISMS_REGISTERS
       },
-      'risks': 'Risk Register'
+      'risks': 'Risk Register',
+      'audit': 'Audit & Evidence'
     }
   },
   help: {

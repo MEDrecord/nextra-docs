@@ -1,42 +1,94 @@
 # Information Security Management System
 
-Welcome to the MEDrecord ISMS documentation. This system documents our approach to managing information security in compliance with ISO 27001.
+<DocumentMeta
+  version="2.0"
+  status="approved"
+  approvedBy="Jan-Marc Verlinden"
+  approvedDate="2024-03-01"
+  filePath="docs/app/isms/page.mdx"
+/>
 
-## Quick Links
+Welcome to the MEDrecord ISMS documentation. This dashboard provides a complete overview of our information security management system in compliance with ISO 27001.
 
-| Section | Description |
-|---------|-------------|
-| [Policies](/isms/policies) | Security policies (linked to Helpdesk) |
-| [Annex A Controls](/isms/annex-a) | ISO 27001 Annex A control implementation |
-| [Registers](/isms/registers) | Changes, risks, incidents, suppliers |
-| [Risks](/isms/risks) | Risk assessment and treatment |
+## Overview
+
+<QuickStats 
+  policies={12}
+  controls={114}
+  risks={32}
+  openIncidents={0}
+/>
+
+## Security Status
+
+<div className="grid md:grid-cols-2 gap-6 mt-6">
+
+<ControlStatusCard
+  implemented={98}
+  partial={12}
+  notImplemented={0}
+  notApplicable={4}
+/>
+
+<RiskHeatmap
+  risks={[
+    { id: '2019-04', title: 'Social engineering', likelihood: 'L', impact: 'L', treatment: 'ACCEPT' },
+    { id: '2019-05', title: 'Vulnerability exploited', likelihood: 'M', impact: 'H', treatment: 'MITIGATE' },
+    { id: '2019-06', title: 'Account sharing', likelihood: 'L', impact: 'L', treatment: 'ACCEPT' },
+    { id: '2019-08', title: 'Insufficient supplier control', likelihood: 'M', impact: 'M', treatment: 'MITIGATE' },
+    { id: '2019-11', title: 'Loss of crypto keys', likelihood: 'L', impact: 'L', treatment: 'ACCEPT' },
+    { id: '2019-14', title: 'Email intercepted', likelihood: 'L', impact: 'L', treatment: 'ACCEPT' },
+    { id: '2019-28', title: 'Improper hardening', likelihood: 'M', impact: 'H', treatment: 'TRANSFER' },
+    { id: '2019-29', title: 'Weak passwords', likelihood: 'L', impact: 'H', treatment: 'ACCEPT' },
+  ]}
+/>
+
+</div>
+
+## Quick Navigation
+
+| Section | Description | For |
+|---------|-------------|-----|
+| [Policies](/isms/policies) | All security policies | Security Officer |
+| [Annex A Controls](/isms/annex-a) | ISO 27001 control implementation | Auditors |
+| [Risk Register](/isms/risks) | Risk assessment and treatment | Management |
+| [Registers](/isms/registers) | Changes, incidents, suppliers, assets | Operations |
+
+## Audit Resources
+
+<AuditLinks
+  links={[
+    { title: 'Statement of Applicability', description: 'All Annex A controls with justification', href: '/isms/annex-a' },
+    { title: 'Risk Treatment Plan', description: 'Current risks and mitigation measures', href: '/isms/risks' },
+    { title: 'Change Register', description: 'All approved changes', href: '/isms/registers/changes' },
+    { title: 'Incident Register', description: 'Security incidents (GitLab)', href: 'https://gitlab.medvision360.org/management/reports-and-announcements/-/boards', external: true },
+    { title: 'Supplier Register', description: 'Third-party assessments', href: '/isms/registers/suppliers' },
+    { title: 'Git History', description: 'Complete document change history', href: 'https://github.com/MEDrecord/nextra-docs/commits/main/docs/app/isms', external: true },
+  ]}
+/>
 
 ## Scope
 
 The ISMS applies to:
 
-- MedSafe PGO
-- HealthTalk
-- ClubDiabetes
-- Supporting infrastructure and personnel
-
-## Helpdesk Integration
-
-Detailed policy documents are maintained in the [Helpdesk system](/helpdesk/isms). Key policies include:
-
-- [Information Security Policy](/helpdesk/isms/information-security-policy)
-- [Access Control Policy](/helpdesk/isms/access-control-policy)
-- [Password Policy](/helpdesk/isms/password-policy)
-- [Business Continuity Plan](/helpdesk/isms/business-continuity-plan)
+- **MedSafe PGO** - Personal health environment
+- **HealthTalk** - Healthcare communication platform
+- **ClubDiabetes** - Patient community
+- **Supporting infrastructure** - Servers, networks, cloud services
+- **Personnel** - All employees and contractors
 
 ## Certification Status
 
-| Standard | Status |
-|----------|--------|
-| ISO 27001 | Certified |
-| NEN 7510 | Compliant |
-| MedMij | Certified |
+| Standard | Status | Valid Until |
+|----------|--------|-------------|
+| ISO 27001:2013 | Certified | Dec 2026 |
+| NEN 7510:2017 | Compliant | Dec 2026 |
+| MedMij | Certified | Dec 2025 |
 
 ## Contact
 
-For ISMS-related questions, contact the Information Security Officer.
+| Role | Contact |
+|------|---------|
+| Information Security Officer | security@medrecord.nl |
+| Data Protection Officer | privacy@medrecord.nl |
+| Management | management@medrecord.nl |

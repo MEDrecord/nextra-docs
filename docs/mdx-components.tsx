@@ -1,4 +1,14 @@
 import { getEnhancedPageMap } from '@components/get-page-map'
+import { DocumentMeta } from '@components/document-meta'
+import { 
+  ControlStatusCard, 
+  RiskHeatmap, 
+  QuickStats, 
+  AuditLinks,
+  ControlStatusBadge,
+  RiskTreatmentBadge,
+  ExposureBadge
+} from '@components/isms-dashboard'
 import type { Folder } from 'nextra'
 import { useMDXComponents as getDocsMDXComponents } from 'nextra-theme-docs'
 import type { UseMDXComponents } from 'nextra/mdx-components'
@@ -124,5 +134,13 @@ export const useMDXComponents: UseMDXComponents<typeof docsComponents> = <T,>(
       className="nextra-border rounded-xl border drop-shadow-sm"
     />
   ),
+  DocumentMeta,
+  ControlStatusCard,
+  RiskHeatmap,
+  QuickStats,
+  AuditLinks,
+  ControlStatusBadge,
+  RiskTreatmentBadge,
+  ExposureBadge,
   ...components
 })
